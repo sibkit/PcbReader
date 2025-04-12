@@ -7,6 +7,9 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class DefineApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
+    [GeneratedRegex(@"^ADD([0-9]+)([^,]*)\*$")]
+    private static partial Regex MatchMacroRegex();
+    
     [GeneratedRegex(@"^ADD([0-9]+)([CROP]{1}),{1}(.*)\*$")]
     private static partial Regex MatchRegex();
     private static readonly IFormatProvider Formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
@@ -98,10 +101,19 @@ public partial class DefineApertureHandler: ICommandHandler<GerberCommandType, G
     } 
     
     public bool Match(GerberContext ctx) {
-        return MatchRegex().IsMatch(ctx.CurLine);
+        return ctx.CurLine.StartsWith("ADD");
     }
     
     public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+        
+        var mm = MatchMacroRegex().Match(ctx.CurLine);
+        if (mm.Success) {
+            var code = int.Parse(mm.Groups[1].Value);
+            var appName = mm.Groups[2].Value;
+            program.Apertures.Add(code, new MacroAperture(appName));
+            return;
+        }
+        
         var m = MatchRegex().Match(ctx.CurLine);
         if (m.Success) {
             var appNum = int.Parse(m.Groups[1].Value);
