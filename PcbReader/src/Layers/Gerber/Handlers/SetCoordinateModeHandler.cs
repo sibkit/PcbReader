@@ -7,12 +7,12 @@ public class SetCoordinateModeHandler: ICommandHandler<GerberCommandType, Gerber
         return [];
     }
     public bool Match(GerberContext ctx) {
-        return ctx.CurLine is "G90" or "G91";
+        return ctx.CurLine is "G90*" or "G91*";
     }
     public void WriteToProgram(GerberContext ctx, GerberLayer program) {
         ctx.CoordinatesMode = ctx.CurLine switch {
-            "G90" => CoordinatesMode.Absolute,
-            "G91" => CoordinatesMode.Incremental,
+            "G90*" => CoordinatesMode.Absolute,
+            "G91*" => CoordinatesMode.Incremental,
             _ => throw new Exception("Unknown coordinates mode")
         };
     }

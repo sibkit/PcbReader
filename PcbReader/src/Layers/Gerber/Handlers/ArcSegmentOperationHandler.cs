@@ -7,7 +7,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class ArcSegmentOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     
-    [GeneratedRegex("^(G02|G03){0,1}(?:(X)([+-]?[0-9.]+))(?:(Y)([+-]?[0-9.]+))(?:(I)([+-]?[0-9.]+))(?:(J)([+-]?[0-9.]+))D01$")]
+    [GeneratedRegex("^(G02|G03){0,1}(?:(X)([+-]?[0-9.]+))(?:(Y)([+-]?[0-9.]+))(?:(I)([+-]?[0-9.]+))(?:(J)([+-]?[0-9.]+))D01\\*$")]
     private static partial Regex MatchRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {

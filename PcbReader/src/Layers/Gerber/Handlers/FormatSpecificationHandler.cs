@@ -40,6 +40,6 @@ public partial class FormatSpecificationHandler: ICommandHandler<GerberCommandTy
         };
     }
 
-    [GeneratedRegex("^FS([LT]{0,1})([AI]{0,1})X([0-9]{2})Y([0-9]{2})$")]
+    [GeneratedRegex("^FS([LT]{0,1})([AI]{0,1})X([0-9]{2})Y([0-9]{2})\\*$")]
     private static partial Regex MatchRegex();
 }

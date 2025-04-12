@@ -49,6 +49,8 @@ public static class Reader
         var files = di.GetFiles("*");
         var i = 0;
         foreach (var fi in files) {
+            if(!fi.Name.Contains("COMPMASK"))
+                continue;
             // if(i>3)
             //     break;
             // i++;

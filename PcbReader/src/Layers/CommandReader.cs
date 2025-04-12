@@ -14,7 +14,7 @@ public abstract class CommandReader<T, TC, TP>
         _handlers = handlers;
     }
 
-    protected abstract IEnumerable<string> ExcludeCommands(string text);
+    protected abstract IEnumerable<string> ExcludeCommands(TextReader reader);
     
     public  (TP, TC) ReadProgram(FileInfo file) {
         var program = new TP();
@@ -22,13 +22,13 @@ public abstract class CommandReader<T, TC, TP>
             file.Open(FileMode.Open, FileAccess.Read, FileShare.Read), Encoding.UTF8);
         
 
-        List<string> lines = [];
-        lines.AddRange(ExcludeCommands(streamReader.ReadToEnd()));
+        List<string> commands = [];
+        commands.AddRange(ExcludeCommands(streamReader));
 
 
         var ctx = new TC();
-        ctx.Init(lines);
-        foreach (var unused in lines) {
+        ctx.Init(commands);
+        foreach (var unused in commands) {
             HandleRow(ctx, program);
             if(!ctx.ContinueHandle) break;
             ctx.CurIndex++;

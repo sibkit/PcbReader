@@ -5,7 +5,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class FlashOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
-    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D03$")]
+    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D03\\*$")]
     private static partial Regex MatchRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {

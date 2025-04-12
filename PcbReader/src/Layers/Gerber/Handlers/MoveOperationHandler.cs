@@ -5,7 +5,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class MoveOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     
-    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D02$")]
+    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D02\\*$")]
     private static partial Regex MatchRegex();
     
     

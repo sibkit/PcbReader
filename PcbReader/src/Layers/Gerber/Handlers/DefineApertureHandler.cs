@@ -7,7 +7,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class DefineApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
-    [GeneratedRegex(@"^ADD([0-9]+)([CROP]{1}),{1}(.*)$")]
+    [GeneratedRegex(@"^ADD([0-9]+)([CROP]{1}),{1}(.*)\*$")]
     private static partial Regex MatchRegex();
     private static readonly IFormatProvider Formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
     

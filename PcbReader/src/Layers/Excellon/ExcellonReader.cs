@@ -34,7 +34,7 @@ public class ExcellonReader: CommandReader<ExcellonCommandType,ExcellonContext, 
     }
     
     private ExcellonReader():base(GetHandlers(),[ExcellonCommandType.StartHeader]){ }
-    protected override IEnumerable<string> ExcludeCommands(string text) {
-        return text.Split('\n','\r').Where(str => str!="");
+    protected override IEnumerable<string> ExcludeCommands(TextReader reader) {
+        return reader.ReadToEnd().Split('\n','\r').Where(str => str!="");
     }
 }

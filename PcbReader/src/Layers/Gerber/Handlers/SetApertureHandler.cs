@@ -5,7 +5,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class SetApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
 
-    [GeneratedRegex("^(?:G54)*D([0-9]+)$")]
+    [GeneratedRegex("^(?:G54)*D([0-9]+)\\*$")]
     private static partial Regex MyRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {

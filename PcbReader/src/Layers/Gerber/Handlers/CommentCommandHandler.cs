@@ -10,6 +10,6 @@ public class CommentCommandHandler: ICommandHandler<GerberCommandType, GerberCon
         return ctx.CurLine.StartsWith("G04");
     }
     public void WriteToProgram(GerberContext ctx, GerberLayer program) {
-        ctx.WriteInfo(ctx.CurLine[3..]);
+        ctx.WriteInfo(ctx.CurLine[3..^1]);
     }
 }

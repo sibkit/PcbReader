@@ -7,7 +7,7 @@ namespace PcbReader.Layers.Gerber.Handlers;
 
 public partial class CommandSegmentOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
 
-    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D01$")]
+    [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D01\\*$")]
     private static partial Regex MatchRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {

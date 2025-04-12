@@ -30,7 +30,40 @@ public class GerberReader: CommandReader<GerberCommandType, GerberContext, Gerbe
     
     private GerberReader():base(GetHandlers(),[]){ }
     
-    protected override IEnumerable<string> ExcludeCommands(string text) {
-        return text.Split(["\n","\r","%","*"],StringSplitOptions.RemoveEmptyEntries).Where(str => str!="");
+    protected override IEnumerable<string> ExcludeCommands(TextReader reader) {
+        var ecOpened = false;
+        string? extendedCommand = null;
+        while (reader.ReadLine() is { } line) {
+            var prevIndex = 0;
+            for (var i = 0; i < line.Length; i++) {
+                switch (line[i]) {
+                    case '*':
+                        if (prevIndex != i) {
+                            if (extendedCommand == null) {
+                                yield return line[prevIndex..(i + 1)];
+                            } else {
+                                extendedCommand += line[prevIndex..(i + 1)];
+                            }
+                        }
+
+                        prevIndex = i + 1;
+                        break;
+                    case '%':
+                        ecOpened = !ecOpened;
+
+                        if (ecOpened) {
+                            if (line.Length >= i + 3 && line[(i + 1)..(i + 3)] == "AM")
+                                extendedCommand = "%";
+                        } else if (extendedCommand != null) {
+                            extendedCommand += line[i];
+                            yield return extendedCommand;
+                            extendedCommand = null;
+                        }
+
+                        prevIndex = i + 1;
+                        break;
+                }
+            }
+        }
     }
 }
