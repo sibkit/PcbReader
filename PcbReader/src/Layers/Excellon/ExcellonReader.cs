@@ -4,37 +4,37 @@ using SetUomFormatHandler = PcbReader.Layers.Excellon.Handlers.SetUomFormatHandl
 
 namespace PcbReader.Layers.Excellon;
 
-public class ExcellonReader: LineReader<ExcellonLineType,ExcellonContext, ExcellonLayer> {
+public class ExcellonReader: CommandReader<ExcellonCommandType,ExcellonContext, ExcellonLayer> {
     
     public static readonly ExcellonReader Instance = new();
 
-    private static Dictionary<ExcellonLineType, ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer>> GetHandlers() {
-        var handlers = new Dictionary<ExcellonLineType, ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer>> {
-            { ExcellonLineType.StartHeader, new StartHeaderHandler() },
-            { ExcellonLineType.Comment, new CommentHandler() },
-            { ExcellonLineType.EndHeader, new EndHeaderHandler() },
-            { ExcellonLineType.SetUomFormat, new SetUomFormatHandler() },
-            { ExcellonLineType.SetTool, new SetToolHandler() },
-            { ExcellonLineType.DrillOperation, new DrillingOperationHandler() },
-            { ExcellonLineType.ToolDefine, new ToolDefineHandler() },
-            { ExcellonLineType.Ignored, new IgnoredFormatHandler() },
-            { ExcellonLineType.BeginPattern, new BeginPatternHandler() },
-            { ExcellonLineType.EndPattern, new EndPatternHandler() },
-            { ExcellonLineType.RepeatPattern, new RepeatPatternHandler() },
-            { ExcellonLineType.SetDrillMode, new SetDrillModeHandler() },
-            { ExcellonLineType.EndProgram, new EndProgramHandler() },
-            { ExcellonLineType.SetCoordinatesMode, new SetCoordinatesModeHandler() },
-            { ExcellonLineType.RoutOperation, new RoutOperationHandler() },
-            { ExcellonLineType.StartMill, new StartMillHandler() },
-            { ExcellonLineType.EndMill, new EndMillHandler() },
-            { ExcellonLineType.LinearMillOperation, new LinearMillOperationHandler() },
-            { ExcellonLineType.ArcMillOperation, new ArcMillOperationHandler() }
+    private static Dictionary<ExcellonCommandType, ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer>> GetHandlers() {
+        var handlers = new Dictionary<ExcellonCommandType, ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer>> {
+            { ExcellonCommandType.StartHeader, new StartHeaderHandler() },
+            { ExcellonCommandType.Comment, new CommentHandler() },
+            { ExcellonCommandType.EndHeader, new EndHeaderHandler() },
+            { ExcellonCommandType.SetUomFormat, new SetUomFormatHandler() },
+            { ExcellonCommandType.SetTool, new SetToolHandler() },
+            { ExcellonCommandType.DrillOperation, new DrillingOperationHandler() },
+            { ExcellonCommandType.ToolDefine, new ToolDefineHandler() },
+            { ExcellonCommandType.Ignored, new IgnoredFormatHandler() },
+            { ExcellonCommandType.BeginPattern, new BeginPatternHandler() },
+            { ExcellonCommandType.EndPattern, new EndPatternHandler() },
+            { ExcellonCommandType.RepeatPattern, new RepeatPatternHandler() },
+            { ExcellonCommandType.SetDrillMode, new SetDrillModeHandler() },
+            { ExcellonCommandType.EndProgram, new EndProgramHandler() },
+            { ExcellonCommandType.SetCoordinatesMode, new SetCoordinatesModeHandler() },
+            { ExcellonCommandType.RoutOperation, new RoutOperationHandler() },
+            { ExcellonCommandType.StartMill, new StartMillHandler() },
+            { ExcellonCommandType.EndMill, new EndMillHandler() },
+            { ExcellonCommandType.LinearMillOperation, new LinearMillOperationHandler() },
+            { ExcellonCommandType.ArcMillOperation, new ArcMillOperationHandler() }
         };
         return handlers;
     }
     
-    private ExcellonReader():base(GetHandlers(),[ExcellonLineType.StartHeader]){ }
-    protected override IEnumerable<string> ExcludeLines(string text) {
+    private ExcellonReader():base(GetHandlers(),[ExcellonCommandType.StartHeader]){ }
+    protected override IEnumerable<string> ExcludeCommands(string text) {
         return text.Split('\n','\r').Where(str => str!="");
     }
 }

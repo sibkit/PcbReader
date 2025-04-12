@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class RoutOperationHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.StartMill];
+public class RoutOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.StartMill];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine.StartsWith("G00");

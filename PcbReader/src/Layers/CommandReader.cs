@@ -2,19 +2,19 @@
 
 namespace PcbReader.Layers;
 
-public abstract class LineReader<T, TC, TP> 
+public abstract class CommandReader<T, TC, TP> 
     where T : Enum 
     where TC: Context, new()
     where TP: new() {
-    private readonly Dictionary<T, ILineHandler<T,TC,TP>> _handlers;
+    private readonly Dictionary<T, ICommandHandler<T,TC,TP>> _handlers;
     private T[] _nextLikelyTypes;
 
-    protected LineReader(Dictionary<T, ILineHandler<T,TC,TP>> handlers, T[] nextLikelyTypes) {
+    protected CommandReader(Dictionary<T, ICommandHandler<T,TC,TP>> handlers, T[] nextLikelyTypes) {
         _nextLikelyTypes = nextLikelyTypes;
         _handlers = handlers;
     }
 
-    protected abstract IEnumerable<string> ExcludeLines(string text);
+    protected abstract IEnumerable<string> ExcludeCommands(string text);
     
     public  (TP, TC) ReadProgram(FileInfo file) {
         var program = new TP();
@@ -23,7 +23,7 @@ public abstract class LineReader<T, TC, TP>
         
 
         List<string> lines = [];
-        lines.AddRange(ExcludeLines(streamReader.ReadToEnd()));
+        lines.AddRange(ExcludeCommands(streamReader.ReadToEnd()));
 
 
         var ctx = new TC();
@@ -38,7 +38,7 @@ public abstract class LineReader<T, TC, TP>
 
     
     
-    private bool MatchAndHandle(ILineHandler<T, TC, TP> handler, TC ctx, TP program) {
+    private bool MatchAndHandle(ICommandHandler<T, TC, TP> handler, TC ctx, TP program) {
         if (!handler.Match(ctx)) return false;
         handler.WriteToProgram(ctx, program);
         _nextLikelyTypes = handler.GetNextLikelyTypes();

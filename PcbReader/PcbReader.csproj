@@ -15,7 +15,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="TestFiles\**\*.*">
+    <Content Include="test_files\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

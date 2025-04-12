@@ -4,9 +4,9 @@ using ApplicationException = System.ApplicationException;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class BeginPatternHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.DrillOperation];
+public class BeginPatternHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.DrillOperation];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine == "M25";

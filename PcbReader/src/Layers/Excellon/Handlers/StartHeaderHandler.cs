@@ -1,10 +1,10 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class StartHeaderHandler : ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer>
+public class StartHeaderHandler : ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer>
 {
-    public ExcellonLineType[] GetNextLikelyTypes()
+    public ExcellonCommandType[] GetNextLikelyTypes()
     {
-        return [ExcellonLineType.StartHeader];
+        return [ExcellonCommandType.StartHeader];
     }
 
     public bool Match(ExcellonContext ctx)

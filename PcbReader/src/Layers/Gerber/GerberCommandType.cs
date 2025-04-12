@@ -1,13 +1,13 @@
 ﻿namespace PcbReader.Layers.Gerber;
 
-public enum GerberLineType {
+public enum GerberCommandType {
     Comment,
     FormatSpecification,
     SetUom,
     DefineAperture,
-    SetCoordinatesModeHandler,
-    SetApertureHandler,
-    DefineMacroApertureHandler,
+    SetCoordinates,
+    SetAperture,
+    DefineMacroAperture,
     FlashOperation,
     MoveOperation,
     ArcSegmentOperation,

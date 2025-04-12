@@ -5,7 +5,7 @@ using PcbReader.Layers.Gerber.Entities.Apertures;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class DefineApertureHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer>  {
+public partial class DefineApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex(@"^ADD([0-9]+)([CROP]{1}),{1}(.*)$")]
     private static partial Regex MatchRegex();
@@ -93,7 +93,7 @@ public partial class DefineApertureHandler: ILineHandler<GerberLineType, GerberC
         };
     }
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     } 
     

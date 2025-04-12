@@ -2,12 +2,12 @@
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class SetToolHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public partial class SetToolHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
     
     private static readonly Regex ReSetTool = SetToolRegex();
     
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.DrillOperation];
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.DrillOperation];
     }
     public bool Match(ExcellonContext ctx) {
         return ReSetTool.IsMatch(ctx.CurLine);

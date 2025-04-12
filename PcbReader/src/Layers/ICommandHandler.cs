@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Layers;
 
-public interface ILineHandler<out T, in TC, in TP> 
+public interface ICommandHandler<out T, in TC, in TP> 
     where T : Enum 
     where TC: Context {
     T[] GetNextLikelyTypes();

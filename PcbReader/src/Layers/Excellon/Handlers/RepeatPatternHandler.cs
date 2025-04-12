@@ -3,10 +3,10 @@ using ApplicationException = System.ApplicationException;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class RepeatPatternHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public partial class RepeatPatternHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
     
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.RepeatPattern];
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.RepeatPattern];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine.StartsWith("M02");

@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class SetCoordinatesModeHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.DrillOperation];
+public class SetCoordinatesModeHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.DrillOperation];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine is "G90" or "G91" or "ICI,OFF" or "ICI,ON" or "ICI";

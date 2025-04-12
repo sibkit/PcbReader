@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class CommentHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.Comment];
+public class CommentHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.Comment];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine.StartsWith(';') || ctx.CurLine.StartsWith("M47");

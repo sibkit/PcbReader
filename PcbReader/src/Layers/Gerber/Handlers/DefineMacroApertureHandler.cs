@@ -4,12 +4,12 @@ using PcbReader.Layers.Gerber.Entities.Apertures;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class DefineMacroApertureHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer>  {
+public partial class DefineMacroApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex(@"^^ADD([0-9]+)([^,]*)$")]
     private static partial Regex MatchRegex();
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(GerberContext ctx) {

@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Layers.Excellon;
 
-public enum ExcellonLineType
+public enum ExcellonCommandType
 {
     StartHeader,
     EndHeader,

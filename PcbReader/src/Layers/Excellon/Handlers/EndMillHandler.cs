@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class EndMillHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.RoutOperation, ExcellonLineType.DrillOperation, ExcellonLineType.SetTool];
+public class EndMillHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.RoutOperation, ExcellonCommandType.DrillOperation, ExcellonCommandType.SetTool];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine is "M16" or "M17";

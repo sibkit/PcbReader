@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class ToolDefineHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public partial class ToolDefineHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
     
     private static readonly Regex ReToolDefine = ToolDefineRegex();
     private readonly IFormatProvider _formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return[ExcellonLineType.ToolDefine, ExcellonLineType.EndHeader];
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return[ExcellonCommandType.ToolDefine, ExcellonCommandType.EndHeader];
     }
     public bool Match(ExcellonContext ctx) {
         return ReToolDefine.IsMatch(ctx.CurLine);

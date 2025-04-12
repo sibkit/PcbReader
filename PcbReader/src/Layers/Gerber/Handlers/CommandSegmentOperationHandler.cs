@@ -5,14 +5,14 @@ using PcbReader.Project;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class LineSegmentOperationHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
+public partial class CommandSegmentOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
 
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D01$")]
     private static partial Regex MatchRegex();
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [
-            GerberLineType.LineSegmentOperation, 
+            GerberCommandType.LineSegmentOperation, 
             //GerberLineType.ArcSegmentOperation
         ];
     }

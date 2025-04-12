@@ -1,37 +1,36 @@
 ﻿using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Handlers;
 using FormatSpecificationHandler = PcbReader.Layers.Gerber.Handlers.FormatSpecificationHandler;
-using LineSegmentOperationHandler = PcbReader.Layers.Gerber.Handlers.LineSegmentOperationHandler;
 using MoveOperationHandler = PcbReader.Layers.Gerber.Handlers.MoveOperationHandler;
 
 namespace PcbReader.Layers.Gerber;
 
-public class GerberReader: LineReader<GerberLineType, GerberContext, GerberLayer> {
+public class GerberReader: CommandReader<GerberCommandType, GerberContext, GerberLayer> {
 
     public static readonly GerberReader Instance = new();
     
-    private static Dictionary<GerberLineType, ILineHandler<GerberLineType, GerberContext, GerberLayer>> GetHandlers() {
-        var handlers = new Dictionary<GerberLineType, ILineHandler<GerberLineType, GerberContext, GerberLayer>> {
-            { GerberLineType.LineSegmentOperation, new LineSegmentOperationHandler() },
-            { GerberLineType.Comment, new CommentLineHandler() },
-            { GerberLineType.FormatSpecification, new FormatSpecificationHandler() },
-            { GerberLineType.MoveOperation, new MoveOperationHandler() },
-            { GerberLineType.SetLcMode, new SetLcModeHandler() },
-            { GerberLineType.SetCoordinatesModeHandler, new SetCoordinateModeHandler() },
-            { GerberLineType.Ignored, new IgnoredHandler() },
-            { GerberLineType.SetUom, new SetUomFormatHandler() },
-            { GerberLineType.DefineAperture, new DefineApertureHandler() },
-            { GerberLineType.SetApertureHandler , new SetApertureHandler() },
-            { GerberLineType.ArcSegmentOperation , new ArcSegmentOperationHandler() },
-            { GerberLineType.DefineMacroApertureHandler, new DefineMacroApertureHandler() },
-            { GerberLineType.FlashOperation, new FlashOperationHandler() }
+    private static Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> GetHandlers() {
+        var handlers = new Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> {
+            { GerberCommandType.LineSegmentOperation, new CommandSegmentOperationHandler() },
+            { GerberCommandType.Comment, new CommentCommandHandler() },
+            { GerberCommandType.FormatSpecification, new FormatSpecificationHandler() },
+            { GerberCommandType.MoveOperation, new MoveOperationHandler() },
+            { GerberCommandType.SetLcMode, new SetLcModeHandler() },
+            { GerberCommandType.SetCoordinates, new SetCoordinateModeHandler() },
+            { GerberCommandType.Ignored, new IgnoredHandler() },
+            { GerberCommandType.SetUom, new SetUomFormatHandler() },
+            { GerberCommandType.DefineAperture, new DefineApertureHandler() },
+            { GerberCommandType.SetAperture , new SetApertureHandler() },
+            { GerberCommandType.ArcSegmentOperation , new ArcSegmentOperationHandler() },
+            { GerberCommandType.DefineMacroAperture, new DefineMacroApertureHandler() },
+            { GerberCommandType.FlashOperation, new FlashOperationHandler() }
         };
         return handlers;
     }
     
     private GerberReader():base(GetHandlers(),[]){ }
     
-    protected override IEnumerable<string> ExcludeLines(string text) {
+    protected override IEnumerable<string> ExcludeCommands(string text) {
         return text.Split(["\n","\r","%","*"],StringSplitOptions.RemoveEmptyEntries).Where(str => str!="");
     }
 }

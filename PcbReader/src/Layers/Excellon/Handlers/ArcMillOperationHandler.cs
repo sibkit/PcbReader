@@ -2,14 +2,14 @@
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class ArcMillOperationHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public partial class ArcMillOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
     
     private static readonly Regex ReArcMill = ArcMillRegex();
-    public ExcellonLineType[] GetNextLikelyTypes() {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
         return [
-            ExcellonLineType.ArcMillOperation, 
-            ExcellonLineType.LinearMillOperation, 
-            ExcellonLineType.EndMill
+            ExcellonCommandType.ArcMillOperation, 
+            ExcellonCommandType.LinearMillOperation, 
+            ExcellonCommandType.EndMill
         ];
     }
     public bool Match(ExcellonContext ctx) {

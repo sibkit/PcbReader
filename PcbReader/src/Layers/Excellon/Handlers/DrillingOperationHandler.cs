@@ -3,10 +3,10 @@ using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class DrillingOperationHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public class DrillingOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
     
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return[ExcellonLineType.DrillOperation, ExcellonLineType.SetTool];
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return[ExcellonCommandType.DrillOperation, ExcellonCommandType.SetTool];
     }
     public bool Match(ExcellonContext ctx) {
         return ExcellonCoordinates.IsCoordinate(ctx.CurLine);

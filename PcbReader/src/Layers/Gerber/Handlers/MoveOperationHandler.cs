@@ -3,13 +3,13 @@ using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class MoveOperationHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
+public partial class MoveOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D02$")]
     private static partial Regex MatchRegex();
     
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(GerberContext ctx) {

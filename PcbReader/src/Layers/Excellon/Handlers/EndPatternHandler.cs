@@ -2,9 +2,9 @@
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class EndPatternHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.RepeatPattern];
+public class EndPatternHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.RepeatPattern];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine is "M01" or "M08";

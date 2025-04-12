@@ -2,9 +2,9 @@
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public class CommentLineHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
-    public GerberLineType[] GetNextLikelyTypes() {
-        return [GerberLineType.Comment];
+public class CommentCommandHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+    public GerberCommandType[] GetNextLikelyTypes() {
+        return [GerberCommandType.Comment];
     }
     public bool Match(GerberContext ctx) {
         return ctx.CurLine.StartsWith("G04");

@@ -2,8 +2,8 @@
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public class SetLcModeHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
-    public GerberLineType[] GetNextLikelyTypes() {
+public class SetLcModeHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return[];
     }
     public bool Match(GerberContext ctx) {

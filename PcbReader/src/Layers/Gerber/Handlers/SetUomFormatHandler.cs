@@ -4,8 +4,8 @@ using Exception = System.Exception;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public class SetUomFormatHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
-    public GerberLineType[] GetNextLikelyTypes() {
+public class SetUomFormatHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(GerberContext ctx) {

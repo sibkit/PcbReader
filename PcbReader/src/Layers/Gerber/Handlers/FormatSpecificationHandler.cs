@@ -3,10 +3,10 @@ using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class FormatSpecificationHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
+public partial class FormatSpecificationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     private readonly Regex _regex = MatchRegex();
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(GerberContext ctx) {

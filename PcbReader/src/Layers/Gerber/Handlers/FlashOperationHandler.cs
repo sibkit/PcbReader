@@ -3,12 +3,12 @@ using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class FlashOperationHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer>  {
+public partial class FlashOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D03$")]
     private static partial Regex MatchRegex();
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     

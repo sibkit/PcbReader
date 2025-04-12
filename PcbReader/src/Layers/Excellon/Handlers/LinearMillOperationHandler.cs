@@ -2,9 +2,9 @@
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class LinearMillOperationHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
-    public ExcellonLineType[] GetNextLikelyTypes() {
-        return [ExcellonLineType.LinearMillOperation, ExcellonLineType.ArcMillOperation];
+public class LinearMillOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
+        return [ExcellonCommandType.LinearMillOperation, ExcellonCommandType.ArcMillOperation];
     }
     public bool Match(ExcellonContext ctx) {
         return ctx.CurLine.StartsWith("G01");

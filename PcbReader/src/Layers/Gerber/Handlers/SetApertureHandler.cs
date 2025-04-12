@@ -3,12 +3,12 @@ using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class SetApertureHandler: ILineHandler<GerberLineType, GerberContext, GerberLayer> {
+public partial class SetApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
 
     [GeneratedRegex("^(?:G54)*D([0-9]+)$")]
     private static partial Regex MyRegex();
     
-    public GerberLineType[] GetNextLikelyTypes() {
+    public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(GerberContext ctx) {

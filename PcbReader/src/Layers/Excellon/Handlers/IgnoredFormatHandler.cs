@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Layers.Excellon.Handlers;
 
-public class IgnoredFormatHandler: ILineHandler<ExcellonLineType, ExcellonContext, ExcellonLayer> {
+public class IgnoredFormatHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
 
-    public ExcellonLineType[] GetNextLikelyTypes() {
+    public ExcellonCommandType[] GetNextLikelyTypes() {
         return [];
     }
     public bool Match(ExcellonContext ctx) {
