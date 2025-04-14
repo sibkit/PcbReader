@@ -2,7 +2,7 @@
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public class CommentCommandHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public class CommentHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     public GerberCommandType[] GetNextLikelyTypes() {
         return [GerberCommandType.Comment];
     }

@@ -7,7 +7,7 @@ public enum GerberCommandType {
     DefineAperture,
     SetCoordinates,
     SetAperture,
-    DefineMacroAperture,
+    DefineApertureMacro,
     FlashOperation,
     MoveOperation,
     ArcSegmentOperation,

@@ -2,10 +2,12 @@
 using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.Apertures;
+using PcbReader.Layers.Gerber.Entities.Macro;
+using PcbReader.Layers.Gerber.Entities.MacroApertures;
 
 namespace PcbReader.Layers.Gerber.Handlers;
 
-public partial class DefineApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class DefineStandardApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex(@"^ADD([0-9]+)([^,]*)\*$")]
     private static partial Regex MatchMacroRegex();

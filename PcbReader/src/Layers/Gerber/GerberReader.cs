@@ -12,17 +12,17 @@ public class GerberReader: CommandReader<GerberCommandType, GerberContext, Gerbe
     private static Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> GetHandlers() {
         var handlers = new Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> {
             { GerberCommandType.LineSegmentOperation, new CommandSegmentOperationHandler() },
-            { GerberCommandType.Comment, new CommentCommandHandler() },
+            { GerberCommandType.Comment, new CommentHandler() },
             { GerberCommandType.FormatSpecification, new FormatSpecificationHandler() },
             { GerberCommandType.MoveOperation, new MoveOperationHandler() },
             { GerberCommandType.SetLcMode, new SetLcModeHandler() },
             { GerberCommandType.SetCoordinates, new SetCoordinateModeHandler() },
             { GerberCommandType.Ignored, new IgnoredHandler() },
             { GerberCommandType.SetUom, new SetUomFormatHandler() },
-            { GerberCommandType.DefineAperture, new DefineApertureHandler() },
+            { GerberCommandType.DefineAperture, new DefineStandardApertureHandler() },
             { GerberCommandType.SetAperture , new SetApertureHandler() },
             { GerberCommandType.ArcSegmentOperation , new ArcSegmentOperationHandler() },
-            { GerberCommandType.DefineMacroAperture, new DefineMacroApertureHandler() },
+            { GerberCommandType.DefineApertureMacro, new DefineApertureTemplateHandler() },
             { GerberCommandType.FlashOperation, new FlashOperationHandler() }
         };
         return handlers;
