@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class SetApertureHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public partial class SetApertureReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
 
     [GeneratedRegex("^(?:G54)*D([0-9]+)\\*$")]
     private static partial Regex MyRegex();

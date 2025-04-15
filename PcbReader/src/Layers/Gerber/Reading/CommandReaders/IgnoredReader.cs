@@ -1,8 +1,8 @@
 ﻿using PcbReader.Layers.Gerber.Entities;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public class IgnoredHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public class IgnoredReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }

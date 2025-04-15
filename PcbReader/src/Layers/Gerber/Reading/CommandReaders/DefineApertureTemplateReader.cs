@@ -1,15 +1,11 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
-using PcbReader.Layers.Gerber.Entities.Apertures;
-using PcbReader.Layers.Gerber.Entities.Macro;
-using PcbReader.Layers.Gerber.Entities.Macro.Expressions;
 using PcbReader.Layers.Gerber.Entities.MacroApertures;
 using PcbReader.Layers.Gerber.Macro.Expressions;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class DefineApertureTemplateHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class DefineApertureTemplateReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex(@"^%AM.+%$")]
     private static partial Regex MatchRegex();

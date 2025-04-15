@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class FormatSpecificationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public partial class FormatSpecificationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     private readonly Regex _regex = MatchRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {

@@ -1,15 +1,12 @@
-﻿using PcbReader.Layers.Gerber.Entities.Macro.Expressions;
-using PcbReader.Layers.Gerber.Macro.Expressions;
+﻿using PcbReader.Layers.Gerber.Macro.Expressions;
 
-namespace PcbReader.Layers.Gerber.Macro;
+namespace PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
 
 
 public interface IToken;
 
 public struct ParensOpenToken: IToken;
 public struct ParensCloseToken: IToken;
-
-public struct AssignToken: IToken;
 
 public readonly struct ValueToken(decimal value) : IToken {
     public decimal Value { get; init; } = value;

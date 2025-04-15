@@ -1,8 +1,6 @@
-﻿using PcbReader.Layers.Gerber.Entities.Macro;
-using PcbReader.Layers.Gerber.Entities.Macro.Expressions;
-using PcbReader.Layers.Gerber.Macro.Expressions;
+﻿using PcbReader.Layers.Gerber.Macro.Expressions;
 
-namespace PcbReader.Layers.Gerber.Macro;
+namespace PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
 
 public interface ITokenReader {
     bool IsMatch(string text, int index);
@@ -51,15 +49,6 @@ public class IgnoringTokenReader : ITokenReader {
     }
 }
 
-public class AssignTokenReader : ITokenReader {
-    public bool IsMatch(string text, int index) {
-        return text[index] == '=';
-    }
-    public (IToken?, int) Read(string text, int index) {
-        return (new AssignToken(), 1);
-    }
-}
-
 public class ParameterTokenReader : ITokenReader {
     public bool IsMatch(string text, int index) {
         return text[index] == '$';
@@ -100,7 +89,6 @@ public class Tokenizer {
         Readers.Add(new IgnoringTokenReader());
         Readers.Add(new ParameterTokenReader());
         Readers.Add(new OperationTokenReader());
-        Readers.Add(new AssignTokenReader());
     }
     
     public List<ITokenReader> Readers { get; init; } = [];

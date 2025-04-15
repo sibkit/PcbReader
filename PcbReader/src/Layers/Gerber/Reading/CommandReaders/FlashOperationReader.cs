@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class FlashOperationHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class FlashOperationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
     
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D03\\*$")]
     private static partial Regex MatchRegex();

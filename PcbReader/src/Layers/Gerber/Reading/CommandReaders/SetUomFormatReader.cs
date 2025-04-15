@@ -2,9 +2,9 @@
 using PcbReader.Project;
 using Exception = System.Exception;
 
-namespace PcbReader.Layers.Gerber.Handlers;
+namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public class SetUomFormatHandler: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public class SetUomFormatReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
