@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber;
+﻿namespace PcbReader.Layers.Common;
 
 public enum LcMode {
     Linear,

@@ -1,15 +1,17 @@
-﻿using PcbReader.Layers.Gerber.Entities;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public class SetCoordinateModeReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public class SetCoordinateModeReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine is "G90*" or "G91*";
     }
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         ctx.CoordinatesMode = ctx.CurLine switch {
             "G90*" => CoordinatesMode.Absolute,
             "G91*" => CoordinatesMode.Incremental,

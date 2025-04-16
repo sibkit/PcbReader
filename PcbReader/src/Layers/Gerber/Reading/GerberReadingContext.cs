@@ -1,9 +1,11 @@
-﻿using PcbReader.Layers.Gerber.Entities;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Project;
 
-namespace PcbReader.Layers.Gerber;
+namespace PcbReader.Layers.Gerber.Reading;
 
-public class GerberContext : Context {
+public class GerberReadingContext : ReadingContext {
     public Coordinate? CurCoordinate { get; set; }
     public int? CurApertureCode { get; set; }
     public PathPaintOperation? CurPathPaintOperation { get; set; }

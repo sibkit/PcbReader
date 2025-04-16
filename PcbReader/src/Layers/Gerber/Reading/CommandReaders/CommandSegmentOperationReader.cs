@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.StandardApertures;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class CommandSegmentOperationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public partial class CommandSegmentOperationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
 
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D01\\*$")]
     private static partial Regex MatchRegex();
@@ -16,11 +17,11 @@ public partial class CommandSegmentOperationReader: ICommandHandler<GerberComman
             //GerberLineType.ArcSegmentOperation
         ];
     }
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return MatchRegex().IsMatch(ctx.CurLine);
     }
 
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         var m = MatchRegex().Match(ctx.CurLine);
         
         var xs = m.Groups[2].Value;

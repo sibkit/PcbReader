@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon;
@@ -39,7 +41,7 @@ public static partial class ExcellonCoordinates {
     
 
     
-    private static decimal ReadValue(string value, ExcellonContext ctx) {
+    private static decimal ReadValue(string value, ExcellonReadingContext ctx) {
         
         if (value.Contains('.')) {
             ctx.CoordinatesDefineState.AccurateValueDetected = true;
@@ -128,7 +130,7 @@ public static partial class ExcellonCoordinates {
         // return dValue * multiplier / Math.Pow(10.0, frac.Length);
     }
     
-    public static Coordinate? ReadCoordinate(string line, ExcellonContext ctx) {
+    public static Coordinate? ReadCoordinate(string line, ExcellonReadingContext ctx) {
         var sc = ReadStringCoordinate(line);
         if (sc == null) 
             return null;

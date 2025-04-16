@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers;
+﻿namespace PcbReader.Layers.Common;
 
 public enum Zeros
 {

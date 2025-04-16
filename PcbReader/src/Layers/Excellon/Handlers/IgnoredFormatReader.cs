@@ -1,11 +1,13 @@
-﻿namespace PcbReader.Layers.Excellon.Handlers;
+﻿using PcbReader.Layers.Common.Reading;
 
-public class IgnoredFormatHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+namespace PcbReader.Layers.Excellon.Handlers;
+
+public class IgnoredFormatReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
 
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine switch {
             "R,T" => true, //Reset Tool Data
             "M48" => true, //Beginning of a Part Program Header
@@ -22,7 +24,7 @@ public class IgnoredFormatHandler: ICommandHandler<ExcellonCommandType, Excellon
             _ => false
         };
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         ctx.WriteInfo("Пропущенная команда: "+ctx.CurLine);
     }
 }

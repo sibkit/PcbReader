@@ -1,18 +1,20 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class FormatSpecificationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public partial class FormatSpecificationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
     private readonly Regex _regex = MatchRegex();
     
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return _regex.IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         var m = _regex.Match(ctx.CurLine);
         var z = m.Groups[1].Value switch {
             "L" => Zeros.Leading,

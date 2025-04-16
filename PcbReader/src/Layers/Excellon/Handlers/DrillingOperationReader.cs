@@ -1,18 +1,19 @@
-﻿using PcbReader.Layers.Excellon.Entities;
+﻿using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Entities;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class DrillingOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public class DrillingOperationReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return[ExcellonCommandType.DrillOperation, ExcellonCommandType.SetTool];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ExcellonCoordinates.IsCoordinate(ctx.CurLine);
     }
     
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         int? toolNumber;
         Coordinate? coordinate;
         

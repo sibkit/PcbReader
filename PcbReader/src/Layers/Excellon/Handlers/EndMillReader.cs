@@ -1,13 +1,15 @@
-﻿namespace PcbReader.Layers.Excellon.Handlers;
+﻿using PcbReader.Layers.Common.Reading;
 
-public class EndMillHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+namespace PcbReader.Layers.Excellon.Handlers;
+
+public class EndMillReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.RoutOperation, ExcellonCommandType.DrillOperation, ExcellonCommandType.SetTool];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine is "M16" or "M17";
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         if (ctx.CurLine == "M17" && ctx.Lines[ctx.CurIndex-1] == "M16") {
             return;
         }

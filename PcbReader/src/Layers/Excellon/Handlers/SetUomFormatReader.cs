@@ -1,20 +1,22 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class SetUomFormatHandler : ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public partial class SetUomFormatReader : ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.Comment];
     }
 
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine.StartsWith("INCH") || ctx.CurLine.StartsWith("METRIC");
     }
 
     private static readonly Regex ReNum = NumberRegex();
     
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         var lineParts = ctx.CurLine.Split(',');
         var firstPart = lineParts[0].Trim();
 

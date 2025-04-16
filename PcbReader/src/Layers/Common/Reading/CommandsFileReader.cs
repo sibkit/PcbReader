@@ -1,15 +1,15 @@
 ﻿using System.Text;
 
-namespace PcbReader.Layers;
+namespace PcbReader.Layers.Common.Reading;
 
-public abstract class CommandReader<T, TC, TP> 
+public abstract class CommandsFileReader<T, TC, TP> 
     where T : Enum 
-    where TC: Context, new()
+    where TC: ReadingContext, new()
     where TP: new() {
-    private readonly Dictionary<T, ICommandHandler<T,TC,TP>> _handlers;
+    private readonly Dictionary<T, ICommandReader<T,TC,TP>> _handlers;
     private T[] _nextLikelyTypes;
 
-    protected CommandReader(Dictionary<T, ICommandHandler<T,TC,TP>> handlers, T[] nextLikelyTypes) {
+    protected CommandsFileReader(Dictionary<T, ICommandReader<T,TC,TP>> handlers, T[] nextLikelyTypes) {
         _nextLikelyTypes = nextLikelyTypes;
         _handlers = handlers;
     }
@@ -38,10 +38,10 @@ public abstract class CommandReader<T, TC, TP>
 
     
     
-    private bool MatchAndHandle(ICommandHandler<T, TC, TP> handler, TC ctx, TP program) {
-        if (!handler.Match(ctx)) return false;
-        handler.WriteToProgram(ctx, program);
-        _nextLikelyTypes = handler.GetNextLikelyTypes();
+    private bool MatchAndHandle(ICommandReader<T, TC, TP> reader, TC ctx, TP program) {
+        if (!reader.Match(ctx)) return false;
+        reader.WriteToProgram(ctx, program);
+        _nextLikelyTypes = reader.GetNextLikelyTypes();
         return true;
     }
 

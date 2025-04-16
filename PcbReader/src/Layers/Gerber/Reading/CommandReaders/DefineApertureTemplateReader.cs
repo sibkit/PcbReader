@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.MacroApertures;
 using PcbReader.Layers.Gerber.Macro.Expressions;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class DefineApertureTemplateReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class DefineApertureTemplateReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>  {
     
     [GeneratedRegex(@"^%AM.+%$")]
     private static partial Regex MatchRegex();
@@ -13,7 +14,7 @@ public partial class DefineApertureTemplateReader: ICommandHandler<GerberCommand
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return MatchRegex().IsMatch(ctx.CurLine);
     }
 
@@ -27,7 +28,7 @@ public partial class DefineApertureTemplateReader: ICommandHandler<GerberCommand
         return result;
     }
     
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         var lines = ctx.CurLine.Trim('%').Split('*', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         var am = new MacroAperture(lines[0][2..]);

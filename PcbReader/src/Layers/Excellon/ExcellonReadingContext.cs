@@ -1,4 +1,6 @@
-﻿using PcbReader.Layers.Excellon.Entities;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Entities;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon;
@@ -16,7 +18,7 @@ public struct CoordinatesDefineState {
     public CoordinatesDefineState() { }
 }
 
-public class ExcellonContext: Context {
+public class ExcellonReadingContext: ReadingContext {
 
     public bool UndefinedFormatDetected { get; set; } = false;
     public NumberFormat NumberFormat { get; set; } = new(null, null);

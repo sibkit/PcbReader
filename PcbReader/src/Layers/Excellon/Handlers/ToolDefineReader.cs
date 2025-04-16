@@ -1,19 +1,20 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class ToolDefineHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public partial class ToolDefineReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     
     private static readonly Regex ReToolDefine = ToolDefineRegex();
     private readonly IFormatProvider _formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return[ExcellonCommandType.ToolDefine, ExcellonCommandType.EndHeader];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ReToolDefine.IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         var match = ReToolDefine.Match(ctx.CurLine);
         if (match.Groups.Count == 3) {
             var toolNum = int.Parse(match.Groups[1].Value);

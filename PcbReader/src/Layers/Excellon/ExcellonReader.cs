@@ -1,34 +1,33 @@
-﻿using PcbReader.Layers.Excellon.Handlers;
-using SetToolHandler = PcbReader.Layers.Excellon.Handlers.SetToolHandler;
-using SetUomFormatHandler = PcbReader.Layers.Excellon.Handlers.SetUomFormatHandler;
+﻿using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Handlers;
 
 namespace PcbReader.Layers.Excellon;
 
-public class ExcellonReader: CommandReader<ExcellonCommandType,ExcellonContext, ExcellonLayer> {
+public class ExcellonReader: CommandsFileReader<ExcellonCommandType,ExcellonReadingContext, ExcellonLayer> {
     
     public static readonly ExcellonReader Instance = new();
 
-    private static Dictionary<ExcellonCommandType, ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer>> GetHandlers() {
-        var handlers = new Dictionary<ExcellonCommandType, ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer>> {
-            { ExcellonCommandType.StartHeader, new StartHeaderHandler() },
-            { ExcellonCommandType.Comment, new CommentHandler() },
-            { ExcellonCommandType.EndHeader, new EndHeaderHandler() },
-            { ExcellonCommandType.SetUomFormat, new SetUomFormatHandler() },
-            { ExcellonCommandType.SetTool, new SetToolHandler() },
-            { ExcellonCommandType.DrillOperation, new DrillingOperationHandler() },
-            { ExcellonCommandType.ToolDefine, new ToolDefineHandler() },
-            { ExcellonCommandType.Ignored, new IgnoredFormatHandler() },
-            { ExcellonCommandType.BeginPattern, new BeginPatternHandler() },
-            { ExcellonCommandType.EndPattern, new EndPatternHandler() },
-            { ExcellonCommandType.RepeatPattern, new RepeatPatternHandler() },
-            { ExcellonCommandType.SetDrillMode, new SetDrillModeHandler() },
-            { ExcellonCommandType.EndProgram, new EndProgramHandler() },
-            { ExcellonCommandType.SetCoordinatesMode, new SetCoordinatesModeHandler() },
-            { ExcellonCommandType.RoutOperation, new RoutOperationHandler() },
-            { ExcellonCommandType.StartMill, new StartMillHandler() },
-            { ExcellonCommandType.EndMill, new EndMillHandler() },
-            { ExcellonCommandType.LinearMillOperation, new LinearMillOperationHandler() },
-            { ExcellonCommandType.ArcMillOperation, new ArcMillOperationHandler() }
+    private static Dictionary<ExcellonCommandType, ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer>> GetHandlers() {
+        var handlers = new Dictionary<ExcellonCommandType, ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer>> {
+            { ExcellonCommandType.StartHeader, new StartHeaderReader() },
+            { ExcellonCommandType.Comment, new CommentReader() },
+            { ExcellonCommandType.EndHeader, new EndHeaderReader() },
+            { ExcellonCommandType.SetUomFormat, new SetUomFormatReader() },
+            { ExcellonCommandType.SetTool, new SetToolReader() },
+            { ExcellonCommandType.DrillOperation, new DrillingOperationReader() },
+            { ExcellonCommandType.ToolDefine, new ToolDefineReader() },
+            { ExcellonCommandType.Ignored, new IgnoredFormatReader() },
+            { ExcellonCommandType.BeginPattern, new BeginPatternReader() },
+            { ExcellonCommandType.EndPattern, new EndPatternReader() },
+            { ExcellonCommandType.RepeatPattern, new RepeatPatternReader() },
+            { ExcellonCommandType.SetDrillMode, new SetDrillModeReader() },
+            { ExcellonCommandType.EndProgram, new EndProgramReader() },
+            { ExcellonCommandType.SetCoordinatesMode, new SetCoordinatesModeReader() },
+            { ExcellonCommandType.RoutOperation, new RoutOperationReader() },
+            { ExcellonCommandType.StartMill, new StartMillReader() },
+            { ExcellonCommandType.EndMill, new EndMillReader() },
+            { ExcellonCommandType.LinearMillOperation, new LinearMillOperationReader() },
+            { ExcellonCommandType.ArcMillOperation, new ArcMillOperationReader() }
         };
         return handlers;
     }

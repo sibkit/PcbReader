@@ -1,13 +1,15 @@
-﻿namespace PcbReader.Layers.Excellon.Handlers;
+﻿using PcbReader.Layers.Common.Reading;
 
-public class SetCoordinatesModeHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+namespace PcbReader.Layers.Excellon.Handlers;
+
+public class SetCoordinatesModeReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.DrillOperation];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine is "G90" or "G91" or "ICI,OFF" or "ICI,ON" or "ICI";
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         ctx.CoordinatesMode = ctx.CurLine switch {
             "G90" => CoordinatesMode.Absolute,
             "G91" => CoordinatesMode.Incremental,

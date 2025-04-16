@@ -1,6 +1,6 @@
 ﻿using PcbReader.Project;
 
-namespace PcbReader.Layers;
+namespace PcbReader.Layers.Common.Reading;
 
 public static class Coordinates {
 

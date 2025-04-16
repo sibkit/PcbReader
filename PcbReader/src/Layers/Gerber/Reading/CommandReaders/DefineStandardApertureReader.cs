@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.MacroApertures;
 using PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class DefineStandardApertureReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class DefineStandardApertureReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>  {
     
     [GeneratedRegex(@"^ADD([0-9]+)([^,]*)\*$")]
     private static partial Regex MatchMacroRegex();
@@ -101,11 +102,11 @@ public partial class DefineStandardApertureReader: ICommandHandler<GerberCommand
         return [];
     } 
     
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine.StartsWith("ADD");
     }
     
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         
         var mm = MatchMacroRegex().Match(ctx.CurLine);
         if (mm.Success) {

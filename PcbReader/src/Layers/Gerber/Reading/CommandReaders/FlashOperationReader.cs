@@ -1,9 +1,10 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class FlashOperationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer>  {
+public partial class FlashOperationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>  {
     
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D03\\*$")]
     private static partial Regex MatchRegex();
@@ -12,11 +13,11 @@ public partial class FlashOperationReader: ICommandHandler<GerberCommandType, Ge
         return [];
     }
     
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return MatchRegex().IsMatch(ctx.CurLine);
     }
     
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         
         var m = MatchRegex().Match(ctx.CurLine);
         var xs = m.Groups[2].Value;

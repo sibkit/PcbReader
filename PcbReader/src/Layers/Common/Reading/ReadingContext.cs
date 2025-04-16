@@ -1,6 +1,6 @@
-﻿namespace PcbReader.Layers;
+﻿namespace PcbReader.Layers.Common.Reading;
 
-public abstract class Context {
+public abstract class ReadingContext {
     private List<string>? _lines;
     public bool ContinueHandle { get; set; } = true;
     

@@ -1,13 +1,15 @@
-﻿namespace PcbReader.Layers.Excellon.Handlers;
+﻿using PcbReader.Layers.Common.Reading;
 
-public class RoutOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+namespace PcbReader.Layers.Excellon.Handlers;
+
+public class RoutOperationReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.StartMill];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine.StartsWith("G00");
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         if (ctx.CurLine == "G00") {
             return;
         }

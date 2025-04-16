@@ -1,8 +1,9 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class ArcMillOperationHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public partial class ArcMillOperationReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     
     private static readonly Regex ReArcMill = ArcMillRegex();
     public ExcellonCommandType[] GetNextLikelyTypes() {
@@ -12,10 +13,10 @@ public partial class ArcMillOperationHandler: ICommandHandler<ExcellonCommandTyp
             ExcellonCommandType.EndMill
         ];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine.StartsWith("G02") || ctx.CurLine.StartsWith("G03");
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         var match = ReArcMill.Match(ctx.CurLine);
         if (match.Success) {
             

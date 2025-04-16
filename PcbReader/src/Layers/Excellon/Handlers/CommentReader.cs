@@ -1,13 +1,15 @@
-﻿namespace PcbReader.Layers.Excellon.Handlers;
+﻿using PcbReader.Layers.Common.Reading;
 
-public class CommentHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+namespace PcbReader.Layers.Excellon.Handlers;
+
+public class CommentReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.Comment];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine.StartsWith(';') || ctx.CurLine.StartsWith("M47");
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         var lines = ctx.CurLine.Split('=');
         if (lines.Length != 2) {
             ctx.WriteInfo("Комментарий: "+ctx.CurLine);

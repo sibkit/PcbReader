@@ -66,13 +66,13 @@ public class ParameterTokenReader : ITokenReader {
 
 public class OperationTokenReader : ITokenReader {
     public bool IsMatch(string text, int index) {
-        return "+-x/".Contains(text[index]);
+        return "+-x/*".Contains(text[index]);
     }
     public (IToken?, int) Read(string text, int index) {
         var operationType = text[index] switch {
             '+' => OperationType.Add,
             '-' => OperationType.Subtract,
-            'x' => OperationType.Multiply,
+            'x' or '*' => OperationType.Multiply,
             '/' => OperationType.Divide,
             _ => throw new Exception("Invalid operation")
         };

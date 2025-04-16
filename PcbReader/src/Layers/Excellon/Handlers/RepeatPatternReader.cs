@@ -1,18 +1,19 @@
-﻿using PcbReader.Layers.Excellon.Entities;
+﻿using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Entities;
 using ApplicationException = System.ApplicationException;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class RepeatPatternHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public partial class RepeatPatternReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.RepeatPattern];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine.StartsWith("M02");
     }
     
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         if (ctx.CurLine == "M02") {
             if (ctx.CurPattern == null || ctx.CurPattern.State == PatternState.Opened)
                 throw new ApplicationException("Pattern is null or opened (1)");

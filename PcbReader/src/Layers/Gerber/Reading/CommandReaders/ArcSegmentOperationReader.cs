@@ -1,11 +1,13 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.StandardApertures;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class ArcSegmentOperationReader: ICommandHandler<GerberCommandType, GerberContext, GerberLayer> {
+public partial class ArcSegmentOperationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
     
     [GeneratedRegex("^(G02|G03){0,1}(?:(X)([+-]?[0-9.]+))(?:(Y)([+-]?[0-9.]+))(?:(I)([+-]?[0-9.]+))(?:(J)([+-]?[0-9.]+))D01\\*$")]
     private static partial Regex MatchRegex();
@@ -13,10 +15,10 @@ public partial class ArcSegmentOperationReader: ICommandHandler<GerberCommandTyp
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     }
-    public bool Match(GerberContext ctx) {
+    public bool Match(GerberReadingContext ctx) {
         return MatchRegex().IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(GerberContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         var m = MatchRegex().Match(ctx.CurLine);
 
         var shift = 0;

@@ -1,17 +1,18 @@
-﻿using PcbReader.Layers.Excellon.Entities;
+﻿using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Entities;
 using PcbReader.Project;
 using ApplicationException = System.ApplicationException;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public class BeginPatternHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public class BeginPatternReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.DrillOperation];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ctx.CurLine == "M25";
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         if (ctx.CurPattern == null || ctx.CurPattern.State == PatternState.Closed) {
             var coordinate = new Coordinate(0,0);
             if (layer.Operations.Count != 0) {

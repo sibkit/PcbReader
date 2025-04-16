@@ -1,4 +1,5 @@
-﻿using PcbReader.Layers.Gerber.Entities;
+﻿using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading.CommandReaders;
 using ArcSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.ArcSegmentOperationReader;
 using CommandSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.CommandSegmentOperationReader;
@@ -11,12 +12,12 @@ using SetApertureReader = PcbReader.Layers.Gerber.Reading.CommandReaders.SetAper
 
 namespace PcbReader.Layers.Gerber.Reading;
 
-public class GerberReader: CommandReader<GerberCommandType, GerberContext, GerberLayer> {
+public class GerberReader: CommandsFileReader<GerberCommandType, GerberReadingContext, GerberLayer> {
 
     public static readonly GerberReader Instance = new();
     
-    private static Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> GetHandlers() {
-        var handlers = new Dictionary<GerberCommandType, ICommandHandler<GerberCommandType, GerberContext, GerberLayer>> {
+    private static Dictionary<GerberCommandType, ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>> GetHandlers() {
+        var handlers = new Dictionary<GerberCommandType, ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>> {
             { GerberCommandType.LineSegmentOperation, new CommandSegmentOperationReader() },
             { GerberCommandType.Comment, new CommentReader() },
             { GerberCommandType.FormatSpecification, new FormatSpecificationReader() },

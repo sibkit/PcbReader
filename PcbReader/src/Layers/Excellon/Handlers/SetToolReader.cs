@@ -1,18 +1,19 @@
 ﻿using System.Text.RegularExpressions;
+using PcbReader.Layers.Common.Reading;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 
-public partial class SetToolHandler: ICommandHandler<ExcellonCommandType, ExcellonContext, ExcellonLayer> {
+public partial class SetToolReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     
     private static readonly Regex ReSetTool = SetToolRegex();
     
     public ExcellonCommandType[] GetNextLikelyTypes() {
         return [ExcellonCommandType.DrillOperation];
     }
-    public bool Match(ExcellonContext ctx) {
+    public bool Match(ExcellonReadingContext ctx) {
         return ReSetTool.IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(ExcellonContext ctx, ExcellonLayer layer) {
+    public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         var toolNumber = int.Parse(ctx.CurLine[1..]);
         ctx.CurToolNumber = toolNumber;
     }
