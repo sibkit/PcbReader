@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber.Entities.Macro;
+﻿namespace PcbReader.Layers.Gerber.Entities.MacroApertures;
 
 public interface IPrimitive {
     

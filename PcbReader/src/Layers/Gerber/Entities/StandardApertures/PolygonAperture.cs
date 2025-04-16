@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber.Entities.Apertures;
+﻿namespace PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 public class PolygonAperture: IAperture {
     public decimal OuterDiameter { get; set; }

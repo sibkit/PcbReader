@@ -1,6 +1,6 @@
 ﻿using PcbReader.Layers.Gerber.Macro;
 
-namespace PcbReader.Layers.Gerber.Entities.Macro.Primitives;
+namespace PcbReader.Layers.Gerber.Entities.MacroApertures.Primitives;
 
 public class Circle: IPrimitive {
     public IExpression Exposure { get; set; }

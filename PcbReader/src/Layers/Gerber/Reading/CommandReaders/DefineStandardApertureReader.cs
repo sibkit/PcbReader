@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using PcbReader.Layers.Gerber.Entities;
-using PcbReader.Layers.Gerber.Entities.Apertures;
 using PcbReader.Layers.Gerber.Entities.MacroApertures;
+using PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 

@@ -17,14 +17,12 @@ public partial class DefineApertureTemplateReader: ICommandHandler<GerberCommand
         return MatchRegex().IsMatch(ctx.CurLine);
     }
 
-    private static LinkExpression ReadParameter(string line) {
+    private static ParameterExpression ReadParameter(string line) {
         var parts = line.Split("=", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (parts.Length != 2) {
             throw new ApplicationException("Invalid parameter format");
         }
-        var result = new LinkExpression {
-            Name = parts[0]
-        };
+        var result = new ParameterExpression(parts[0]);
         //result.Value = ParseP
         return result;
     }

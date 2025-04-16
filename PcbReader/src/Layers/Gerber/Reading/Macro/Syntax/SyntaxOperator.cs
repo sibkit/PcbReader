@@ -6,10 +6,10 @@ public class SyntaxOperator(OperationType type): ISyntaxExpressionPart {
 
     public OperationType OperationType { get; } = type;
     
-    public int GetPriority() {
+    public OperationPriority GetPriority() {
         return OperationType switch {
-            OperationType.Add or OperationType.Subtract => 1,
-            OperationType.Multiply or OperationType.Divide => 2,
+            OperationType.Add or OperationType.Subtract => OperationPriority.P1,
+            OperationType.Multiply or OperationType.Divide => OperationPriority.P2,
             _ => throw new Exception("Unknown operation type")
         };
     }

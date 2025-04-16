@@ -93,7 +93,7 @@ public class Tokenizer {
     
     public List<ITokenReader> Readers { get; init; } = [];
     
-    public IList<IToken> Tokenize(string text) {
+    public IList<IToken>? Tokenize(string text) {
         var tokens = new List<IToken>();
 
         for (var i = 0; i < text.Length; ) {

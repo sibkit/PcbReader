@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber.Entities.Apertures;
+﻿namespace PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 public class RectangleAperture: IAperture {
     public decimal XSize { get; set; }

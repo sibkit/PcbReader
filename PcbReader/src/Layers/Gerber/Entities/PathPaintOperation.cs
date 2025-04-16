@@ -1,4 +1,4 @@
-﻿using PcbReader.Layers.Gerber.Entities.Apertures;
+﻿using PcbReader.Layers.Gerber.Entities.StandardApertures;
 using PcbReader.Project;
 
 namespace PcbReader.Layers.Gerber.Entities;

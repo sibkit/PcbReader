@@ -1,5 +1,4 @@
-﻿
-using PcbReader.Layers.Gerber.Entities;
+﻿using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading.CommandReaders;
 using ArcSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.ArcSegmentOperationReader;
 using CommandSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.CommandSegmentOperationReader;
@@ -10,7 +9,7 @@ using FormatSpecificationReader = PcbReader.Layers.Gerber.Reading.CommandReaders
 using MoveOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.MoveOperationReader;
 using SetApertureReader = PcbReader.Layers.Gerber.Reading.CommandReaders.SetApertureReader;
 
-namespace PcbReader.Layers.Gerber;
+namespace PcbReader.Layers.Gerber.Reading;
 
 public class GerberReader: CommandReader<GerberCommandType, GerberContext, GerberLayer> {
 

@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Layers.Gerber.Macro.Expressions;
+﻿
+
+namespace PcbReader.Layers.Gerber.Macro.Expressions;
 
 public enum OperationType {
     Add,
@@ -7,11 +9,23 @@ public enum OperationType {
     Divide,
 }
 
-public class OperationExpression {
-    public OperationExpression(OperationType operationType) {
+public class OperationExpression : IExpression {
+    public OperationExpression(
+        OperationType operationType,
+        IExpression? leftExpression,
+        IExpression? rightExpression) 
+    {
+        OperationType = operationType;
+        LeftExpression = leftExpression;
+        RightExpression = rightExpression;
+    }
+
+    public OperationExpression(OperationType operationType) 
+    {
         OperationType = operationType;
     }
     
     public OperationType OperationType { get; set; }
-    public List<IExpression> Expressions { get; } = [];
+    public IExpression? LeftExpression { get; set; }
+    public IExpression? RightExpression { get; set; }
 }
