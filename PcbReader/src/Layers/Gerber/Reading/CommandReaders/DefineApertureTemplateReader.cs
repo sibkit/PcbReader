@@ -31,7 +31,7 @@ public partial class DefineApertureTemplateReader: ICommandReader<GerberCommandT
     public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         var lines = ctx.CurLine.Trim('%').Split('*', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var am = new MacroAperture(lines[0][2..]);
+        var am = new MacroApertureTemplate(lines[0][2..]);
         
 
         foreach (var line in lines[1..]) {

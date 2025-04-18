@@ -4,8 +4,7 @@ namespace PcbReader.Layers.Gerber.Reading.Macro.Syntax;
 
 public enum OperationPriority {
     P1 = 1,
-    P2 = 2,
-    P3 = 3
+    P2 = 2
 }
 
 public static class OperationPriorityExtension {

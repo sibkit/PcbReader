@@ -7,20 +7,32 @@ using PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
 namespace ConsoleApp;
 
 public static class ExpressionsTest {
-    public static void Test() {
-        Console.WriteLine((4*3).ToString(CultureInfo.InvariantCulture));
+    public static void Test(string line) {
+        //const string text = "102-(2+2*2)/0.007";
+        try {
+            Console.Write("Выражение: " + line + "\n");
+            var tokens = new Tokenizer().Tokenize(line);
+            var builder = new ExpressionBuilder(line);
 
-        var lexer = new Tokenizer();
-//const string text = "1 + 7 x 3 + (2 + 1) x 4 x 6 + 4 x 2";
-        const string text = "(2+2*2)/3";
-        var tokens = lexer.Tokenize(text);
+            var node = builder.Build();
+            Console.Write("Синтаксическое дерево: " + PrintExpression(node) + "\n");
 
-        var builder = new ExpressionBuilder();
-        var node = builder.Build(text);
-
-        Console.WriteLine(text + " = " + CalculateExpression(node));
-        Console.WriteLine(PrintExpression(node));
-        Console.WriteLine("ok");
+            Console.Write("Результат вычисления: ");
+            Console.Write(CalculateExpression(node) + "\n");
+        } catch (ParseExpressionException pee) {
+            Console.Write("Ошибка: "+pee.Message);
+            
+        } catch (Exception e) {
+            Console.Write("Ошибка: ");
+            switch (e) {
+                case DivideByZeroException:
+                    Console.WriteLine("Деление на ноль" + "\n");
+                    break;
+                default:
+                    Console.WriteLine(e.Message + "\n");
+                    break;
+            }
+        }
     }
     
     static string PrintOperation(OperationType operation) {

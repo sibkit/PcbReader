@@ -1,6 +1,11 @@
-﻿using PcbReader.Layers.Gerber.Macro.Expressions;
+﻿using System.Globalization;
+using PcbReader.Layers.Gerber.Macro.Expressions;
 
 namespace PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
+
+public static class Formatter {
+    public static readonly IFormatProvider FormatProvider = new NumberFormatInfo { NumberDecimalSeparator = "." };
+}
 
 public interface ITokenReader {
     bool IsMatch(string text, int index);
@@ -36,7 +41,7 @@ public class ValueTokenReader : ITokenReader {
                 resultString += text[i];
             else break;
         }
-        return (new ValueToken(decimal.Parse(resultString)), resultString.Length);
+        return (new ValueToken(decimal.Parse(resultString, Formatter.FormatProvider)), resultString.Length);
     }
 }
 
@@ -81,7 +86,6 @@ public class OperationTokenReader : ITokenReader {
 }
 
 public class Tokenizer {
-
     public Tokenizer() {
         Readers.Add(new ParensOpenTokenReader());
         Readers.Add(new ParensCloseTokenReader());
@@ -90,17 +94,18 @@ public class Tokenizer {
         Readers.Add(new ParameterTokenReader());
         Readers.Add(new OperationTokenReader());
     }
-    
     public List<ITokenReader> Readers { get; init; } = [];
     
     public IList<IToken>? Tokenize(string text) {
         var tokens = new List<IToken>();
-
         for (var i = 0; i < text.Length; ) {
             foreach (var reader in Readers) {
                 if (!reader.IsMatch(text, i)) continue;
                 var rr = reader.Read(text, i);
-                if(rr.Item1!=null) tokens.Add(rr.Item1);
+                if (rr.Item1 != null) {
+                    rr.Item1.SourceIndex = i;
+                    tokens.Add(rr.Item1);
+                }
                 i += rr.Item2;
                 goto NEXT_CHAR;
             }
