@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber;
+﻿namespace PcbReader.Layers.Gerber.Reading;
 
 public enum GerberCommandType {
     Comment,

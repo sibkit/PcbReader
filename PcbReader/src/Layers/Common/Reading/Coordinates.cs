@@ -4,8 +4,8 @@ namespace PcbReader.Layers.Common.Reading;
 
 public static class Coordinates {
 
-    public static Coordinate ParseCoordinate(NumberFormat nf, string xString, string yString) {
-        return new Coordinate(ReadValue(nf, xString), ReadValue(nf, yString));
+    public static Point ParseCoordinate(NumberFormat nf, string xString, string yString) {
+        return new Point(ReadValue(nf, xString), ReadValue(nf, yString));
     }
     public static decimal ReadValue(NumberFormat nf, string value) {
         if (value == "0")

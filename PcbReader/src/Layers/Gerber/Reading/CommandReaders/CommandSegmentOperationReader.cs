@@ -48,7 +48,7 @@ public partial class CommandSegmentOperationReader: ICommandReader<GerberCommand
         var curAperture = program.Apertures[ctx.CurApertureCode.Value];
         switch (curAperture) {
             case CircleAperture ca:
-                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Coordinate)ctx.CurCoordinate);
+                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
 
                 var part = new LinePathPart(c);
                 ctx.CurPathPaintOperation!.Parts.Add(part);

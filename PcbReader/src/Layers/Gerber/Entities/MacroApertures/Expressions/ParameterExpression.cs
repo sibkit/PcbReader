@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Gerber.Macro.Expressions;
+﻿namespace PcbReader.Layers.Gerber.Entities.MacroApertures.Expressions;
 
 public class ParameterExpression(string name): IExpression {
 

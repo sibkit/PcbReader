@@ -130,7 +130,7 @@ public static partial class ExcellonCoordinates {
         // return dValue * multiplier / Math.Pow(10.0, frac.Length);
     }
     
-    public static Coordinate? ReadCoordinate(string line, ExcellonReadingContext ctx) {
+    public static Point? ReadCoordinate(string line, ExcellonReadingContext ctx) {
         var sc = ReadStringCoordinate(line);
         if (sc == null) 
             return null;
@@ -138,7 +138,7 @@ public static partial class ExcellonCoordinates {
         decimal y;
         x = !string.IsNullOrEmpty(sc.X) ? ReadValue(sc.X, ctx) : 0;;
         y = !string.IsNullOrEmpty(sc.Y) ? ReadValue(sc.Y, ctx) : 0;
-        return new Coordinate(x,y);
+        return new Point(x,y);
     }
 
     public static bool IsCoordinate(string line) {

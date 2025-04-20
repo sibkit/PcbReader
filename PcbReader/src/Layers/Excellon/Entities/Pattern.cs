@@ -9,11 +9,11 @@ public enum PatternState {
 
 public class Pattern() {
     
-    public Pattern(Coordinate startPoint) : this() {
+    public Pattern(Point startPoint) : this() {
         StartPoint = startPoint;
     }
     public PatternState State { get; set; } = PatternState.Opened;
     public IList<IMachiningOperation> MachiningOperations { get; } = new List<IMachiningOperation>();
     
-    public Coordinate StartPoint { get; set; }
+    public Point StartPoint { get; set; }
 }

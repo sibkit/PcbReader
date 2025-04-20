@@ -3,8 +3,8 @@
 namespace PcbReader.Layers.Gerber.Entities;
 
 public class LinePathPart: IPathPart {
-    public LinePathPart(Coordinate endCoordinate) {
-        EndCoordinate = endCoordinate;
+    public LinePathPart(Point endPoint) {
+        EndPoint = endPoint;
     }
-    public Coordinate EndCoordinate { get; init; }
+    public Point EndPoint { get; init; }
 }

@@ -20,4 +20,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="src\Converters\ExcellonToSvg\" />
+    <Folder Include="src\Converters\GerberToSvg\" />
+  </ItemGroup>
+
 </Project>

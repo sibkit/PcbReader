@@ -22,7 +22,7 @@ public class LinearMillOperationReader: ICommandReader<ExcellonCommandType, Exce
                 var part = new LinearMillPart(coordinate.Value);
                 ctx.CurMillOperation.MillParts.Add(part);
             }
-            ctx.CurCoordinate = coordinate.Value;
+            ctx.CurPoint = coordinate.Value;
         }
     }
 }

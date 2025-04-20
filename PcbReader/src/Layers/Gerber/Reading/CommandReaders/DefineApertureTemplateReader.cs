@@ -2,7 +2,7 @@
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.MacroApertures;
-using PcbReader.Layers.Gerber.Macro.Expressions;
+using PcbReader.Layers.Gerber.Entities.MacroApertures.Expressions;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 

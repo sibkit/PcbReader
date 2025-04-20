@@ -5,9 +5,9 @@ namespace PcbReader.Layers.Excellon.Entities;
 public interface IMachiningOperation
 {
     public MachiningOperationType OperationType { get; }
-    public Coordinate StartCoordinate { get; set; }
+    public Point StartPoint { get; set; }
 
-    public IMachiningOperation CloneWithShift(Coordinate shift);
+    public IMachiningOperation CloneWithShift(Point shift);
 }
 
 public enum MachiningOperationType

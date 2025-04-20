@@ -5,11 +5,11 @@ namespace PcbReader.Layers.Gerber.Entities;
 
 public class PathPaintOperation {
     
-    public PathPaintOperation(CircleAperture aperture, Coordinate startCoordinate) {
+    public PathPaintOperation(CircleAperture aperture, Point startPoint) {
         Aperture = aperture;
-        StartCoordinate = startCoordinate;
+        StartPoint = startPoint;
     }
-    public Coordinate StartCoordinate { get; set; }
+    public Point StartPoint { get; set; }
     public CircleAperture Aperture { get; set; }
     public List<IPathPart> Parts { get; } = [];
 }

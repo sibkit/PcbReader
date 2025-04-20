@@ -15,5 +15,6 @@ public class NumberFormat() {
     public Zeros? Zeros { get; set; } = null;
     public int? Left{get;set;} = null;
     public int? Right{get;set;} = null;
+    
 }
 

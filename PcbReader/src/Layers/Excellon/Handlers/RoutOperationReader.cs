@@ -18,7 +18,7 @@ public class RoutOperationReader: ICommandReader<ExcellonCommandType, ExcellonRe
         if (coordinate == null) {
             ctx.WriteError("Invalid coordinate: "+ctx.CurLine);
         } else {
-            ctx.CurCoordinate = coordinate.Value;
+            ctx.CurPoint = coordinate.Value;
         }
         
     }

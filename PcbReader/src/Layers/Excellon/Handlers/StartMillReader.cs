@@ -15,7 +15,7 @@ public class StartMillReader: ICommandReader<ExcellonCommandType, ExcellonReadin
             ctx.WriteError("Начало фрезерования при незавершенном фрезеровании.");
         }
         ctx.CurMillOperation = new MillOperation() {
-            StartCoordinate = ctx.CurCoordinate
+            StartPoint = ctx.CurPoint
         };
     }
 }

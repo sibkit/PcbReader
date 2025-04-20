@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using PcbReader.Layers.Gerber.Macro;
-using PcbReader.Layers.Gerber.Macro.Expressions;
+using PcbReader.Layers.Gerber.Entities.MacroApertures;
+using PcbReader.Layers.Gerber.Entities.MacroApertures.Expressions;
 using PcbReader.Layers.Gerber.Reading.Macro.Syntax;
 
 namespace PcbReader.Layers.Gerber.Reading.Macro;

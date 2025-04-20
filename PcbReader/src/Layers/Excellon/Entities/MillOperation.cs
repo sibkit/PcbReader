@@ -2,14 +2,14 @@
 
 namespace PcbReader.Layers.Excellon.Entities;
 
-public readonly struct ArcMillPart(Coordinate endCoordinate, float radius) {
-    public Coordinate EndCoordinate { get; } = endCoordinate;
+public readonly struct ArcMillPart(Point endPoint, float radius) {
+    public Point EndPoint { get; } = endPoint;
     public MillPartType PartType { get; } = MillPartType.Arc;
     public float Radius { get; } = radius;
 }
 
-public readonly struct LinearMillPart(Coordinate endCoordinate) : IMillPart {
-    public Coordinate EndCoordinate { get; } = endCoordinate;
+public readonly struct LinearMillPart(Point endPoint) : IMillPart {
+    public Point EndPoint { get; } = endPoint;
     public MillPartType PartType { get; } = MillPartType.Linear;
     
 }
@@ -17,13 +17,13 @@ public readonly struct LinearMillPart(Coordinate endCoordinate) : IMillPart {
 public class MillOperation: IMachiningOperation {
 
     public MachiningOperationType OperationType { get; } = MachiningOperationType.Mill;
-    public Coordinate StartCoordinate { get; set; }
+    public Point StartPoint { get; set; }
 
     public List<IMillPart> MillParts { get; } = [];
     
-    public IMachiningOperation CloneWithShift(Coordinate shift) {
+    public IMachiningOperation CloneWithShift(Point shift) {
         var result = new MillOperation {
-            StartCoordinate = StartCoordinate + shift
+            StartPoint = StartPoint + shift
         };
         return result;
     }

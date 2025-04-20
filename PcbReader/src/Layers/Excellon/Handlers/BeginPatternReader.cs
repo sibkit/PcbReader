@@ -14,10 +14,10 @@ public class BeginPatternReader: ICommandReader<ExcellonCommandType, ExcellonRea
     }
     public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         if (ctx.CurPattern == null || ctx.CurPattern.State == PatternState.Closed) {
-            var coordinate = new Coordinate(0,0);
+            var coordinate = new Point(0,0);
             if (layer.Operations.Count != 0) {
                 var lo = layer.Operations.Last();
-                coordinate = lo.StartCoordinate;
+                coordinate = lo.StartPoint;
             }
             
             ctx.CurPattern = new Pattern(coordinate);

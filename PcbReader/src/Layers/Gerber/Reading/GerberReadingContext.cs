@@ -6,7 +6,7 @@ using PcbReader.Project;
 namespace PcbReader.Layers.Gerber.Reading;
 
 public class GerberReadingContext : ReadingContext {
-    public Coordinate? CurCoordinate { get; set; }
+    public Point? CurCoordinate { get; set; }
     public int? CurApertureCode { get; set; }
     public PathPaintOperation? CurPathPaintOperation { get; set; }
     

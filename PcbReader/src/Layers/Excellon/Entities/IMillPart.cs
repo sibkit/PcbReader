@@ -4,7 +4,7 @@ namespace PcbReader.Layers.Excellon.Entities;
 
 public interface IMillPart
 {
-    public Coordinate EndCoordinate { get; }
+    public Point EndPoint { get; }
     public MillPartType PartType { get; }
 }
 

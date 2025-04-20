@@ -3,6 +3,6 @@
 namespace PcbReader.Layers.Gerber.Entities;
 
 public class FlashOperation: IPaintOperation {
-    public Coordinate Coordinate{get;set;}
+    public Point Point{get;set;}
     public int ApertureCode{get;set;}
 }

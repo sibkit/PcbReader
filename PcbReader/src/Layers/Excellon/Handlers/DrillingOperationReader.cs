@@ -15,7 +15,7 @@ public class DrillingOperationReader: ICommandReader<ExcellonCommandType, Excell
     
     public void WriteToProgram(ExcellonReadingContext ctx, ExcellonLayer layer) {
         int? toolNumber;
-        Coordinate? coordinate;
+        Point? coordinate;
         
         if (ctx.CurToolNumber != null) 
             toolNumber = ctx.CurToolNumber.Value;
@@ -27,7 +27,7 @@ public class DrillingOperationReader: ICommandReader<ExcellonCommandType, Excell
             case CoordinatesMode.Incremental:
                 if (layer.Operations.Count != 0) {
                     var lastOperation = layer.Operations.Last();
-                    coordinate = lastOperation.StartCoordinate + readedCoordinate;
+                    coordinate = lastOperation.StartPoint + readedCoordinate;
                 } else {
                     coordinate = readedCoordinate;
                 }
@@ -38,7 +38,7 @@ public class DrillingOperationReader: ICommandReader<ExcellonCommandType, Excell
             default:
                 throw new Exception("DrillingOperationHandler: WriteToProgram (Unknown Coordinates mode)");
         }
-        ctx.CurCoordinate = coordinate.Value;
+        ctx.CurPoint = coordinate.Value;
         var result = new DrillOperation(coordinate!.Value, toolNumber!.Value);
         if (ctx.CurPattern is { State: PatternState.Opened }) {
             ctx.CurPattern.MachiningOperations.Add(result);

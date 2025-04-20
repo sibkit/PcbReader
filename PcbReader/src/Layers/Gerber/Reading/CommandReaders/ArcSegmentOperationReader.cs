@@ -62,10 +62,10 @@ public partial class ArcSegmentOperationReader: ICommandReader<GerberCommandType
         
         switch (curAperture) {
             case CircleAperture ca:
-                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Coordinate)ctx.CurCoordinate);
+                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
 
                 var part = new ArcPathPart {
-                    EndCoordinate = c,
+                    EndPoint = c,
                     IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
                     JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
                 };

@@ -35,7 +35,7 @@ public partial class FlashOperationReader: ICommandReader<GerberCommandType, Ger
         }
 
         program.Operations.Add(new FlashOperation {
-            Coordinate = Coordinates.ParseCoordinate(ctx.NumberFormat!,xs,ys),
+            Point = Coordinates.ParseCoordinate(ctx.NumberFormat!,xs,ys),
             ApertureCode = ctx.CurApertureCode.Value
         });
     }
