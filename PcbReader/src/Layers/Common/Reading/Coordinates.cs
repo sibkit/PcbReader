@@ -1,13 +1,11 @@
-﻿using PcbReader.Project;
-
-namespace PcbReader.Layers.Common.Reading;
+﻿namespace PcbReader.Layers.Common.Reading;
 
 public static class Coordinates {
 
     public static Point ParseCoordinate(NumberFormat nf, string xString, string yString) {
         return new Point(ReadValue(nf, xString), ReadValue(nf, yString));
     }
-    public static decimal ReadValue(NumberFormat nf, string value) {
+    public static double ReadValue(NumberFormat nf, string value) {
         if (value == "0")
             return 0;
         
@@ -45,13 +43,13 @@ public static class Coordinates {
         }
 
         if (wholeNumberString == "") {
-            return multiplier * decimal.Parse(fracString) / (decimal)Math.Pow(10, fracString.Length);
+            return multiplier * double.Parse(fracString) / Math.Pow(10, fracString.Length);
         }
 
         if (fracString == "") {
-            return multiplier * decimal.Parse(wholeNumberString);
+            return multiplier * double.Parse(wholeNumberString);
         }
-        return multiplier * decimal.Parse(wholeNumberString)+decimal.Parse(fracString) / (decimal)Math.Pow(10, fracString.Length);
+        return multiplier * double.Parse(wholeNumberString)+double.Parse(fracString) / Math.Pow(10, fracString.Length);
 
     }
 }

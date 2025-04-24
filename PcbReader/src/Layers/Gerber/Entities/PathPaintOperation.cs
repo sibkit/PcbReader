@@ -1,10 +1,9 @@
-﻿using PcbReader.Layers.Gerber.Entities.StandardApertures;
-using PcbReader.Project;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 namespace PcbReader.Layers.Gerber.Entities;
 
 public class PathPaintOperation {
-    
     public PathPaintOperation(CircleAperture aperture, Point startPoint) {
         Aperture = aperture;
         StartPoint = startPoint;

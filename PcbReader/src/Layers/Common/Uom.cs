@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Project;
+﻿namespace PcbReader.Layers.Common;
 
 public enum Uom
 {

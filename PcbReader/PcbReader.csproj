@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Folder Include="src\Converters\ExcellonToSvg\" />
-    <Folder Include="src\Converters\GerberToSvg\" />
+    <Folder Include="src\Project\" />
   </ItemGroup>
 
 </Project>

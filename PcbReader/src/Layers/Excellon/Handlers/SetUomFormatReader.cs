@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
-using PcbReader.Project;
 
 namespace PcbReader.Layers.Excellon.Handlers;
 

@@ -1,6 +1,6 @@
-﻿using PcbReader.Layers.Common.Reading;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
-using PcbReader.Project;
 using Exception = System.Exception;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;

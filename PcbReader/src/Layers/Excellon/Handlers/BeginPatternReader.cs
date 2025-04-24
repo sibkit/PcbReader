@@ -1,6 +1,6 @@
-﻿using PcbReader.Layers.Common.Reading;
+﻿using PcbReader.Layers.Common;
+using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
-using PcbReader.Project;
 using ApplicationException = System.ApplicationException;
 
 namespace PcbReader.Layers.Excellon.Handlers;
