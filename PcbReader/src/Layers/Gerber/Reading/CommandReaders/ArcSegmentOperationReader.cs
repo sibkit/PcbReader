@@ -68,6 +68,7 @@ public partial class ArcSegmentOperationReader: ICommandReader<GerberCommandType
                         IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
                         JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
                     });
+                    program.Operations.Add(op);
                 } else {
                     var part = new ArcPathPart {
                         EndPoint = c,

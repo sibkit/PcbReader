@@ -23,27 +23,34 @@ public static class SvgWriter {
         if(pt.Y > bounds.EndPoint.Y)
             bounds.EndPoint = bounds.EndPoint with { Y = pt.Y };
     }
-    
+
     private static Rect CalculateViewBox(SvgLayer doc) {
-        var result = new Rect();
+
+        var result = doc.Paths.Count > 0
+            ? new Rect {
+                StartPoint = doc.Paths.First().StartPoint,
+                EndPoint = doc.Paths.First().StartPoint,
+            }
+            : new Rect();
         foreach (var p in doc.Paths) {
             ExtendBounds(ref result, p.StartPoint);
             foreach (var pp in p.Parts) {
                 ExtendBounds(ref result, pp.EndPoint);
             }
         }
-        var maxSide =  result.GetWidth() > result.GetHeight() ? result.GetWidth()*0.08 : result.GetHeight()*0.08;
+
+        var maxSide = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.08 : result.GetHeight() * 0.08;
         result.StartPoint = result.StartPoint with {
-            X = result.StartPoint.X - maxSide, 
+            X = result.StartPoint.X - maxSide,
             Y = result.StartPoint.Y - maxSide
         };
         result.EndPoint = result.EndPoint with {
-            X = result.EndPoint.X + maxSide, 
+            X = result.EndPoint.X + maxSide,
             Y = result.EndPoint.Y + maxSide
         };
         return result;
     }
-    
+
     public static void Write(SvgLayer doc, string fileName) {
         using var swr = new StreamWriter(fileName);
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
@@ -51,9 +58,9 @@ public static class SvgWriter {
         swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
                   vbr.StartPoint.X.ToString("R")+ " "+
                   vbr.StartPoint.Y.ToString("R")+" "+ 
-                  Math.Round(vbr.GetWidth(),8) + " "+
-                  Math.Round(vbr.GetHeight(),8) + "\">");
-        swr.Write("\n<g stroke=\"red\"  stroke-linejoin=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,8)+"\">");
+                  Math.Round(vbr.GetWidth(),6) + " "+
+                  Math.Round(vbr.GetHeight(),6) + "\">");
+        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,6)+"\">");
         foreach (var path in doc.Paths) {
             var sp = path.StartPoint;
             swr.Write("\n<path d=\"M ");
@@ -69,8 +76,9 @@ public static class SvgWriter {
                         swr.Write("A " +
                                   Math.Round(a.Radius, 8) + " " +
                                   Math.Round(a.Radius, 8) + " " +
-                                  (a.RotationDirection == RotationDirection.ClockWise ? "0" : "1") +
-                                  " 0 0 " +
+                                  "0 " +
+                                  (a.IsLargeArc ? "1 " : "0 ") +
+                                  (a.RotationDirection == RotationDirection.ClockWise ? "1 " : "0 ") +
                                   Math.Round(a.EndPoint.X, 8) + " " +
                                   Math.Round(a.EndPoint.Y, 8) + " ");
                         break;

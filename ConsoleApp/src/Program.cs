@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
+using PcbReader.Converters;
 using PcbReader.Converters.GerberToSvg;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
@@ -14,6 +16,8 @@ namespace ConsoleApp;
 public static class Program {
     public static void Main(string[] args) {
 
+        TestGeometry();
+        
         double d1 = 128;
         double d2 = 100;
         var d3 = d1 / d2;
@@ -36,6 +40,40 @@ public static class Program {
         
     }
 
+    static void TestGeometry() {
+        
+        //upRight
+        //  cp  ep
+        //  sp
+        
+        
+        // var sp = new Point(1, 1);
+        // var ep = new Point(2, 2);
+        // var cp = new Point(1, 2);
+        // var aw = Geometry.ArcWay(sp, ep, cp, AxisLayout.YUpXRight);
+        // if(aw.IsLarge)
+        //     throw new Exception("TestGeometry: large arc way");
+        // if(aw.RotationDirection != RotationDirection.CounterClockwise)
+        //     throw new Exception("TestGeometry: ClockWise Arc Way");
+        //
+        // aw = Geometry.ArcWay(sp, ep, cp, AxisLayout.YDownXRight);
+        //
+        // if(aw.IsLarge)
+        //     throw new Exception("TestGeometry: large arc way");
+        // if(aw.RotationDirection != RotationDirection.ClockWise)
+        //     throw new Exception("TestGeometry: CounterClockwise Arc Way");
+        
+        
+        
+        //downRight
+        
+        //  cp  ep
+        //  sp
+        
+        var aw = Geometry.ArcWay(new Point(1,2), new Point(2,1), new Point(1,1), AxisLayout.YDownXRight);
+        Console.WriteLine("d");
+    }
+    
     static void CalculateResult() {
         var callsCountPerDay = 30m;
         var avgSellPrice = 50000m;

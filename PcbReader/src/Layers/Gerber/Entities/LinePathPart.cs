@@ -6,5 +6,5 @@ public class LinePathPart: IPathPart {
     public LinePathPart(Point endPoint) {
         EndPoint = endPoint;
     }
-    public Point EndPoint { get; init; }
+    public Point EndPoint { get; set; }
 }
