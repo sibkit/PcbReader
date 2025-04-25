@@ -1,8 +1,12 @@
 ﻿using System.Globalization;
+using PcbReader.Converters.GerberToSvg;
 using PcbReader.Layers.Common;
+using PcbReader.Layers.Gerber.Entities;
+using PcbReader.Layers.Gerber.Reading;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
+using LinePathPart = PcbReader.Layers.Svg.Entities.LinePathPart;
 using Path = PcbReader.Layers.Svg.Entities.Path;
 
 namespace ConsoleApp;
@@ -17,7 +21,7 @@ public static class Program {
         var d5 = 0.32;
         var s1 = d5.ToString("R");
         
-        TestSvg();
+        TestGerberToSvg();
         //ExpressionsTest.Test("2+3*4*5/(6+7)");
         //CalculateResult();
         // ExpressionsTest.Test();
@@ -65,38 +69,93 @@ public static class Program {
         
     }
 
-    static void TestSvg() {
+    private static GerberLayer ReadGerber(FileInfo fileInfo) {
+        // try {
+            var p = GerberReader.Instance.Read(fileInfo);
+            if (p.Item2.Errors.Count > 0) {
+                Console.WriteLine("  ...ERROR");
+                Console.WriteLine("Обнаружены ошибки:");
+                foreach (var error in p.Item2.Errors) {
+                    Console.WriteLine(error);
+                }
+                Console.WriteLine();
+            }
+            
+            if (p.Item2.Warnings.Count > 0) {
+                Console.WriteLine("Обнаружены предупреждения:");
+                foreach (var warning in p.Item2.Warnings) {
+                    Console.WriteLine(warning);
+                }
+            }
+
+            if (p.Item2.Errors.Count == 0 && p.Item2.Warnings.Count == 0) {
+                Console.WriteLine("  ...OK");
+            }
+            return p.Item1;
+
+        // } catch (ApplicationException e) {
+        //     //Console.WriteLine("");
+        //     Console.WriteLine("Не удалось прочитать файл: \"" + fileInfo.Name + "\"");
+        //     Console.WriteLine(e);
+        //         
+        // }
+    }
+    
+    private static void TestGerberToSvg() {
+        var di = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\test_files\gerber\03");
+        var files = di.GetFiles("*");
+        var i = 0;
+        foreach (var fi in files) {
+            // if(!fi.Name.Contains("COMPMASK"))
+            //     continue;
+            // if(i>3)
+            //     break;
+            // i++;
+            if(fi.Extension.ToUpper() is ".DRL" or ".TC" or ".TOL")
+                continue;
+            Console.WriteLine("-----");
+            Console.WriteLine("Обработка файла: " + fi.Name);
+
+            var gl = ReadGerber(fi);
+            var svg = GerberToSvgConverter.Convert(gl);
+            WriteSvg(svg);
+            Console.WriteLine("-----");
+            Console.WriteLine("");
+        }
+    }
+    
+    static void WriteSvg(SvgLayer layer) {
         var di = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\test_files\svg");
         var files = di.GetFiles("svg_test_*");
         var num = files.Select(efi => efi.Name.Split(".")[0].Split("_").Last()).Select(int.Parse).Prepend(0).Max();
         num++;
 
         
-        var 
         
-        var doc = new SvgLayer();
-        for (var i = 0; i < 10; i++) {
-            var p = new Path {
-                StartPoint = new Point((double)i * (1 + i) / 2 + i, 0)
-            };
+        
+        // var doc = new SvgLayer();
+        // for (var i = 0; i < 10; i++) {
+        //     var p = new Path {
+        //         StartPoint = new Point((double)i * (1 + i) / 2 + i, 0)
+        //     };
+        //
+        //     var w = i + 1;
+        //
+        //     p.Parts.Add(new LinePathPart {
+        //         EndPoint = new Point(p.StartPoint.X, p.StartPoint.Y + w)
+        //     });
+        //     p.Parts.Add(new LinePathPart {
+        //         EndPoint = new Point(p.StartPoint.X + w, p.StartPoint.Y + w)
+        //     });
+        //     p.Parts.Add(new LinePathPart {
+        //         EndPoint = new Point(p.StartPoint.X + w, p.StartPoint.Y)
+        //     });
+        //
+        //
+        //     doc.Paths.Add(p);
+        // }
 
-            var w = i + 1;
-
-            p.Parts.Add(new LinePathPart {
-                EndPoint = new Point(p.StartPoint.X, p.StartPoint.Y + w)
-            });
-            p.Parts.Add(new LinePathPart {
-                EndPoint = new Point(p.StartPoint.X + w, p.StartPoint.Y + w)
-            });
-            p.Parts.Add(new LinePathPart {
-                EndPoint = new Point(p.StartPoint.X + w, p.StartPoint.Y)
-            });
-
-
-            doc.Paths.Add(p);
-        }
-
-        SvgWriter.Write(doc, Directory.GetCurrentDirectory() + @"\test_files\svg\svg_test_" + num.ToString("D4") + ".svg");
+        SvgWriter.Write(layer, Directory.GetCurrentDirectory() + @"\test_files\svg\svg_test_" + num.ToString("D4") + ".svg");
     }
 
 }

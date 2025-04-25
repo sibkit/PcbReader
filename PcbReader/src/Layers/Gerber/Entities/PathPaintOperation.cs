@@ -3,7 +3,7 @@ using PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 namespace PcbReader.Layers.Gerber.Entities;
 
-public class PathPaintOperation {
+public class PathPaintOperation: IPaintOperation {
     public PathPaintOperation(CircleAperture aperture, Point startPoint) {
         Aperture = aperture;
         StartPoint = startPoint;
@@ -11,4 +11,5 @@ public class PathPaintOperation {
     public Point StartPoint { get; set; }
     public CircleAperture Aperture { get; set; }
     public List<IPathPart> Parts { get; } = [];
+    public bool IsClosed { get; set; } = false;
 }

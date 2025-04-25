@@ -11,15 +11,17 @@ using SvgPath = PcbReader.Layers.Svg.Entities.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
-public class GerberToSvgConverter {
-    public SvgLayer Convert(GerberLayer layer) {
+public static class GerberToSvgConverter {
+    public static SvgLayer Convert(GerberLayer layer) {
         var result = new SvgLayer();
         foreach(var operation in layer.Operations)
         {
             switch (operation) {
                 case PathPaintOperation path:
+                    result.Paths.Add(ConvertPath(path));
                     break;
                 case FlashOperation flash:
+                    Console.WriteLine("Flash not implemented");
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: Convert");
@@ -29,24 +31,28 @@ public class GerberToSvgConverter {
     }
     
     static SvgPath ConvertPath(PathPaintOperation operation) {
-        var result = new SvgPath();
-        result.StartPoint = operation.StartPoint;
+        var result = new SvgPath {
+            StartPoint = operation.StartPoint
+        };
+        var startPartPoint = operation.StartPoint;
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
+                    result.Parts.Add(new SvgLinePart {
+                        EndPoint = line.EndPoint
+                    });
                     break;
                 case GerberArcPart arc:
+                    result.Parts.AddRange(ConvertArcPath(startPartPoint, arc));
+                    startPartPoint = arc.EndPoint;
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: ConvertPath");
             }
         }
+        result.IsClosed = operation.IsClosed;
         return result;
     }
-
-
-
-
     
     static List<SvgArcPart> ConvertArcPath(Point gsp, GerberArcPart gap) {
         var result = new List<SvgArcPart>();
@@ -54,15 +60,15 @@ public class GerberToSvgConverter {
         var cy = gsp.Y + gap.JOffset;
 
         var r1 = Math.Sqrt(
-            Math.Pow((double)cx - (double)gsp.X, 2) +
-            Math.Pow((double)cy - (double)gsp.Y, 2));
+            Math.Pow(cx - gsp.X, 2) +
+            Math.Pow(cy - gsp.Y, 2));
         var r2 = Math.Sqrt(
-            Math.Pow((double)cx - (double)gap.EndPoint.X, 2) +
-            Math.Pow((double)cy - (double)gap.EndPoint.Y, 2));
+            Math.Pow(cx - gap.EndPoint.X, 2) +
+            Math.Pow(cy - gap.EndPoint.Y, 2));
         var tr = (decimal)(r2 + r1) / 2; //true radius
 
-        if (gsp == gap.EndPoint) {
 
+        if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
             
@@ -82,12 +88,16 @@ public class GerberToSvgConverter {
             result.Add(part1);
             result.Add(part2);
         } else {
-            //var a = CalculateAngel(gsp, gap.EndPoint, new Point())
+            var arcWay = Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy));
+            
             var part = new SvgArcPart {
-                RotationDirection = gap.RotationDirection,
+                RotationDirection = arcWay.RotationDirection,
                 EndPoint = gap.EndPoint,
-                Radius = tr
+                Radius = tr,
+                IsLargeArc = arcWay.IsLarge,
             };
+            result.Add(part);
+            
         }
         return result;
     }

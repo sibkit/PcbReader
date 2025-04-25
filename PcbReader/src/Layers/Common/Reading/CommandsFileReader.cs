@@ -16,7 +16,7 @@ public abstract class CommandsFileReader<T, TC, TP>
 
     protected abstract IEnumerable<string> ExcludeCommands(TextReader reader);
     
-    public  (TP, TC) ReadProgram(FileInfo file) {
+    public  (TP, TC) Read(FileInfo file) {
         var program = new TP();
         using var streamReader = new StreamReader(
             file.Open(FileMode.Open, FileAccess.Read, FileShare.Read), Encoding.UTF8);

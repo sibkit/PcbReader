@@ -14,7 +14,7 @@ public static class Reader
 
             Console.Write("Обработка файла: " + fi.Name);
             try {
-                var p = ExcellonReader.Instance.ReadProgram(fi);
+                var p = ExcellonReader.Instance.Read(fi);
                 if (p.Item2.Errors.Count > 0) {
                     Console.WriteLine("  ...ERROR");
                     Console.WriteLine("Обнаружены ошибки:");
@@ -60,7 +60,7 @@ public static class Reader
             Console.WriteLine("-----");
             Console.WriteLine("Обработка файла: " + fi.Name);
             try {
-                var p = GerberReader.Instance.ReadProgram(fi);
+                var p = GerberReader.Instance.Read(fi);
                 if (p.Item2.Errors.Count > 0) {
                     Console.WriteLine("  ...ERROR");
                     Console.WriteLine("Обнаружены ошибки:");

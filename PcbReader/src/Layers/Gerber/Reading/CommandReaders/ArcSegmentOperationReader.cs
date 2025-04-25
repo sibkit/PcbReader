@@ -61,15 +61,21 @@ public partial class ArcSegmentOperationReader: ICommandReader<GerberCommandType
         
         switch (curAperture) {
             case CircleAperture ca:
-                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
-
-                var part = new ArcPathPart {
-                    EndPoint = c,
-                    IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
-                    JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
-                };
-                ctx.CurPathPaintOperation!.Parts.Add(part);
-
+                if (ctx.CurPathPaintOperation == null) {
+                    var op = new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
+                    op.Parts.Add(new ArcPathPart {
+                        EndPoint = c,
+                        IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
+                        JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
+                    });
+                } else {
+                    var part = new ArcPathPart {
+                        EndPoint = c,
+                        IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
+                        JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
+                    };
+                    ctx.CurPathPaintOperation!.Parts.Add(part);
+                }
                 break;
             case null:
                 ctx.WriteError("Аппертура не задана");

@@ -6,7 +6,7 @@ using PcbReader.Layers.Gerber.Entities.StandardApertures;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
-public partial class CommandSegmentOperationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
+public partial class LineSegmentOperationReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer> {
 
     [GeneratedRegex("^(?:(X)([+-]?[0-9.]+))?(?:(Y)([+-]?[0-9.]+))?D01\\*$")]
     private static partial Regex MatchRegex();
@@ -14,7 +14,7 @@ public partial class CommandSegmentOperationReader: ICommandReader<GerberCommand
     public GerberCommandType[] GetNextLikelyTypes() {
         return [
             GerberCommandType.LineSegmentOperation, 
-            //GerberLineType.ArcSegmentOperation
+            GerberCommandType.ArcSegmentOperation
         ];
     }
     public bool Match(GerberReadingContext ctx) {
@@ -48,11 +48,14 @@ public partial class CommandSegmentOperationReader: ICommandReader<GerberCommand
         var curAperture = program.Apertures[ctx.CurApertureCode.Value];
         switch (curAperture) {
             case CircleAperture ca:
-                ctx.CurPathPaintOperation ??= new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
-
-                var part = new LinePathPart(c);
-                ctx.CurPathPaintOperation!.Parts.Add(part);
-
+                if (ctx.CurPathPaintOperation == null) {
+                    var op = new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
+                    op.Parts.Add(new LinePathPart(c));
+                    program.Operations.Add(op);
+                } else {
+                    var part = new LinePathPart(c);
+                    ctx.CurPathPaintOperation!.Parts.Add(part);
+                }
                 break;
             case null:
                 ctx.WriteError("Аппертура не задана");

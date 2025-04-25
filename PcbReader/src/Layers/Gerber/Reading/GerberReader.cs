@@ -2,7 +2,6 @@
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading.CommandReaders;
 using ArcSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.ArcSegmentOperationReader;
-using CommandSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.CommandSegmentOperationReader;
 using DefineApertureTemplateReader = PcbReader.Layers.Gerber.Reading.CommandReaders.DefineApertureTemplateReader;
 using DefineStandardApertureReader = PcbReader.Layers.Gerber.Reading.CommandReaders.DefineStandardApertureReader;
 using FlashOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.FlashOperationReader;
@@ -18,7 +17,7 @@ public class GerberReader: CommandsFileReader<GerberCommandType, GerberReadingCo
     
     private static Dictionary<GerberCommandType, ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>> GetHandlers() {
         var handlers = new Dictionary<GerberCommandType, ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>> {
-            { GerberCommandType.LineSegmentOperation, new CommandSegmentOperationReader() },
+            { GerberCommandType.LineSegmentOperation, new LineSegmentOperationReader() },
             { GerberCommandType.Comment, new CommentReader() },
             { GerberCommandType.FormatSpecification, new FormatSpecificationReader() },
             { GerberCommandType.MoveOperation, new MoveOperationReader() },
@@ -30,7 +29,9 @@ public class GerberReader: CommandsFileReader<GerberCommandType, GerberReadingCo
             { GerberCommandType.SetAperture , new SetApertureReader() },
             { GerberCommandType.ArcSegmentOperation , new ArcSegmentOperationReader() },
             { GerberCommandType.DefineApertureMacro, new DefineApertureTemplateReader() },
-            { GerberCommandType.FlashOperation, new FlashOperationReader() }
+            { GerberCommandType.FlashOperation, new FlashOperationReader() },
+            { GerberCommandType.BeginRegion , new BeginRegionCommandReader() },
+            { GerberCommandType.EndRegion , new EndRegionCommandReader() },
         };
         return handlers;
     }

@@ -53,10 +53,12 @@ public static class SvgWriter {
                   vbr.StartPoint.Y.ToString("R")+" "+ 
                   Math.Round(vbr.GetWidth(),8) + " "+
                   Math.Round(vbr.GetHeight(),8) + "\">");
+        swr.Write("\n<g stroke=\"red\"  stroke-linejoin=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,8)+"\">");
         foreach (var path in doc.Paths) {
             var sp = path.StartPoint;
             swr.Write("\n<path d=\"M ");
             swr.Write(sp.X);
+            ;
             swr.Write(" "+sp.Y+" ");
             foreach (var pp in path.Parts) {
                 switch (pp) {
@@ -75,8 +77,16 @@ public static class SvgWriter {
                 }
             }
 
-            swr.Write("Z\"/>");
+            if (path.IsClosed) {
+                swr.Write("Z>");
+            }
+
+            if (path.StrokeWidth > 0.00000001) {
+                swr.Write(" style=\"stroke-width: "+Math.Round(path.StrokeWidth,8)+"\"");
+            }
+            swr.Write("\"/>");
         }
+        swr.Write("\n</g>");
         swr.Write("\n</svg>");
         swr.Flush();
     }

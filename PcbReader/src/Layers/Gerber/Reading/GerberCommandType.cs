@@ -13,5 +13,7 @@ public enum GerberCommandType {
     ArcSegmentOperation,
     LineSegmentOperation,
     SetLcMode,
-    Ignored
+    Ignored,
+    BeginRegion,
+    EndRegion,
 }
