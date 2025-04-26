@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using PcbReader.Layers.Gerber.Entities.MacroApertures.Expressions;
+using PcbReader.Layers.Gerber.Entities.Apertures.Macro.Expressions;
 
 namespace PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
 

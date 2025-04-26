@@ -1,4 +1,4 @@
-﻿using PcbReader.Layers.Gerber.Entities.MacroApertures.Expressions;
+﻿using PcbReader.Layers.Gerber.Entities.Apertures.Macro.Expressions;
 using PcbReader.Layers.Gerber.Reading.Macro.Syntax;
 using PcbReader.Layers.Gerber.Reading.Macro.Tokenize;
 

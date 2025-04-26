@@ -1,13 +1,6 @@
 ﻿using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading.CommandReaders;
-using ArcSegmentOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.ArcSegmentOperationReader;
-using DefineApertureTemplateReader = PcbReader.Layers.Gerber.Reading.CommandReaders.DefineApertureTemplateReader;
-using DefineStandardApertureReader = PcbReader.Layers.Gerber.Reading.CommandReaders.DefineStandardApertureReader;
-using FlashOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.FlashOperationReader;
-using FormatSpecificationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.FormatSpecificationReader;
-using MoveOperationReader = PcbReader.Layers.Gerber.Reading.CommandReaders.MoveOperationReader;
-using SetApertureReader = PcbReader.Layers.Gerber.Reading.CommandReaders.SetApertureReader;
 
 namespace PcbReader.Layers.Gerber.Reading;
 
@@ -19,17 +12,17 @@ public class GerberReader: CommandsFileReader<GerberCommandType, GerberReadingCo
         var handlers = new Dictionary<GerberCommandType, ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>> {
             { GerberCommandType.LineSegmentOperation, new LineSegmentOperationReader() },
             { GerberCommandType.Comment, new CommentReader() },
-            { GerberCommandType.FormatSpecification, new FormatSpecificationReader() },
-            { GerberCommandType.MoveOperation, new MoveOperationReader() },
-            { GerberCommandType.SetLcMode, new SetLcModeReader() },
-            { GerberCommandType.SetCoordinates, new SetCoordinateModeReader() },
-            { GerberCommandType.Ignored, new IgnoredReader() },
-            { GerberCommandType.SetUom, new SetUomFormatReader() },
-            { GerberCommandType.DefineAperture, new DefineStandardApertureReader() },
-            { GerberCommandType.SetAperture , new SetApertureReader() },
-            { GerberCommandType.ArcSegmentOperation , new ArcSegmentOperationReader() },
-            { GerberCommandType.DefineApertureMacro, new DefineApertureTemplateReader() },
-            { GerberCommandType.FlashOperation, new FlashOperationReader() },
+            { GerberCommandType.FormatSpecification, new FormatSpecificationCommandReader() },
+            { GerberCommandType.MoveOperation, new MoveOperationCommandReader() },
+            { GerberCommandType.SetLcMode, new SetLcModeCommandReader() },
+            { GerberCommandType.SetCoordinates, new SetCoordinateModeCommandReader() },
+            { GerberCommandType.Ignored, new IgnoredCommandReader() },
+            { GerberCommandType.SetUom, new SetUomFormatCommandReader() },
+            { GerberCommandType.DefineAperture, new DefineApertureCommandReader() },
+            { GerberCommandType.SetAperture , new SetApertureCommandReader() },
+            { GerberCommandType.ArcSegmentOperation , new ArcSegmentOperationCommandReader() },
+            { GerberCommandType.DefineApertureMacro, new DefineApertureTemplateCommandReader() },
+            { GerberCommandType.FlashOperation, new FlashOperationCommandReader() },
             { GerberCommandType.BeginRegion , new BeginRegionCommandReader() },
             { GerberCommandType.EndRegion , new EndRegionCommandReader() },
         };

@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Layers.Common.Reading;
+﻿using PcbReader.Geometry;
+
+namespace PcbReader.Layers.Common.Reading;
 
 public static class Coordinates {
 

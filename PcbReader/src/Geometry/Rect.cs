@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Common;
+﻿namespace PcbReader.Geometry;
 
 public struct Rect {
     public Point StartPoint { get; set; }

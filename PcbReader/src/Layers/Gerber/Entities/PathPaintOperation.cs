@@ -1,5 +1,6 @@
-﻿using PcbReader.Layers.Common;
-using PcbReader.Layers.Gerber.Entities.StandardApertures;
+﻿using PcbReader.Geometry;
+using PcbReader.Layers.Common;
+using PcbReader.Layers.Gerber.Entities.Apertures;
 
 namespace PcbReader.Layers.Gerber.Entities;
 

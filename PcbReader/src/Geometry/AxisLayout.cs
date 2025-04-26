@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Layers.Common;
+﻿namespace PcbReader.Geometry;
 
 public enum AxisLayout {
     YUpXRight,

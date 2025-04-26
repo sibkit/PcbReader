@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using PcbReader.Geometry;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Svg.Entities;
 

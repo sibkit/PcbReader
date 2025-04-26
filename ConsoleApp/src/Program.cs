@@ -2,6 +2,7 @@
 using System.Globalization;
 using PcbReader.Converters;
 using PcbReader.Converters.GerberToSvg;
+using PcbReader.Geometry;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading;

@@ -1,7 +1,4 @@
-﻿using PcbReader.Layers.Common;
-using Path = PcbReader.Layers.Svg.Entities.Path;
-
-namespace PcbReader.Converters;
+﻿namespace PcbReader.Geometry;
 
 public readonly struct ArcWay(RotationDirection direction, bool isLarge) {
     public RotationDirection RotationDirection { get; init; } = direction;

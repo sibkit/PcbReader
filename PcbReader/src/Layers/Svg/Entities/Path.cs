@@ -1,4 +1,5 @@
-﻿using PcbReader.Layers.Common;
+﻿using PcbReader.Geometry;
+using PcbReader.Layers.Common;
 
 namespace PcbReader.Layers.Svg.Entities;
 

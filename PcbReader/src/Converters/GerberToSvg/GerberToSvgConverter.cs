@@ -1,4 +1,5 @@
 ﻿
+using PcbReader.Geometry;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
@@ -27,7 +28,7 @@ public static class GerberToSvgConverter {
                     throw new Exception("GerberToSvgConverter: Convert");
             }
         }
-        ConvertAxis(result);
+        InvertAxis(result);
         return result;
     }
 
@@ -76,7 +77,7 @@ public static class GerberToSvgConverter {
             Math.Pow(cx - gap.EndPoint.X, 2) +
             Math.Pow(cy - gap.EndPoint.Y, 2));
         var tr = (decimal)(r2 + r1) / 2; //true radius
-        var arcWay = Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy), AxisLayout.YDownXRight);
+        var arcWay = Geometry.Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy), AxisLayout.YDownXRight);
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
@@ -107,7 +108,7 @@ public static class GerberToSvgConverter {
         return result;
     }
 
-    static void ConvertAxis(SvgLayer layer) {
+    static void InvertAxis(SvgLayer layer) {
         foreach (var pth in layer.Paths) {
             pth.StartPoint = pth.StartPoint with { Y = -pth.StartPoint.Y };
             foreach (var p in pth.Parts) {
@@ -121,7 +122,6 @@ public static class GerberToSvgConverter {
                         break;
                 }
             }
-
         }
     }
 }

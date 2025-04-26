@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using PcbReader.Geometry;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
 
