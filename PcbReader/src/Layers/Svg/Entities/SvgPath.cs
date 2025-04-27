@@ -1,10 +1,7 @@
-﻿using PcbReader.Geometry;
-using PcbReader.Layers.Common;
-
-namespace PcbReader.Layers.Svg.Entities;
+﻿namespace PcbReader.Layers.Svg.Entities;
 
 public class SvgPath {
     public double StrokeWidth { get; set; }
     public List<ISvgPathPart> Parts { get; } = [];
-    public Point StartPoint { get; set; }
+    // public Point StartPoint { get; set; }
 }

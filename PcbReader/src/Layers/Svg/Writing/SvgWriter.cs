@@ -13,34 +13,36 @@ public static class SvgWriter {
         
     }
     
-    private static void ExtendBounds(ref Rect bounds, Point pt) {
-        if(pt.X < bounds.StartPoint.X)
-            bounds.StartPoint = bounds.StartPoint with { X = pt.X };
-        if(pt.X > bounds.EndPoint.X)
-            bounds.EndPoint = bounds.EndPoint with { X = pt.X };
+    private static void ExtendBounds(ref Point leftTop, ref Point rightBottom, Point pt) {
+        if(pt.X < leftTop.X)
+            leftTop.X = pt.X;
+        if(pt.X > rightBottom.X)
+            rightBottom.X = pt.X;
         
-        if(pt.Y < bounds.StartPoint.Y)
-            bounds.StartPoint = bounds.StartPoint with { Y = pt.Y };
-        if(pt.Y > bounds.EndPoint.Y)
-            bounds.EndPoint = bounds.EndPoint with { Y = pt.Y };
+        if(pt.Y < leftTop.Y)
+            leftTop.Y = pt.Y;
+        if(pt.Y > rightBottom.Y)
+            rightBottom.Y = pt.Y;
     }
 
     private static Rect CalculateViewBox(SvgLayer doc) {
 
-        var result = doc.Paths.Count > 0
-            ? new Rect {
-                StartPoint = doc.Paths.First().StartPoint,
-                EndPoint = doc.Paths.First().StartPoint,
-            }
-            : new Rect();
+        var leftTop = new Point(double.MaxValue, double.MaxValue);
+        var rightBottom = new Point(double.MinValue, double.MinValue);
+        
+
         foreach (var p in doc.Paths) {
-            ExtendBounds(ref result, p.StartPoint);
+            
             foreach (var pp in p.Parts) {
                 if (pp is ISvgCursorDriver cursorDriver)
-                    ExtendBounds(ref result, cursorDriver.PointTo);
+                    ExtendBounds(ref leftTop, ref rightBottom, cursorDriver.PointTo);
             }
         }
 
+        var result = new Rect {
+            StartPoint = leftTop,
+            EndPoint = rightBottom,
+        };
         var maxSide = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.08 : result.GetHeight() * 0.08;
         result.StartPoint = result.StartPoint with {
             X = result.StartPoint.X - maxSide,
@@ -62,17 +64,17 @@ public static class SvgWriter {
                   vbr.StartPoint.Y.ToString("R")+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
-        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,6)+"\">");
+        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,6)+"\">");
         foreach (var path in doc.Paths) {
-            var sp = path.StartPoint;
-            swr.Write("\n<path d=\"M ");
-            swr.Write(sp.X);
-            ;
-            swr.Write(" "+sp.Y+" ");
+            //var sp = path.StartPoint;
+            swr.Write("\n<path d=\"");
             foreach (var pp in path.Parts) {
                 switch (pp) {
+                    case MoveSvgPathPart m:
+                        swr.Write("M  " + Math.Round(m.PointTo.X, 6) + " " + Math.Round(m.PointTo.Y, 6) + " ");
+                        break;
                     case LineSvgPathPart l:
-                        swr.Write("L " + l.PointTo.X + " " + l.PointTo.Y + " ");
+                        swr.Write("L " + Math.Round(l.PointTo.X, 6) + " " + Math.Round(l.PointTo.Y, 6) + " ");
                         break;
                     case ArcSvgPathPart a:
                         swr.Write("A " +
@@ -85,15 +87,18 @@ public static class SvgWriter {
                                   Math.Round(a.PointTo.Y, 8) + " ");
                         break;
                     case CloseSvgPathPart:
-                        swr.Write("Z>");
+                        swr.Write("Z");
                         break;
                 }
             }
-
-            if (path.StrokeWidth > 0.00000001) {
-                swr.Write(" style=\"stroke-width: "+Math.Round(path.StrokeWidth,8)+"\"");
+            swr.Write("\"");
+            if (path.Parts.Count >0 && path.Parts.Last() is CloseSvgPathPart) {
+                swr.Write(" fill=\"red\"");
             }
-            swr.Write("\"/>");
+            if (path.StrokeWidth > 0.00000001) {
+                swr.Write( "stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
+            }
+            swr.Write("/>");
         }
         swr.Write("\n</g>");
         swr.Write("\n</svg>");

@@ -38,9 +38,11 @@ public static class GerberToSvgConverter {
     // }
 
     static SvgPath ConvertPath(PathPaintOperation operation) {
-        var result = new SvgPath {
-            StartPoint = operation.StartPoint, 
-        };
+        var result = new SvgPath();
+
+        result.Parts.Add(new MoveSvgPathPart {
+            PointTo = operation.StartPoint,
+        });
         var startPartPoint = operation.StartPoint;
         foreach (var op in operation.Parts) {
             switch (op) {
@@ -75,7 +77,7 @@ public static class GerberToSvgConverter {
         var r2 = Math.Sqrt(
             Math.Pow(cx - gap.EndPoint.X, 2) +
             Math.Pow(cy - gap.EndPoint.Y, 2));
-        var tr = (decimal)(r2 + r1) / 2; //true radius
+        var tr = (r2 + r1) / 2; //true radius
         var arcWay = Geometry.Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy), AxisLayout.YDownXRight);
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
@@ -109,9 +111,11 @@ public static class GerberToSvgConverter {
 
     static void InvertAxis(SvgLayer layer) {
         foreach (var pth in layer.Paths) {
-            pth.StartPoint = pth.StartPoint with { Y = -pth.StartPoint.Y };
             foreach (var p in pth.Parts) {
                 switch (p) {
+                    case MoveSvgPathPart move:
+                        move.PointTo = move.PointTo with { Y = -move.PointTo.Y };
+                        break;
                     case LineSvgPathPart line:
                         line.PointTo = line.PointTo with { Y = -line.PointTo.Y };
                         break;
