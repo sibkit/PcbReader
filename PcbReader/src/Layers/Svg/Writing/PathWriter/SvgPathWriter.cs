@@ -1,25 +1,24 @@
 ﻿using PcbReader.Layers.Svg.Entities;
-using Path = PcbReader.Layers.Svg.Entities.Path;
 
 namespace PcbReader.Layers.Svg.Writing.PathWriter;
 
 public static class SvgPathWriter {
-    public static void WritePath(Path p, TextWriter writer) {
+    public static void WritePath(SvgPath p, TextWriter writer) {
         writer.Write("<path ");
         
         writer.WriteLine("M "+p.StartPoint.X + p.StartPoint.Y);
     }
 
-    static void WriteArcPatchPart(TextWriter w, ArcPathPart part) {
+    static void WriteArcPatchPart(TextWriter w, ArcSvgPathPart part) {
         w.Write("A");
         
-        w.Write(part.EndPoint.X);
-        w.Write(" "+part.EndPoint.Y+" ");
+        w.Write(part.PointTo.X);
+        w.Write(" "+part.PointTo.Y+" ");
     }
 
-    static void WriteLinePathPart(TextWriter w, LinePathPart part) {
+    static void WriteLinePathPart(TextWriter w, LineSvgPathPart part) {
         w.Write("L");
-        w.Write(part.EndPoint.X);
-        w.Write(" "+part.EndPoint.Y+" ");
+        w.Write(part.PointTo.X);
+        w.Write(" "+part.PointTo.Y+" ");
     }
 }

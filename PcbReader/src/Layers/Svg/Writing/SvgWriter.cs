@@ -36,7 +36,8 @@ public static class SvgWriter {
         foreach (var p in doc.Paths) {
             ExtendBounds(ref result, p.StartPoint);
             foreach (var pp in p.Parts) {
-                ExtendBounds(ref result, pp.EndPoint);
+                if (pp is ISvgCursorDriver cursorDriver)
+                    ExtendBounds(ref result, cursorDriver.PointTo);
             }
         }
 
@@ -70,24 +71,23 @@ public static class SvgWriter {
             swr.Write(" "+sp.Y+" ");
             foreach (var pp in path.Parts) {
                 switch (pp) {
-                    case LinePathPart l:
-                        swr.Write("L " + pp.EndPoint.X + " " + pp.EndPoint.Y + " ");
+                    case LineSvgPathPart l:
+                        swr.Write("L " + l.PointTo.X + " " + l.PointTo.Y + " ");
                         break;
-                    case ArcPathPart a:
+                    case ArcSvgPathPart a:
                         swr.Write("A " +
                                   Math.Round(a.Radius, 8) + " " +
                                   Math.Round(a.Radius, 8) + " " +
                                   "0 " +
                                   (a.IsLargeArc ? "1 " : "0 ") +
                                   (a.RotationDirection == RotationDirection.ClockWise ? "1 " : "0 ") +
-                                  Math.Round(a.EndPoint.X, 8) + " " +
-                                  Math.Round(a.EndPoint.Y, 8) + " ");
+                                  Math.Round(a.PointTo.X, 8) + " " +
+                                  Math.Round(a.PointTo.Y, 8) + " ");
+                        break;
+                    case CloseSvgPathPart:
+                        swr.Write("Z>");
                         break;
                 }
-            }
-
-            if (path.IsClosed) {
-                swr.Write("Z>");
             }
 
             if (path.StrokeWidth > 0.00000001) {

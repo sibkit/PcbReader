@@ -5,5 +5,5 @@ namespace PcbReader.Layers.Svg.Entities;
 
 public class SvgLayer {
     public Rect? ViewBox { get; set; }
-    public List<Path> Paths { get; } = [];
+    public List<SvgPath> Paths { get; } = [];
 }

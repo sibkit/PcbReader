@@ -8,23 +8,20 @@ namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 
 public partial class DefineApertureCommandReader: ICommandReader<GerberCommandType, GerberReadingContext, GerberLayer>  {
     
-    [GeneratedRegex(@"^ADD([0-9]+)([^,]*)\*$")]
-    private static partial Regex MatchMacroRegex();
+
     
-    [GeneratedRegex(@"^ADD([0-9]+)([CROP]{1}),{1}(.*)\*$")]
+    [GeneratedRegex(@"^ADD([0-9]+)([A-Za-z]{1}[A-Za-z0-9]*)(?:,{1}(.*))*\*$")]
     private static partial Regex MatchRegex();
     private static readonly IFormatProvider Formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
     
-    [GeneratedRegex("^([0-9.]+)(?:(?: *X *)([0-9.]+))*$")]
-    private static partial Regex ParamsRegex();
-    private static List<decimal?> ParseParams(string input) {
-        var m = ParamsRegex().Match(input);
-        var result = new List<decimal?>();
-        for (var i = 1; i < m.Groups.Count; i++) {
-            if(m.Groups[i].Value == "")
+
+    private static List<double?> ParseParams(string input) {
+        var result = new List<double?>();
+        foreach (var value in input.Split("X")) {
+            if(value == "")
                 result.Add(null);
             else
-                result.Add(decimal.Parse(m.Groups[i].Value, Formatter));
+                result.Add(double.Parse(value, Formatter));
         }
         return result;
     }
@@ -79,12 +76,12 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
         var prs = ParseParams(sParams);
         var outerDiameter = prs[0]!.Value;
         var verticesCount = (int)prs[1]!.Value;
-        decimal? rotation = null;
+        double? rotation = null;
         if (sParams.Length > 2) {
             rotation = prs[2];
         }
 
-        decimal? holeDiameter = null;
+        double? holeDiameter = null;
         if (sParams.Length == 4) {
             holeDiameter = prs[3];
         }
@@ -96,7 +93,18 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
             HoleDiameter = holeDiameter
         };
     }
-    
+
+    private static MacroAperture ParseMacroAperture(string templateName, string sParams) {
+        var prs = ParseParams(sParams);
+        var result = new MacroAperture(templateName);
+
+        foreach (var pr in prs) {
+            if (pr != null)
+                result.ParameterValues.Add((decimal)pr);
+        }
+        return result;
+    }
+
     public GerberCommandType[] GetNextLikelyTypes() {
         return [];
     } 
@@ -107,13 +115,13 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
     
     public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
         
-        var mm = MatchMacroRegex().Match(ctx.CurLine);
-        if (mm.Success) {
-            var code = int.Parse(mm.Groups[1].Value);
-            var templateName = mm.Groups[2].Value;
-            program.Apertures.Add(code, new MacroAperture(templateName));
-            return;
-        }
+        // var mm = MatchMacroRegex().Match(ctx.CurLine);
+        // if (mm.Success) {
+        //     var code = int.Parse(mm.Groups[1].Value);
+        //     var templateName = mm.Groups[2].Value;
+        //     program.Apertures.Add(code, new MacroAperture(templateName));
+        //     return;
+        // }
         
         var m = MatchRegex().Match(ctx.CurLine);
         if (m.Success) {
@@ -133,7 +141,8 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
                     program.Apertures.Add(appNum, ParsePolygonAperture(sParams));
                     break;
                 default:
-                    throw new Exception("DefineApertureHandler: WriteToProgram (Unknown aperture type)");
+                    program.Apertures.Add(appNum, ParseMacroAperture(m.Groups[2].Value, sParams));
+                    break;
             }
         } else {
             throw new Exception("DefineApertureHandler: WriteToProgram (Invalid match)");

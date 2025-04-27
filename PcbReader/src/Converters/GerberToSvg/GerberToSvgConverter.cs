@@ -4,11 +4,8 @@ using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
-using SvgArcPart = PcbReader.Layers.Svg.Entities.ArcPathPart;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
-using SvgLinePart = PcbReader.Layers.Svg.Entities.LinePathPart;
-using SvgPath = PcbReader.Layers.Svg.Entities.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
@@ -22,7 +19,8 @@ public static class GerberToSvgConverter {
                     result.Paths.Add(ConvertPath(path));
                     break;
                 case FlashOperation flash:
-                    Console.WriteLine("Flash not implemented");
+                    var aperture = layer.Apertures[flash.ApertureCode];
+                    result.Paths.Add(ApertureConverter.ConvertAperture(flash.Point, aperture));
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: Convert");
@@ -47,8 +45,8 @@ public static class GerberToSvgConverter {
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
-                    result.Parts.Add(new SvgLinePart {
-                        EndPoint = line.EndPoint
+                    result.Parts.Add(new LineSvgPathPart {
+                        PointTo = line.EndPoint
                     });
                     break;
                 case GerberArcPart arc:
@@ -59,12 +57,13 @@ public static class GerberToSvgConverter {
                     throw new Exception("GerberToSvgConverter: ConvertPath");
             }
         }
-        result.IsClosed = operation.IsClosed;
+        if(operation.IsClosed)
+            result.Parts.Add(new CloseSvgPathPart());
         return result;
     }
     
-    static List<SvgArcPart> ConvertArcPath(Point gsp, GerberArcPart gap) {
-        var result = new List<SvgArcPart>();
+    static List<ArcSvgPathPart> ConvertArcPath(Point gsp, GerberArcPart gap) {
+        var result = new List<ArcSvgPathPart>();
         //var cx = gsp.X + gap.IOffset;
         //var cy = gsp.Y - gap.JOffset;
         var cx = gap.EndPoint.X < gsp.X ? gsp.X - gap.IOffset : gsp.X + gap.IOffset;
@@ -81,25 +80,25 @@ public static class GerberToSvgConverter {
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
-            var part1 = new SvgArcPart {
+            var part1 = new ArcSvgPathPart {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = false,
-                EndPoint = new Point(mpx, mpy)
+                PointTo = new Point(mpx, mpy)
             };
-            var part2 = new SvgArcPart {
+            var part2 = new ArcSvgPathPart {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = true,
-                EndPoint = gsp
+                PointTo = gsp
             };
             result.Add(part1);
             result.Add(part2);
         } else {
             
-            var part = new SvgArcPart {
+            var part = new ArcSvgPathPart {
                 RotationDirection = arcWay.RotationDirection, //Invert, because gerber and svg has different axis layout
-                EndPoint = gap.EndPoint,
+                PointTo = gap.EndPoint,
                 Radius = tr,
                 IsLargeArc = arcWay.IsLarge,
             };
@@ -113,11 +112,11 @@ public static class GerberToSvgConverter {
             pth.StartPoint = pth.StartPoint with { Y = -pth.StartPoint.Y };
             foreach (var p in pth.Parts) {
                 switch (p) {
-                    case SvgLinePart line:
-                        line.EndPoint = line.EndPoint with { Y = -line.EndPoint.Y };
+                    case LineSvgPathPart line:
+                        line.PointTo = line.PointTo with { Y = -line.PointTo.Y };
                         break;
-                    case SvgArcPart arc:
-                        arc.EndPoint = arc.EndPoint with { Y = -arc.EndPoint.Y };
+                    case ArcSvgPathPart arc:
+                        arc.PointTo = arc.PointTo with { Y = -arc.PointTo.Y };
                         arc.RotationDirection = arc.RotationDirection.Invert();
                         break;
                 }

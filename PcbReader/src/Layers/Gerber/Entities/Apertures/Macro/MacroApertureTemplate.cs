@@ -3,7 +3,6 @@
 namespace PcbReader.Layers.Gerber.Entities.Apertures.Macro;
 
 public class MacroApertureTemplate {
-    
     public MacroApertureTemplate(string templateName) {
         Name = templateName;
     }

@@ -3,9 +3,8 @@ using PcbReader.Layers.Common;
 
 namespace PcbReader.Layers.Svg.Entities;
 
-public class Path {
+public class SvgPath {
     public double StrokeWidth { get; set; }
+    public List<ISvgPathPart> Parts { get; } = [];
     public Point StartPoint { get; set; }
-    public List<IPathPart> Parts { get; } = [];
-    public bool IsClosed { get; set; }
 }

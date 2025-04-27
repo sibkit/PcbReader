@@ -9,8 +9,6 @@ using PcbReader.Layers.Gerber.Reading;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
-using LinePathPart = PcbReader.Layers.Svg.Entities.LinePathPart;
-using Path = PcbReader.Layers.Svg.Entities.Path;
 
 namespace ConsoleApp;
 
