@@ -39,7 +39,7 @@ public static class GerberToSvgConverter {
 
     static SvgPath ConvertPath(PathPaintOperation operation) {
         var result = new SvgPath();
-
+        result.StrokeWidth = operation.Aperture.Diameter;
         result.Parts.Add(new MoveSvgPathPart {
             PointTo = operation.StartPoint,
         });

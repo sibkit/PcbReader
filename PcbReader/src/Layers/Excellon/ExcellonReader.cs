@@ -21,7 +21,7 @@ public class ExcellonReader: CommandsFileReader<ExcellonCommandType,ExcellonRead
             { ExcellonCommandType.EndPattern, new EndPatternReader() },
             { ExcellonCommandType.RepeatPattern, new RepeatPatternReader() },
             { ExcellonCommandType.SetDrillMode, new SetDrillModeReader() },
-            { ExcellonCommandType.EndProgram, new EndProgramReader() },
+            { ExcellonCommandType.EndProgram, new EndProgramCommandReader() },
             { ExcellonCommandType.SetCoordinatesMode, new SetCoordinatesModeReader() },
             { ExcellonCommandType.RoutOperation, new RoutOperationReader() },
             { ExcellonCommandType.StartMill, new StartMillReader() },

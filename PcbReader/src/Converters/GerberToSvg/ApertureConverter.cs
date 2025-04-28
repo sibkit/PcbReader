@@ -12,22 +12,30 @@ public static class ApertureConverter {
             RectangleAperture rect => ConvertRectangleAperture(coordinate, rect),
             MacroAperture macro => ConvertMacroAperture(coordinate, macro),
             ObRoundAperture obRound => ConvertObRoundAperture(coordinate, obRound),
-            // case RectangleAperture rectangle:
-            //     break;
-            // case ObRoundAperture obRound:
-            //     break;
             // case PolygonAperture polygon:
-            //     break;
-            // case MacroAperture macro:
             //     break;
             _ => throw new Exception("Unknown aperture type")
         };
     }
 
     public static SvgPath ConvertCircleAperture(Point coordinate, CircleAperture circle) {
-        var result = new SvgPath();
-        
-        return result;
+
+        var painter = new SvgPathPainter();
+        var r = circle.Diameter / 2;
+        painter.MoveToAbs(coordinate.X-r , coordinate.Y);
+        painter.ArcToInc(2*r, 0, r, RotationDirection.CounterClockwise, false);
+        painter.ArcToInc(-2*r, 0, r, RotationDirection.CounterClockwise, false);
+        painter.ClosePath();
+
+        if (circle.HoleDiameter is { } hd and > 0.000001) {
+            var hr = hd / 2;
+            painter.MoveToAbs(coordinate.X - r, coordinate.Y);
+            painter.ArcToInc(2*r, 0, r, RotationDirection.ClockWise, false);
+            painter.ArcToInc(-2*r, 0, r, RotationDirection.ClockWise, false);
+            painter.ClosePath();
+        }
+
+        return painter.SvgPath;
     }
 
     public static SvgPath ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
@@ -42,10 +50,8 @@ public static class ApertureConverter {
         if (rect.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
             painter.MoveToAbs(coordinate.X - r, coordinate.Y);
-            painter.ArcToInc(r, r, r, RotationDirection.ClockWise, false);
-            painter.ArcToInc(r, -r, r, RotationDirection.ClockWise, false);
-            painter.ArcToInc(-r, -r, r, RotationDirection.ClockWise, false);
-            painter.ArcToInc(-r, r, r, RotationDirection.ClockWise, false);
+            painter.ArcToInc(2*r, 0, r, RotationDirection.ClockWise, false);
+            painter.ArcToInc(-2*r, 0, r, RotationDirection.ClockWise, false);
             painter.ClosePath();
         }
         return painter.SvgPath;

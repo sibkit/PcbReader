@@ -15,8 +15,8 @@ public struct ParensCloseToken: IToken {
     public int SourceIndex { get; set; }
 }
 
-public struct ValueToken(decimal value) : IToken {
-    public decimal Value { get; init; } = value;
+public struct ValueToken(double value) : IToken {
+    public double Value { get; init; } = value;
     public int SourceIndex { get; set; }
 }
 

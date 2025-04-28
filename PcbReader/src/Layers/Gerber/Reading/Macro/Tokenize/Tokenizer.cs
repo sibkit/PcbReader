@@ -41,7 +41,7 @@ public class ValueTokenReader : ITokenReader {
                 resultString += text[i];
             else break;
         }
-        return (new ValueToken(decimal.Parse(resultString, Formatter.FormatProvider)), resultString.Length);
+        return (new ValueToken(double.Parse(resultString, Formatter.FormatProvider)), resultString.Length);
     }
 }
 

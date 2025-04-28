@@ -2,7 +2,7 @@
 
 namespace PcbReader.Layers.Gerber.Reading.Macro.Syntax;
 
-public class SyntaxValue(decimal value): ISyntaxOperand {
-    public decimal Value { get; } = value;
+public class SyntaxValue(double value): ISyntaxOperand {
+    public double Value { get; } = value;
     public IToken? Token { get; set; }
 }

@@ -11,4 +11,5 @@ public class MacroApertureTemplate {
     public List<IPrimitive> Primitives {get;} = [];
     public List<IExpression> Parameters {get;} = [];
     public List<ParameterExpression> Expressions {get;} = [];
+    public List<string> Comments {get;} = [];
 }

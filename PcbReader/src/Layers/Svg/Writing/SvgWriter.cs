@@ -43,7 +43,7 @@ public static class SvgWriter {
             StartPoint = leftTop,
             EndPoint = rightBottom,
         };
-        var maxSide = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.08 : result.GetHeight() * 0.08;
+        var maxSide = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.04 : result.GetHeight() * 0.04;
         result.StartPoint = result.StartPoint with {
             X = result.StartPoint.X - maxSide,
             Y = result.StartPoint.Y - maxSide
@@ -60,8 +60,8 @@ public static class SvgWriter {
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
 
         swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
-                  vbr.StartPoint.X.ToString("R")+ " "+
-                  vbr.StartPoint.Y.ToString("R")+" "+ 
+                  Math.Round(vbr.StartPoint.X,6)+ " "+
+                  Math.Round(vbr.StartPoint.Y,6)+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
         swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,6)+"\">");
@@ -93,10 +93,10 @@ public static class SvgWriter {
             }
             swr.Write("\"");
             if (path.Parts.Count >0 && path.Parts.Last() is CloseSvgPathPart) {
-                swr.Write(" fill=\"red\"");
+                swr.Write(" fill=\"black\"");
             }
             if (path.StrokeWidth > 0.00000001) {
-                swr.Write( "stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
+                swr.Write( " stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
             }
             swr.Write("/>");
         }

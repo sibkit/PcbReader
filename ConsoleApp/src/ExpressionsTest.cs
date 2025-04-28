@@ -58,7 +58,7 @@ public static class ExpressionsTest {
 
 
 
-    static decimal CalculateExpression(IExpression? expression) {
+    static double CalculateExpression(IExpression? expression) {
         return expression switch {
             OperationExpression op => op.OperationType switch {
                 OperationType.Add => CalculateExpression(op.LeftExpression) + CalculateExpression(op.RightExpression),
