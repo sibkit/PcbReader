@@ -17,7 +17,7 @@ public partial class FlashOperationCommandReader: ICommandReader<GerberCommandTy
         return MatchRegex().IsMatch(ctx.CurLine);
     }
     
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         
         var m = MatchRegex().Match(ctx.CurLine);
         var xs = m.Groups[2].Value;
@@ -34,7 +34,7 @@ public partial class FlashOperationCommandReader: ICommandReader<GerberCommandTy
             return;
         }
 
-        program.Operations.Add(new FlashOperation {
+        layer.Operations.Add(new FlashOperation {
             Point = Coordinates.ParseCoordinate(ctx.NumberFormat!,xs,ys),
             ApertureCode = ctx.CurApertureCode.Value
         });

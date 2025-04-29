@@ -14,7 +14,7 @@ public partial class FormatSpecificationCommandReader: ICommandReader<GerberComm
     public bool Match(GerberReadingContext ctx) {
         return _regex.IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         var m = _regex.Match(ctx.CurLine);
         var z = m.Groups[1].Value switch {
             "L" => Zeros.Leading,

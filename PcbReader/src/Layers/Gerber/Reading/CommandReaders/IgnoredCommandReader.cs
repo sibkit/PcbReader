@@ -15,7 +15,7 @@ public class IgnoredCommandReader: ICommandReader<GerberCommandType, GerberReadi
             _ => false
         };
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         if (ctx.CurLine is "G74*" or "G75*") {
             ctx.WriteWarning("Устаревшая команда: "+ctx.CurLine);
         }

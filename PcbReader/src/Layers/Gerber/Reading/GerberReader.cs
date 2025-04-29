@@ -30,38 +30,44 @@ public class GerberReader: CommandsFileReader<GerberCommandType, GerberReadingCo
     }
     
     private GerberReader():base(GetHandlers(),[]){ }
+
+    private bool CheckForExCommandStart(string line, int index) {
+        return line.Length>index+3 && line[(index+1)..(index+3)] == "AM";
+    }
     
     protected override IEnumerable<string> ExcludeCommands(TextReader reader) {
-        var ecOpened = false;
-        string? extendedCommand = null;
+        var exOpened = false;
+        string? curCommand = null;
+        
         while (reader.ReadLine() is { } line) {
-            var prevIndex = 0;
             for (var i = 0; i < line.Length; i++) {
                 switch (line[i]) {
                     case '*':
-                        if (prevIndex != i) {
-                            if (extendedCommand == null) {
-                                yield return line[prevIndex..(i + 1)];
-                            } else {
-                                extendedCommand += line[prevIndex..(i + 1)];
+                        if (!exOpened) {
+                            if (curCommand != null) {
+                                yield return curCommand + line[i];
+                                curCommand = null;
                             }
+                        } else {
+                            curCommand += line[i];
                         }
 
-                        prevIndex = i + 1;
                         break;
                     case '%':
-                        ecOpened = !ecOpened;
-
-                        if (ecOpened) {
-                            if (line.Length >= i + 3 && line[(i + 1)..(i + 3)] == "AM")
-                                extendedCommand = "%";
-                        } else if (extendedCommand != null) {
-                            extendedCommand += line[i];
-                            yield return extendedCommand;
-                            extendedCommand = null;
+                        if (exOpened) {
+                            exOpened = false;
+                            yield return curCommand + '%';
+                            curCommand = null;
                         }
 
-                        prevIndex = i + 1;
+                        if (CheckForExCommandStart(line, i)) {
+                            exOpened = true;
+                            curCommand = "" + line[i];
+                        }
+
+                        break;
+                    default:
+                        curCommand += line[i];
                         break;
                 }
             }

@@ -11,7 +11,7 @@ public class SetLcModeCommandReader: ICommandReader<GerberCommandType, GerberRea
     public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine is "G01*" or "G02*" or "G03*";
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         ctx.LcMode = ctx.CurLine switch {
             "G01*" => LcMode.Linear,
             "G02*" => LcMode.Clockwise,

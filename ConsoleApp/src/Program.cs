@@ -14,7 +14,8 @@ namespace ConsoleApp;
 
 public static class Program {
     public static void Main(string[] args) {
-
+        //CalculateResult();
+        MacroTest.MacroAmTest();
         TestGeometry();
         
         double d1 = 128;
@@ -75,10 +76,10 @@ public static class Program {
     }
     
     static void CalculateResult() {
-        var callsCountPerDay = 30m;
-        var avgSellPrice = 50000m;
+        var callsCountPerDay = 60m;
+        var avgSellPrice = 30000m;
         var clientOrdersPerDay = 0.03m;
-        var resultChance = 0.25m;
+        var resultChance = 0.75m;
         
         var clientsCount = 0m;
 
@@ -107,7 +108,7 @@ public static class Program {
         
     }
 
-    private static GerberLayer ReadGerber(FileInfo fileInfo) {
+    public static GerberLayer ReadGerber(FileInfo fileInfo) {
         // try {
             var p = GerberReader.Instance.Read(fileInfo);
             if (p.Item2.Errors.Count > 0) {
@@ -130,13 +131,6 @@ public static class Program {
                 Console.WriteLine("  ...OK");
             }
             return p.Item1;
-
-        // } catch (ApplicationException e) {
-        //     //Console.WriteLine("");
-        //     Console.WriteLine("Не удалось прочитать файл: \"" + fileInfo.Name + "\"");
-        //     Console.WriteLine(e);
-        //         
-        // }
     }
     
     private static void TestGerberToSvg() {
@@ -162,7 +156,7 @@ public static class Program {
         }
     }
     
-    static void WriteSvg(SvgLayer layer) {
+    public static void WriteSvg(SvgLayer layer) {
         var di = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\test_files\svg");
         var files = di.GetFiles("svg_test_*");
         var num = files.Select(efi => efi.Name.Split(".")[0].Split("_").Last()).Select(int.Parse).Prepend(0).Max();

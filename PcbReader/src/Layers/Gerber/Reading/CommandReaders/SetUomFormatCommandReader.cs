@@ -12,8 +12,8 @@ public class SetUomFormatCommandReader: ICommandReader<GerberCommandType, Gerber
     public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine is "MOIN*" or "MOMM*";
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
-        program.Uom = ctx.CurLine switch {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
+        layer.Uom = ctx.CurLine switch {
             "MOIN*" => Uom.Inch,
             "MOMM*" => Uom.Metric,
             _ => throw new Exception("Unknown UOM")

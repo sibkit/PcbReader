@@ -13,14 +13,14 @@ public class BeginRegionCommandReader: ICommandReader<GerberCommandType, GerberR
     public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine == "G36*";
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         
         if (ctx.CurApertureCode == null) {
             ctx.WriteError("Не задана аппертура перед командой G36");
             return;
         }
             
-        var curAperture = program.Apertures[ctx.CurApertureCode.Value];
+        var curAperture = layer.Apertures[ctx.CurApertureCode.Value];
         
         switch (curAperture) {
             case CircleAperture ca:

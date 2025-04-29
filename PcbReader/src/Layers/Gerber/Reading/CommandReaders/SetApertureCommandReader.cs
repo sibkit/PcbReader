@@ -15,10 +15,10 @@ public partial class SetApertureCommandReader: ICommandReader<GerberCommandType,
     public bool Match(GerberReadingContext ctx) {
         return MyRegex().IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         var m = MyRegex().Match(ctx.CurLine);
         var apCode = int.Parse(m.Groups[1].Value);
-        if (program.Apertures.ContainsKey(apCode)) {
+        if (layer.Apertures.ContainsKey(apCode)) {
             ctx.CurApertureCode = apCode;
         } else {
             ctx.WriteError("Не найдена аппертура с кодом: "+apCode);

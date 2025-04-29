@@ -5,5 +5,5 @@ public interface ICommandReader<out T, in TC, in TP>
     where TC: ReadingContext {
     T[] GetNextLikelyTypes();
     bool Match(TC ctx);
-    void WriteToProgram(TC ctx, TP program);
+    void WriteToProgram(TC ctx, TP layer);
 }

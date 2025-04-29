@@ -1,9 +1,9 @@
 ﻿namespace PcbReader.Layers.Gerber.Entities.Apertures.Macro.Primitives;
 
-public class Outline {
+
+
+public class Outline: IPrimitive {
     public IExpression Exposure { get; set; }
-    public IExpression Vertices { get; set; }
-    public IExpression StartX { get; set; }
-    public IExpression StartY { get; set; }
+    public List<(IExpression, IExpression)> Vertices { get; } = [];
     public IExpression Rotation { get; set; }
 }

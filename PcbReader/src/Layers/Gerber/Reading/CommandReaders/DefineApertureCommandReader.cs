@@ -113,7 +113,7 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
         return ctx.CurLine.StartsWith("ADD");
     }
     
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         
         // var mm = MatchMacroRegex().Match(ctx.CurLine);
         // if (mm.Success) {
@@ -129,19 +129,19 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
             var sParams = m.Groups[3].Value;
             switch (m.Groups[2].Value) {
                 case "C":
-                    program.Apertures.Add(appNum, ParseCircleAperture(sParams));
+                    layer.Apertures.Add(appNum, ParseCircleAperture(sParams));
                 break;
                 case "R":
-                    program.Apertures.Add(appNum, ParseRectangleAperture(sParams));
+                    layer.Apertures.Add(appNum, ParseRectangleAperture(sParams));
                     break;
                 case "O":
-                    program.Apertures.Add(appNum, ParseObRoundAperture(sParams));
+                    layer.Apertures.Add(appNum, ParseObRoundAperture(sParams));
                     break;
                 case "P":
-                    program.Apertures.Add(appNum, ParsePolygonAperture(sParams));
+                    layer.Apertures.Add(appNum, ParsePolygonAperture(sParams));
                     break;
                 default:
-                    program.Apertures.Add(appNum, ParseMacroAperture(m.Groups[2].Value, sParams));
+                    layer.Apertures.Add(appNum, ParseMacroAperture(m.Groups[2].Value, sParams));
                     break;
             }
         } else {

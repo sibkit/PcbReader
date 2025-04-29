@@ -1,12 +1,14 @@
 ﻿using PcbReader.Geometry;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.Apertures;
+using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
 using PcbReader.Layers.Svg.Entities;
 
 namespace PcbReader.Converters.GerberToSvg;
 
-public static class ApertureConverter {
-    public static SvgPath ConvertAperture(Point coordinate, IAperture aperture) {
+public class ApertureConverter(GerberLayer layer) {
+    
+    public SvgPath ConvertAperture(Point coordinate, IAperture aperture) {
         return aperture switch {
             CircleAperture circle => ConvertCircleAperture(coordinate, circle),
             RectangleAperture rect => ConvertRectangleAperture(coordinate, rect),
@@ -18,7 +20,7 @@ public static class ApertureConverter {
         };
     }
 
-    public static SvgPath ConvertCircleAperture(Point coordinate, CircleAperture circle) {
+    public SvgPath ConvertCircleAperture(Point coordinate, CircleAperture circle) {
 
         var painter = new SvgPathPainter();
         var r = circle.Diameter / 2;
@@ -38,7 +40,7 @@ public static class ApertureConverter {
         return painter.SvgPath;
     }
 
-    public static SvgPath ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
+    public SvgPath ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
         var painter = new SvgPathPainter();
         painter.MoveToAbs(coordinate.X - rect.XSize / 2, coordinate.Y - rect.YSize / 2);
         painter.LineToInc(rect.XSize, 0);
@@ -57,7 +59,7 @@ public static class ApertureConverter {
         return painter.SvgPath;
     }
 
-    public static SvgPath ConvertObRoundAperture(Point coordinate, ObRoundAperture obRound){
+    public SvgPath ConvertObRoundAperture(Point coordinate, ObRoundAperture obRound){
             var painter = new SvgPathPainter();
 
             if (obRound.XSize >= obRound.YSize) {
@@ -95,9 +97,16 @@ public static class ApertureConverter {
             return painter.SvgPath;
         }
     
-        public static SvgPath ConvertMacroAperture(Point coordinate, MacroAperture macro){
+        public SvgPath ConvertMacroAperture(Point coordinate, MacroAperture macro){
             var result = new SvgPath();
-            Console.WriteLine("Macro apertures not implemented");
+            if (!layer.MacroApertureTemplates.TryGetValue(macro.TemplateName, out var template))
+                throw new ApplicationException("Не найден шаблон для макроаппертуры: \"" + macro.TemplateName + "\"");
+
+            foreach (IPrimitive primitive in template.Primitives) {
+                
+            }
+            
+            Console.WriteLine("GerberToSvg.ConvertMacroAperture: Macro apertures not implemented");
             // result.StartPoint = coordinate - new Point(rect.XSize/2, rect.YSize/2);
             return result;
         }

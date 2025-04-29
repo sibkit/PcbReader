@@ -10,8 +10,12 @@ using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
 namespace PcbReader.Converters.GerberToSvg;
 
 public static class GerberToSvgConverter {
+    
+
     public static SvgLayer Convert(GerberLayer layer) {
+
         var result = new SvgLayer();
+        var apertureConverter = new ApertureConverter(layer);
         foreach(var operation in layer.Operations)
         {
             switch (operation) {
@@ -20,13 +24,14 @@ public static class GerberToSvgConverter {
                     break;
                 case FlashOperation flash:
                     var aperture = layer.Apertures[flash.ApertureCode];
-                    result.Paths.Add(ApertureConverter.ConvertAperture(flash.Point, aperture));
+                    result.Paths.Add(apertureConverter.ConvertAperture(flash.Point, aperture));
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: Convert");
             }
         }
         InvertAxis(result);
+
         return result;
     }
 
@@ -38,8 +43,9 @@ public static class GerberToSvgConverter {
     // }
 
     static SvgPath ConvertPath(PathPaintOperation operation) {
-        var result = new SvgPath();
-        result.StrokeWidth = operation.Aperture.Diameter;
+        var result = new SvgPath {
+            StrokeWidth = operation.Aperture.Diameter
+        };
         result.Parts.Add(new MoveSvgPathPart {
             PointTo = operation.StartPoint,
         });

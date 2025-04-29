@@ -1,10 +1,10 @@
 ﻿namespace PcbReader.Layers.Gerber.Entities.Apertures.Macro.Primitives;
 
-public class CenterLine {
-    public bool Exposure { get; set; }
-    public double Width { get; set; }
-    public double Height { get; set; }
-    public double CenterX { get; set; }
-    public double CenterY { get; set; }
-    public double Rotation { get; set; }
+public class CenterLine : IPrimitive {
+    public IExpression Exposure { get; set; }
+    public IExpression Width { get; set; }
+    public IExpression Height { get; set; }
+    public IExpression CenterX { get; set; }
+    public IExpression CenterY { get; set; }
+    public IExpression Rotation { get; set; }
 }

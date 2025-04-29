@@ -18,7 +18,7 @@ public partial class ArcSegmentOperationCommandReader: ICommandReader<GerberComm
     public bool Match(GerberReadingContext ctx) {
         return MatchRegex().IsMatch(ctx.CurLine);
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         var m = MatchRegex().Match(ctx.CurLine);
 
         var shift = 0;
@@ -58,7 +58,7 @@ public partial class ArcSegmentOperationCommandReader: ICommandReader<GerberComm
             return;
         }
             
-        var curAperture = program.Apertures[ctx.CurApertureCode.Value];
+        var curAperture = layer.Apertures[ctx.CurApertureCode.Value];
         
         switch (curAperture) {
             case CircleAperture ca:
@@ -69,7 +69,7 @@ public partial class ArcSegmentOperationCommandReader: ICommandReader<GerberComm
                         IOffset = Coordinates.ReadValue(ctx.NumberFormat!,si),
                         JOffset = Coordinates.ReadValue(ctx.NumberFormat!,sj)
                     });
-                    program.Operations.Add(op);
+                    layer.Operations.Add(op);
                 } else {
                     var part = new ArcPathPart {
                         EndPoint = c,

@@ -22,7 +22,7 @@ public partial class LineSegmentOperationReader: ICommandReader<GerberCommandTyp
         return MatchRegex().IsMatch(ctx.CurLine);
     }
 
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         var m = MatchRegex().Match(ctx.CurLine);
         
         var xs = m.Groups[2].Value;
@@ -46,13 +46,13 @@ public partial class LineSegmentOperationReader: ICommandReader<GerberCommandTyp
             return;
         }
             
-        var curAperture = program.Apertures[ctx.CurApertureCode.Value];
+        var curAperture = layer.Apertures[ctx.CurApertureCode.Value];
         switch (curAperture) {
             case CircleAperture ca:
                 if (ctx.CurPathPaintOperation == null) {
                     var op = new PathPaintOperation(ca, (Point)ctx.CurCoordinate);
                     op.Parts.Add(new LinePathPart(c));
-                    program.Operations.Add(op);
+                    layer.Operations.Add(op);
                 } else {
                     var part = new LinePathPart(c);
                     ctx.CurPathPaintOperation!.Parts.Add(part);

@@ -10,7 +10,7 @@ public class CommentReader: ICommandReader<GerberCommandType, GerberReadingConte
     public bool Match(GerberReadingContext ctx) {
         return ctx.CurLine.StartsWith("G04");
     }
-    public void WriteToProgram(GerberReadingContext ctx, GerberLayer program) {
+    public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         ctx.WriteInfo(ctx.CurLine[3..^1]);
     }
 }

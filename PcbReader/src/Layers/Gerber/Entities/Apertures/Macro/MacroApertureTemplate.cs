@@ -9,7 +9,6 @@ public class MacroApertureTemplate {
     
     public string Name {get;}
     public List<IPrimitive> Primitives {get;} = [];
-    public List<IExpression> Parameters {get;} = [];
-    public List<ParameterExpression> Expressions {get;} = [];
+    public Dictionary<string, IExpression> Expressions {get;} = [];
     public List<string> Comments {get;} = [];
 }

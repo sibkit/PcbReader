@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Layers.Gerber.Entities.Apertures.Macro.Primitives;
 
-public class VectorLine {
+public class VectorLine: IPrimitive {
     public IExpression Exposure { get; set; }
     public IExpression Width { get; set; }
     public IExpression StartX { get; set; }
