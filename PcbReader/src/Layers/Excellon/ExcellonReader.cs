@@ -1,5 +1,10 @@
 ﻿using PcbReader.Layers.Common.Reading;
-using PcbReader.Layers.Excellon.Handlers;
+using PcbReader.Layers.Excellon.CommandReaders;
+using PcbReader.Layers.Excellon.Entities;
+using ArcMillOperationReader = PcbReader.Layers.Excellon.CommandReaders.ArcMillOperationReader;
+using SetToolReader = PcbReader.Layers.Excellon.CommandReaders.SetToolReader;
+using SetUomFormatReader = PcbReader.Layers.Excellon.CommandReaders.SetUomFormatReader;
+using ToolDefineReader = PcbReader.Layers.Excellon.CommandReaders.ToolDefineReader;
 
 namespace PcbReader.Layers.Excellon;
 

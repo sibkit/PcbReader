@@ -1,7 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using PcbReader.Layers.Common.Reading;
+using PcbReader.Layers.Excellon.Entities;
 
-namespace PcbReader.Layers.Excellon.Handlers;
+namespace PcbReader.Layers.Excellon.CommandReaders;
 
 public partial class SetToolReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     

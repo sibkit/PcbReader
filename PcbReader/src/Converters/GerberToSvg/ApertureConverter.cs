@@ -1,14 +1,15 @@
-﻿using PcbReader.Geometry;
+﻿using PcbReader.Converters.PathEdit;
+using PcbReader.Geometry;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.Apertures;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
-using PcbReader.Layers.Svg.Entities;
+using Path = PcbReader.Geometry.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
 public class ApertureConverter(GerberLayer layer) {
-    
-    public SvgPath ConvertAperture(Point coordinate, IAperture aperture) {
+
+    public Shape ConvertAperture(Point coordinate, IAperture aperture) {
         return aperture switch {
             CircleAperture circle => ConvertCircleAperture(coordinate, circle),
             RectangleAperture rect => ConvertRectangleAperture(coordinate, rect),
@@ -20,94 +21,90 @@ public class ApertureConverter(GerberLayer layer) {
         };
     }
 
-    public SvgPath ConvertCircleAperture(Point coordinate, CircleAperture circle) {
-
-        var painter = new SvgPathPainter();
+    public Shape ConvertCircleAperture(Point coordinate, CircleAperture circle) {
         var r = circle.Diameter / 2;
-        painter.MoveToAbs(coordinate.X-r , coordinate.Y);
-        painter.ArcToInc(2*r, 0, r, RotationDirection.CounterClockwise, false);
-        painter.ArcToInc(-2*r, 0, r, RotationDirection.CounterClockwise, false);
-        painter.ClosePath();
+
+        var result = new Shape();
+        var pOuter = new PathPartsPainter(coordinate.X - r, coordinate.Y);
+        pOuter.ArcToInc(2 * r, 0, r, RotationDirection.CounterClockwise, false);
+        pOuter.ArcToInc(-2 * r, 0, r, RotationDirection.CounterClockwise, false);
+        result.OuterContours.Add(pOuter.CreateContour());
 
         if (circle.HoleDiameter is { } hd and > 0.000001) {
-            var hr = hd / 2;
-            painter.MoveToAbs(coordinate.X - r, coordinate.Y);
-            painter.ArcToInc(2*r, 0, r, RotationDirection.ClockWise, false);
-            painter.ArcToInc(-2*r, 0, r, RotationDirection.ClockWise, false);
-            painter.ClosePath();
+            var pInner = new PathPartsPainter(coordinate.X - r, coordinate.Y);
+            pInner.ArcToInc(2 * r, 0, r, RotationDirection.ClockWise, false);
+            pInner.ArcToInc(-2 * r, 0, r, RotationDirection.ClockWise, false);
+            result.InnerContours.Add(pInner.CreateContour());
         }
 
-        return painter.SvgPath;
+        return result;
     }
 
-    public SvgPath ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
-        var painter = new SvgPathPainter();
-        painter.MoveToAbs(coordinate.X - rect.XSize / 2, coordinate.Y - rect.YSize / 2);
-        painter.LineToInc(rect.XSize, 0);
-        painter.LineToInc(0, rect.YSize);
-        painter.LineToInc(-rect.XSize, 0);
-        painter.LineToInc(0, -rect.YSize);
-        painter.ClosePath();
-        
+    public Shape ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
+
+        var result = new Shape();
+
+        var outerPainter = new PathPartsPainter(coordinate.X - rect.XSize / 2, coordinate.Y - rect.YSize / 2);
+        outerPainter.LineToInc(rect.XSize, 0);
+        outerPainter.LineToInc(0, rect.YSize);
+        outerPainter.LineToInc(-rect.XSize, 0);
+        outerPainter.LineToInc(0, -rect.YSize);
+        result.OuterContours.Add(outerPainter.CreateContour());
+
         if (rect.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
-            painter.MoveToAbs(coordinate.X - r, coordinate.Y);
-            painter.ArcToInc(2*r, 0, r, RotationDirection.ClockWise, false);
-            painter.ArcToInc(-2*r, 0, r, RotationDirection.ClockWise, false);
-            painter.ClosePath();
+            var innerPainter = new PathPartsPainter(coordinate.X - r, coordinate.Y);
+            innerPainter.ArcToInc(2 * r, 0, r, RotationDirection.ClockWise, false);
+            innerPainter.ArcToInc(-2 * r, 0, r, RotationDirection.ClockWise, false);
+            result.InnerContours.Add(innerPainter.CreateContour());
         }
-        return painter.SvgPath;
+
+        return result;
     }
 
-    public SvgPath ConvertObRoundAperture(Point coordinate, ObRoundAperture obRound){
-            var painter = new SvgPathPainter();
+    public Shape ConvertObRoundAperture(Point coordinate, ObRoundAperture obRound) {
+        var result = new Shape();
 
-            if (obRound.XSize >= obRound.YSize) {
-                var br = obRound.YSize / 2;
-                painter.MoveToAbs(coordinate.X - br , coordinate.Y - obRound.YSize/2 + br);
-            
-                painter.ArcToInc(2*br, 0, br, RotationDirection.CounterClockwise, false);
-                painter.LineToInc(0, obRound.YSize - 2*br);
-                painter.ArcToInc(-2*br, 0, br, RotationDirection.CounterClockwise, false);
-                painter.LineToInc(0, -(obRound.YSize - 2*br));
-                painter.ClosePath();
-            } else {
-                var br = obRound.XSize / 2;
-                painter.MoveToAbs(coordinate.X - (obRound.XSize/2 - br), coordinate.Y + br);
-            
-                painter.ArcToInc(0, -2*br, br, RotationDirection.CounterClockwise, false);
-                painter.LineToInc(obRound.XSize - 2*br, 0);
-                painter.ArcToInc(0, 2*br, br, RotationDirection.CounterClockwise, false);
-                painter.LineToInc(-(obRound.XSize - 2*br), 0);
-                painter.ClosePath();
-            }
-            
-
-
-            if (obRound.HoleDiameter is { } hd and > 0.000001) {
-                var r = hd / 2;
-                painter.MoveToAbs(coordinate.X - r, coordinate.Y);
-                painter.ArcToInc(r, r, r, RotationDirection.ClockWise, false);
-                painter.ArcToInc(r, -r, r, RotationDirection.ClockWise, false);
-                painter.ArcToInc(-r, -r, r, RotationDirection.ClockWise, false);
-                painter.ArcToInc(-r, r, r, RotationDirection.ClockWise, false);
-                painter.ClosePath();
-            }
-
-            return painter.SvgPath;
+        if (obRound.XSize >= obRound.YSize) {
+            var br = obRound.YSize / 2;
+            var outerPainter = new PathPartsPainter(coordinate.X - br, coordinate.Y - obRound.YSize / 2 + br);
+            outerPainter.ArcToInc(2 * br, 0, br, RotationDirection.CounterClockwise, false);
+            outerPainter.LineToInc(0, obRound.YSize - 2 * br);
+            outerPainter.ArcToInc(-2 * br, 0, br, RotationDirection.CounterClockwise, false);
+            outerPainter.LineToInc(0, -(obRound.YSize - 2 * br));
+            result.OuterContours.Add(outerPainter.CreateContour());
+        } else {
+            var br = obRound.XSize / 2;
+            var outerPainter = new PathPartsPainter(coordinate.X - (obRound.XSize / 2 - br), coordinate.Y + br);
+            outerPainter.ArcToInc(0, -2 * br, br, RotationDirection.CounterClockwise, false);
+            outerPainter.LineToInc(obRound.XSize - 2 * br, 0);
+            outerPainter.ArcToInc(0, 2 * br, br, RotationDirection.CounterClockwise, false);
+            outerPainter.LineToInc(-(obRound.XSize - 2 * br), 0);
+            result.OuterContours.Add(outerPainter.CreateContour());
         }
-    
-        public SvgPath ConvertMacroAperture(Point coordinate, MacroAperture macro){
-            var result = new SvgPath();
-            if (!layer.MacroApertureTemplates.TryGetValue(macro.TemplateName, out var template))
-                throw new ApplicationException("Не найден шаблон для макроаппертуры: \"" + macro.TemplateName + "\"");
 
-            foreach (IPrimitive primitive in template.Primitives) {
-                
-            }
-            
-            Console.WriteLine("GerberToSvg.ConvertMacroAperture: Macro apertures not implemented");
-            // result.StartPoint = coordinate - new Point(rect.XSize/2, rect.YSize/2);
-            return result;
+        if (obRound.HoleDiameter is { } hd and > 0.000001) {
+            var r = hd / 2;
+            var innerPainter = new PathPartsPainter(coordinate.X - r, coordinate.Y);
+            innerPainter.ArcToInc(r, r, r, RotationDirection.ClockWise, false);
+            innerPainter.ArcToInc(r, -r, r, RotationDirection.ClockWise, false);
+            innerPainter.ArcToInc(-r, -r, r, RotationDirection.ClockWise, false);
+            innerPainter.ArcToInc(-r, r, r, RotationDirection.ClockWise, false);
+            result.InnerContours.Add(innerPainter.CreateContour());
         }
+
+        return result;
+    }
+
+    public Shape ConvertMacroAperture(Point coordinate, MacroAperture macro) {
+        var result = new Shape();
+        if (!layer.MacroApertureTemplates.TryGetValue(macro.TemplateName, out var template))
+            throw new ApplicationException("Не найден шаблон для макроаппертуры: \"" + macro.TemplateName + "\"");
+
+        foreach (IPrimitive primitive in template.Primitives) { }
+
+        Console.WriteLine("GerberToSvg.ConvertMacroAperture: Macro apertures not implemented");
+        // result.StartPoint = coordinate - new Point(rect.XSize/2, rect.YSize/2);
+        return result;
+    }
 }

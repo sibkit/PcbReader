@@ -1,6 +1,8 @@
-﻿namespace PcbReader.Geometry;
+﻿using PcbReader.Geometry;
 
-public struct Rect {
+namespace PcbReader.Layers.Svg.Entities;
+
+public struct ViewBox {
     public Point StartPoint { get; set; }
     public Point EndPoint { get; set; }
 

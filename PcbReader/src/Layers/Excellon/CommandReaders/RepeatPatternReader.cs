@@ -2,7 +2,7 @@
 using PcbReader.Layers.Excellon.Entities;
 using ApplicationException = System.ApplicationException;
 
-namespace PcbReader.Layers.Excellon.Handlers;
+namespace PcbReader.Layers.Excellon.CommandReaders;
 
 public partial class RepeatPatternReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     

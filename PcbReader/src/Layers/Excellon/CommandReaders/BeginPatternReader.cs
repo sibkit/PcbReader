@@ -1,10 +1,9 @@
 ﻿using PcbReader.Geometry;
-using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
 using ApplicationException = System.ApplicationException;
 
-namespace PcbReader.Layers.Excellon.Handlers;
+namespace PcbReader.Layers.Excellon.CommandReaders;
 
 public class BeginPatternReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {

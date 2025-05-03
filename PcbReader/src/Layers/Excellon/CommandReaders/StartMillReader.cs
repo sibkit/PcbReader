@@ -1,7 +1,7 @@
 ﻿using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
 
-namespace PcbReader.Layers.Excellon.Handlers;
+namespace PcbReader.Layers.Excellon.CommandReaders;
 
 public class StartMillReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     public ExcellonCommandType[] GetNextLikelyTypes() {

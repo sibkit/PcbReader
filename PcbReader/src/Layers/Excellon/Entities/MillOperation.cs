@@ -16,12 +16,8 @@ public readonly struct LinearMillPart(Point endPoint) : IMillPart {
 }
 
 public class MillOperation: IMachiningOperation {
-
-    public MachiningOperationType OperationType { get; } = MachiningOperationType.Mill;
     public Point StartPoint { get; set; }
-
     public List<IMillPart> MillParts { get; } = [];
-    
     public IMachiningOperation CloneWithShift(Point shift) {
         var result = new MillOperation {
             StartPoint = StartPoint + shift

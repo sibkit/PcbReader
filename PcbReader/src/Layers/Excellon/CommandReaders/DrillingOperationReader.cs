@@ -1,9 +1,8 @@
 ﻿using PcbReader.Geometry;
-using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
 
-namespace PcbReader.Layers.Excellon.Handlers;
+namespace PcbReader.Layers.Excellon.CommandReaders;
 
 public class DrillingOperationReader: ICommandReader<ExcellonCommandType, ExcellonReadingContext, ExcellonLayer> {
     

@@ -1,7 +1,6 @@
 ﻿using PcbReader.Layers.Common;
-using PcbReader.Layers.Excellon.Entities;
 
-namespace PcbReader.Layers.Excellon;
+namespace PcbReader.Layers.Excellon.Entities;
 
 public class ExcellonLayer
 {

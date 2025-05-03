@@ -44,7 +44,8 @@ public partial class DefineApertureTemplateCommandReader: ICommandReader<GerberC
     
     public void WriteToProgram(GerberReadingContext ctx, GerberLayer layer) {
         var lines = ctx.CurLine.Trim('%').Split('*', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var am = new MacroApertureTemplate(lines[0][2..]);
+        var name = lines[0][2..];
+        var am = new MacroApertureTemplate(name);
         foreach (var line in lines[1..]) {
             if (line.StartsWith('$')) {
                 var parts = line.Split('=');
@@ -56,7 +57,7 @@ public partial class DefineApertureTemplateCommandReader: ICommandReader<GerberC
             }
         }
         //Console.WriteLine(ctx.CurLine);
-        layer.MacroApertureTemplates.Add(lines[0], am);
+        layer.MacroApertureTemplates.Add(name, am);
     }
 
     private static IExpression ReadExpression(string expression) {

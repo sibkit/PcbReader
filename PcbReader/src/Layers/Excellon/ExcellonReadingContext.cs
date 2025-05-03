@@ -25,7 +25,6 @@ public class ExcellonReadingContext: ReadingContext {
     
     public int? CurToolNumber { get; set; }
     public CoordinatesMode CoordinatesMode { get; set; } = CoordinatesMode.Absolute;
-    public MachiningOperationType CurOperationType { get; set; } = MachiningOperationType.Drill;
     public Pattern? CurPattern { get; set; }
     public Point CurPoint { get; set; }
 
