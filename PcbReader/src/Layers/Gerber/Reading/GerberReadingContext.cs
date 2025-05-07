@@ -14,4 +14,4 @@ public class GerberReadingContext : ReadingContext {
     public CoordinatesMode? CoordinatesMode { get; set; }
     
     public LcMode? LcMode { get; set; }
-}
+} 

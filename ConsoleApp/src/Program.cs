@@ -16,6 +16,7 @@ public static class Program {
     public static void Main(string[] args) {
         //CalculateResult();
         MacroTest.MacroAmTest();
+        return;
         TestGeometry();
         
         double d1 = 128;
@@ -71,7 +72,7 @@ public static class Program {
         //  sp
 
         
-        var aw = Geometry.ArcWay(new Point(1,2), new Point(2,1), new Point(1,1), AxisLayout.YDownXRight);
+        var aw = Geometry.ArcWay(new Point(1,2), new Point(2,1), new Point(1,1));
         Console.WriteLine("d");
     }
     

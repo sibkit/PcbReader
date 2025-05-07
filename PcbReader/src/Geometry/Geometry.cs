@@ -9,8 +9,16 @@ public static class Geometry {
     public static double LineLength(Point sp, Point ep){
         return Math.Sqrt(Math.Pow(ep.X-sp.X,2)+Math.Pow(ep.Y-sp.Y,2));
     }
+
+    public static Shape CombineShapes(List<Shape> shapes) {
+        var result = new Shape();
+        // foreach (var shape in shapes) {
+        //     result.OuterContours.
+        // }
+        return result;
+    }
     
-    public static Point ArcCenter(Point sp, Point ep, double radius, RotationDirection rd, bool isLarge, AxisLayout axisLayout) {
+    public static Point ArcCenter(Point sp, Point ep, double radius, RotationDirection rd, bool isLarge) {
         //находим центр окружности через точки пересечения окружностей с центрами в sp и ep.
         //rd 
         var p0 = new Point((ep.X + sp.X) / 2, (ep.Y + sp.Y) / 2);
@@ -21,32 +29,15 @@ public static class Geometry {
         return rd == RotationDirection.ClockWise ? (isLarge ? p2 : p1) : (isLarge ? p1 : p2);
     }
 
-    public static ArcWay ArcWay(Point sp, Point ep, Point cp, AxisLayout axisLayout) {
+    public static ArcWay ArcWay(Point sp, Point ep, Point cp) {
         var angle = ArcAngle(sp, ep, cp);
         var s = (ep.X-sp.X)*(cp.Y-sp.Y) - (ep.Y-sp.Y)*(cp.X-sp.X);
-        
-        if(s>0) {
-            switch (axisLayout) {
-                case AxisLayout.YDownXRight:
-                    return new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
-                case AxisLayout.YUpXRight:
-                    return new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(axisLayout), axisLayout, null);
-            }
+
+        if (s > 0) {
+            return new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI);
         } else {
-            switch (axisLayout) {
-                case AxisLayout.YDownXRight:
-                    return new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI);
-                case AxisLayout.YUpXRight:
-                    return new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(axisLayout), axisLayout, null);
-            }
+            return new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
         }
-        
-        
-        return new ArcWay(s > 0 ? RotationDirection.CounterClockwise : RotationDirection.ClockWise, angle > Math.PI);
     }
     
     public static double ArcAngle(Point sp, Point ep, Point cp) {

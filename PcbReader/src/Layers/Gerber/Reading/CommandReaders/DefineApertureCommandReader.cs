@@ -100,7 +100,7 @@ public partial class DefineApertureCommandReader: ICommandReader<GerberCommandTy
 
         foreach (var pr in prs) {
             if (pr != null)
-                result.ParameterValues.Add((decimal)pr);
+                result.ParameterValues.Add(pr.Value);
         }
         return result;
     }

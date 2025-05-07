@@ -6,5 +6,5 @@ public class MacroAperture: IAperture {
     }
 
     public string TemplateName {get;}
-    public List<decimal> ParameterValues {get;} = [];
+    public List<double> ParameterValues {get;} = [];
 }

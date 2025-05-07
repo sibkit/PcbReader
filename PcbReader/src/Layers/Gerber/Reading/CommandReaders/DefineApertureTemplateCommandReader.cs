@@ -35,6 +35,7 @@ public partial class DefineApertureTemplateCommandReader: ICommandReader<GerberC
         return lineParts[0] switch {
             "1" => ReadCircle(lineParts),
             "4" => ReadOutline(lineParts),
+            "5" => ReadPolygon(lineParts),
             "7" => ReadThermal(lineParts),
             "20" => ReadVectorLine(lineParts),
             "21" => ReadCenterLine(lineParts),
@@ -76,6 +77,18 @@ public partial class DefineApertureTemplateCommandReader: ICommandReader<GerberC
         return result;
     }
 
+    private static Polygon ReadPolygon(string[] values) {
+        var result = new Polygon {
+            Exposure = ReadExpression(values[1]),
+            VerticesCount = ReadExpression(values[2]),
+            CenterX = ReadExpression(values[3]),
+            CenterY = ReadExpression(values[4]),
+            Diameter = ReadExpression(values[5]),
+            Rotation =  ReadExpression(values[6])
+        };
+        return result;
+    }
+    
     private static Outline ReadOutline(string[] values) {
         var result = new Outline {
             Exposure = ReadExpression(values[1]),

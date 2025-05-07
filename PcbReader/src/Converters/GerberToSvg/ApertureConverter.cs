@@ -101,10 +101,11 @@ public class ApertureConverter(GerberLayer layer) {
         if (!layer.MacroApertureTemplates.TryGetValue(macro.TemplateName, out var template))
             throw new ApplicationException("Не найден шаблон для макроаппертуры: \"" + macro.TemplateName + "\"");
 
-        foreach (IPrimitive primitive in template.Primitives) { }
+        var shapes = (from primitive in template.Primitives let pc = new PrimitiveConverter(template, macro) select pc.Convert(primitive)).ToList();
 
-        Console.WriteLine("GerberToSvg.ConvertMacroAperture: Macro apertures not implemented");
+        Console.WriteLine("ApertureConverter.ConvertMacroAperture: Macro apertures not implemented");
         // result.StartPoint = coordinate - new Point(rect.XSize/2, rect.YSize/2);
+        
         return result;
     }
 }

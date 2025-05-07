@@ -129,7 +129,7 @@ public static class SvgWriter {
                   Math.Round(vbr.StartPoint.Y,6)+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
-        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\""+Math.Round(vbr.GetWidth()/1000,6)+"\">");
+        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\"0\">");
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:

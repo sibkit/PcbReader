@@ -77,7 +77,7 @@ public static class GerberToSvgConverter {
             Math.Pow(cx - gap.EndPoint.X, 2) +
             Math.Pow(cy - gap.EndPoint.Y, 2));
         var tr = (r2 + r1) / 2; //true radius
-        var arcWay = Geometry.Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy), AxisLayout.YDownXRight);
+        var arcWay = Geometry.Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy));
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
