@@ -17,10 +17,10 @@ public static class ContourProcessing {
     //         }
     //     }
     // }
-    public static Shape Subtract(Shape minuend, Shape subtrahend) {
-        var result = new Shape();
-        return result;
-    }
+    // public static Shape Subtract(Shape minuend, Shape subtrahend) {
+    //     var result = new Shape();
+    //     return result;
+    // }
 
 
 }

@@ -2,6 +2,7 @@
 using System.Globalization;
 using PcbReader.Converters;
 using PcbReader.Converters.GerberToSvg;
+using PcbReader.Converters.PathEdit;
 using PcbReader.Geometry;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
@@ -14,8 +15,11 @@ namespace ConsoleApp;
 
 public static class Program {
     public static void Main(string[] args) {
+
+        TestIntersections();
+        
         //CalculateResult();
-        MacroTest.MacroAmTest();
+        //MacroTest.MacroAmTest();
         return;
         TestGeometry();
         
@@ -132,6 +136,47 @@ public static class Program {
                 Console.WriteLine("  ...OK");
             }
             return p.Item1;
+    }
+
+    private static void TestIntersections() {
+        var layer = new SvgLayer();
+        var painter1 = new PathPartsPainter(10, 10);
+        painter1.ArcToInc(0,20,10,RotationDirection.ClockWise,false);
+        painter1.ArcToInc(0,-20,10,RotationDirection.ClockWise,false);
+        layer.Elements.Add(painter1.CreateContour());
+        
+        var painter2 = new PathPartsPainter(20, 20);
+        painter2.ArcToInc(0,20,10,RotationDirection.ClockWise,false);
+        painter2.ArcToInc(0,-20,10,RotationDirection.ClockWise,false);
+        layer.Elements.Add(painter2.CreateContour());
+
+        var intersections = new List<Point>();
+        
+        foreach (var e1 in layer.Elements) {
+            if (e1 is Contour c1) {
+                var p1 = c1.StartPoint;
+                foreach (var pp1 in c1.Parts) {
+                    foreach (var e2 in layer.Elements) {
+                        if (e2 is Contour c2 && c1 != c2) {
+                            var p2 = c2.StartPoint;
+                            foreach (var pp2 in c2.Parts) {
+                                intersections.AddRange(Intersections.FindIntersections(p1, pp1, p2, pp2));
+                                p2 = pp2.PointTo;
+                            }
+                        }
+                    }
+
+                    p1 = pp1.PointTo;
+                }
+            }
+        }
+
+        foreach (var point in intersections) {
+            layer.Elements.Add(new Dot {
+                Diameter = 1,
+                Point = point,
+            });
+        }
     }
     
     private static void TestGerberToSvg() {

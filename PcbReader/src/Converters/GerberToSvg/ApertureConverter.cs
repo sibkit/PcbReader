@@ -9,12 +9,13 @@ namespace PcbReader.Converters.GerberToSvg;
 
 public class ApertureConverter(GerberLayer layer) {
 
-    public Shape ConvertAperture(Point coordinate, IAperture aperture) {
+    public List<Shape> ConvertAperture(Point coordinate, IAperture aperture) {
+
         return aperture switch {
-            CircleAperture circle => ConvertCircleAperture(coordinate, circle),
-            RectangleAperture rect => ConvertRectangleAperture(coordinate, rect),
+            CircleAperture circle => [ConvertCircleAperture(coordinate, circle)],
+            RectangleAperture rect => [ConvertRectangleAperture(coordinate, rect)],
             MacroAperture macro => ConvertMacroAperture(coordinate, macro),
-            ObRoundAperture obRound => ConvertObRoundAperture(coordinate, obRound),
+            ObRoundAperture obRound => [ConvertObRoundAperture(coordinate, obRound)],
             // case PolygonAperture polygon:
             //     break;
             _ => throw new Exception("Unknown aperture type")
@@ -24,11 +25,14 @@ public class ApertureConverter(GerberLayer layer) {
     public Shape ConvertCircleAperture(Point coordinate, CircleAperture circle) {
         var r = circle.Diameter / 2;
 
-        var result = new Shape();
+        
         var pOuter = new PathPartsPainter(coordinate.X - r, coordinate.Y);
         pOuter.ArcToInc(2 * r, 0, r, RotationDirection.CounterClockwise, false);
         pOuter.ArcToInc(-2 * r, 0, r, RotationDirection.CounterClockwise, false);
-        result.OuterContours.Add(pOuter.CreateContour());
+        var result = new Shape {
+            OuterContour = pOuter.CreateContour()
+        };
+
 
         if (circle.HoleDiameter is { } hd and > 0.000001) {
             var pInner = new PathPartsPainter(coordinate.X - r, coordinate.Y);
@@ -42,15 +46,16 @@ public class ApertureConverter(GerberLayer layer) {
 
     public Shape ConvertRectangleAperture(Point coordinate, RectangleAperture rect) {
 
-        var result = new Shape();
-
         var outerPainter = new PathPartsPainter(coordinate.X - rect.XSize / 2, coordinate.Y - rect.YSize / 2);
         outerPainter.LineToInc(rect.XSize, 0);
         outerPainter.LineToInc(0, rect.YSize);
         outerPainter.LineToInc(-rect.XSize, 0);
         outerPainter.LineToInc(0, -rect.YSize);
-        result.OuterContours.Add(outerPainter.CreateContour());
-
+        
+        var result = new Shape {
+            OuterContour = outerPainter.CreateContour()
+        };
+        
         if (rect.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
             var innerPainter = new PathPartsPainter(coordinate.X - r, coordinate.Y);
@@ -63,7 +68,7 @@ public class ApertureConverter(GerberLayer layer) {
     }
 
     public Shape ConvertObRoundAperture(Point coordinate, ObRoundAperture obRound) {
-        var result = new Shape();
+        Shape result;
 
         if (obRound.XSize >= obRound.YSize) {
             var br = obRound.YSize / 2;
@@ -72,7 +77,9 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.LineToInc(0, obRound.YSize - 2 * br);
             outerPainter.ArcToInc(-2 * br, 0, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(0, -(obRound.YSize - 2 * br));
-            result.OuterContours.Add(outerPainter.CreateContour());
+            result = new Shape {
+                OuterContour = outerPainter.CreateContour()
+            };
         } else {
             var br = obRound.XSize / 2;
             var outerPainter = new PathPartsPainter(coordinate.X - (obRound.XSize / 2 - br), coordinate.Y + br);
@@ -80,7 +87,9 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.LineToInc(obRound.XSize - 2 * br, 0);
             outerPainter.ArcToInc(0, 2 * br, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(-(obRound.XSize - 2 * br), 0);
-            result.OuterContours.Add(outerPainter.CreateContour());
+            result = new Shape {
+                OuterContour = outerPainter.CreateContour()
+            };
         }
 
         if (obRound.HoleDiameter is { } hd and > 0.000001) {
@@ -96,8 +105,8 @@ public class ApertureConverter(GerberLayer layer) {
         return result;
     }
 
-    public Shape ConvertMacroAperture(Point coordinate, MacroAperture macro) {
-        var result = new Shape();
+    public List<Shape> ConvertMacroAperture(Point coordinate, MacroAperture macro) {
+        var result = new List<Shape>();
         if (!layer.MacroApertureTemplates.TryGetValue(macro.TemplateName, out var template))
             throw new ApplicationException("Не найден шаблон для макроаппертуры: \"" + macro.TemplateName + "\"");
 

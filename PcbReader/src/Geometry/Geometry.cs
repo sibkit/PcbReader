@@ -6,17 +6,15 @@ public readonly struct ArcWay(RotationDirection direction, bool isLarge) {
 }
 
 public static class Geometry {
+
+    public static double Accuracy { get; } = 0.000000001;
     public static double LineLength(Point sp, Point ep){
         return Math.Sqrt(Math.Pow(ep.X-sp.X,2)+Math.Pow(ep.Y-sp.Y,2));
     }
 
-    public static Shape CombineShapes(List<Shape> shapes) {
-        var result = new Shape();
-        // foreach (var shape in shapes) {
-        //     result.OuterContours.
-        // }
-        return result;
-    }
+    // public static Contour UniteContours(Contour c1, Contour c2) {
+    //     
+    // }
     
     public static Point ArcCenter(Point sp, Point ep, double radius, RotationDirection rd, bool isLarge) {
         //находим центр окружности через точки пересечения окружностей с центрами в sp и ep.
@@ -31,15 +29,16 @@ public static class Geometry {
 
     public static ArcWay ArcWay(Point sp, Point ep, Point cp) {
         var angle = ArcAngle(sp, ep, cp);
-        var s = (ep.X-sp.X)*(cp.Y-sp.Y) - (ep.Y-sp.Y)*(cp.X-sp.X);
 
-        if (s > 0) {
-            return new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI);
-        } else {
-            return new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
-        }
+        var vecA = new Vector(ep - sp);
+        var vecB = new Vector(cp - sp);
+        var crossProduct = Vectors.CrossProduct(vecA, vecB);
+        
+        return crossProduct > 0 ? 
+            new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI) : 
+            new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
     }
-    
+
     public static double ArcAngle(Point sp, Point ep, Point cp) {
         //|a|*|b|*cos(θ) = xa * xb + ya * yb
         var x1 = sp.X - cp.X;

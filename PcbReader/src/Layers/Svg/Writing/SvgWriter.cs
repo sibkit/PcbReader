@@ -24,32 +24,34 @@ public static class SvgWriter {
             rightBottom.Y = pt.Y;
     }
 
-    private static ViewBox CalculateViewBox(SvgLayer doc) {
+    private static Bounds CalculateViewBox(SvgLayer doc) {
         var leftTop = new Point(double.MaxValue, double.MaxValue);
         var rightBottom = new Point(double.MinValue, double.MinValue);
-        
+
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:
-                    foreach (var pp in p.Parts) {
+                    foreach (var pp in p.Segments) {
                         ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
                     }
+
                     break;
                 case Shape shape:
-                    foreach (var oc in shape.OuterContours) {
-                        ExtendBounds(ref leftTop, ref rightBottom, oc.StartPoint);
-                        foreach(var pp in oc.Parts)
-                            ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
-                    }
+
+                    ExtendBounds(ref leftTop, ref rightBottom, shape.OuterContour.StartPoint);
+                    foreach (var pp in shape.OuterContour.Parts)
+                        ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
+
                     foreach (var ic in shape.InnerContours) {
                         ExtendBounds(ref leftTop, ref rightBottom, ic.StartPoint);
-                        foreach(var pp in ic.Parts)
+                        foreach (var pp in ic.Parts)
                             ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
                     }
+
                     break;
                 case Contour contour:
                     ExtendBounds(ref leftTop, ref rightBottom, contour.StartPoint);
-                    foreach(var pp in contour.Parts)
+                    foreach (var pp in contour.Parts)
                         ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
                     break;
                 case Dot dot:
@@ -58,7 +60,8 @@ public static class SvgWriter {
                 default: throw new NotImplementedException();
             }
         }
-        var result = new ViewBox {
+
+        var result = new Bounds {
             StartPoint = leftTop,
             EndPoint = rightBottom,
         };
@@ -95,7 +98,7 @@ public static class SvgWriter {
     static void WritePath(StreamWriter writer, Path path) {
         var sp = path.StartPoint;
         writer.Write("\n<path d=\"M  " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
-        foreach (var pp in path.Parts) 
+        foreach (var pp in path.Segments) 
             WritePathPart(writer, pp);
         if (path.StrokeWidth > 0.00000001) {
             writer.Write("\" stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
@@ -112,8 +115,7 @@ public static class SvgWriter {
     }
 
     static void WriteShape(StreamWriter writer, Shape shape) {
-        foreach(var oc in shape.OuterContours)
-            WriteContour(writer, oc);
+            WriteContour(writer, shape.OuterContour);
     }
 
     static void WriteDot(StreamWriter writer, Dot dot) {

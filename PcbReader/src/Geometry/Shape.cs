@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Geometry;
 
 public class Shape: IVisible {
-    public List<Contour> OuterContours { get; } = [];
+    public required Contour OuterContour { get; init; }
     public List<Contour> InnerContours { get; } = [];
 }

@@ -81,7 +81,7 @@ public class PathPartsPainter(double x, double y) {
         var result = new Path {
             StartPoint = new Point(x, y),
         };
-        result.Parts.AddRange(PathParts);
+        result.Segments.AddRange(PathParts);
         return result;
     }
 }

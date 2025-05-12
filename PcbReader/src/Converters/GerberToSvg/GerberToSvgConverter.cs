@@ -1,6 +1,7 @@
 ﻿
 using System.Net.Http.Headers;
 using PcbReader.Geometry;
+using PcbReader.Geometry.PathParts;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
@@ -28,7 +29,7 @@ public static class GerberToSvgConverter {
                     break;
                 case FlashOperation flash:
                     var aperture = layer.Apertures[flash.ApertureCode];
-                    result.Elements.Add(apertureConverter.ConvertAperture(flash.Point, aperture));
+                    result.Elements.AddRange(apertureConverter.ConvertAperture(flash.Point, aperture));
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: Convert");
@@ -48,12 +49,12 @@ public static class GerberToSvgConverter {
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
-                    result.Parts.Add(new LinePathPart {
+                    result.Segments.Add(new LinePathPart {
                         PointTo = line.EndPoint
                     });
                     break;
                 case GerberArcPart arc:
-                    result.Parts.AddRange(ConvertArcPath(startPartPoint, arc));
+                    result.Segments.AddRange(ConvertArcPath(startPartPoint, arc));
                     startPartPoint = arc.EndPoint;
                     break;
                 default:
@@ -133,7 +134,7 @@ public static class GerberToSvgConverter {
             switch (e) {
                 case Path pth:
                     pth.StartPoint = pth.StartPoint with { Y = -pth.StartPoint.Y };
-                    foreach (var p in pth.Parts) {
+                    foreach (var p in pth.Segments) {
                         InvertAxis(p);
                     }
                     break;
@@ -144,8 +145,7 @@ public static class GerberToSvgConverter {
                     }
                     break;
                 case Shape shape:
-                    foreach (var oc in shape.OuterContours)
-                        InvertAxis(oc);
+                        InvertAxis(shape.OuterContour);
                     foreach (var ic in shape.InnerContours)
                         InvertAxis(ic);
                     break;

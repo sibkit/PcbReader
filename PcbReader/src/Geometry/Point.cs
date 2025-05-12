@@ -11,14 +11,14 @@ public struct Point(double x, double y) : IEquatable<Point> {
         => new Point(a.X - b.X, a.Y - b.Y);
     
     public static bool operator ==(Point a, Point b) 
-        => Math.Abs(a.X - b.X) < 0.0000001 && Math.Abs(a.Y - b.Y) < 0.0000001;
+        => Math.Abs(a.X - b.X) < Geometry.Accuracy && Math.Abs(a.Y - b.Y) < Geometry.Accuracy;
     
     public static bool operator !=(Point a, Point b)
-        => Math.Abs(a.X - b.X) > 0.0000001 || Math.Abs(a.Y - b.Y) > 0.0000001;
+        => Math.Abs(a.X - b.X) > Geometry.Accuracy || Math.Abs(a.Y - b.Y) > Geometry.Accuracy;
 
     public override bool Equals(object? obj) {
         if (obj is Point p)
-            return Math.Abs(this.X - p.X) < 0.0000001 && Math.Abs(this.Y - p.Y) < 0.0000001;
+            return Math.Abs(X - p.X) < Geometry.Accuracy && Math.Abs(Y - p.Y) < Geometry.Accuracy;
         return false;
     }
 

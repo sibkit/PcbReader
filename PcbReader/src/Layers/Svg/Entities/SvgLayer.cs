@@ -3,6 +3,6 @@
 namespace PcbReader.Layers.Svg.Entities;
 
 public class SvgLayer {
-    public ViewBox? ViewBox { get; set; }
+    public Bounds? ViewBox { get; set; }
     public List<IVisible> Elements { get; } = [];
 }
