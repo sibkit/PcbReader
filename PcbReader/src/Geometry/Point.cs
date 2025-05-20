@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Geometry;
 
-public struct Point(double x, double y) : IEquatable<Point> {
+public readonly struct Point(double x, double y) : IEquatable<Point> {
     public double X { get; } = x;
     public double Y { get; } = y;
     

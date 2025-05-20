@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Geometry;
 
-public struct Bounds {
-    public Point MinPoint { get; set; }
-    public Point MaxPoint { get; set; }
+public readonly struct Bounds {
+    public Point MinPoint { get; init; }
+    public Point MaxPoint { get; init; }
 
     public double GetWidth() {
         return MaxPoint.X - MinPoint.X;

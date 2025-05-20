@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
 using PcbReader.Geometry;
 using PcbReader.Geometry.PathParts;
 using PcbReader.Layers.Svg.Entities;
@@ -6,22 +7,25 @@ using Path = PcbReader.Geometry.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
 
+[SuppressMessage("ReSharper", "ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator")]
 public static class SvgWriter {
 
     static SvgWriter() {
         
     }
     
-    private static void ExtendBounds(ref Bounds bounds, Point pt) {
+    private static Bounds ExtendBounds(Bounds bounds, Point pt) {
         if (pt.X < bounds.MinPoint.X)
-            bounds.MinPoint = bounds.MinPoint.WithNewX(pt.X);
+            bounds = bounds with { MinPoint = bounds.MinPoint.WithNewX(pt.X) };
         if (pt.X > bounds.MaxPoint.X)
-            bounds.MaxPoint = bounds.MaxPoint.WithNewX(pt.X);
+            bounds = bounds with { MaxPoint = bounds.MaxPoint.WithNewX(pt.X) };
 
         if (pt.Y < bounds.MinPoint.Y)
-            bounds.MinPoint = bounds.MinPoint.WithNewY(pt.Y);
+            bounds = bounds with { MinPoint = bounds.MinPoint.WithNewY(pt.Y) };
         if (pt.Y > bounds.MaxPoint.Y)
-            bounds.MaxPoint = bounds.MaxPoint.WithNewY(pt.Y);
+            bounds = bounds with { MaxPoint = bounds.MaxPoint.WithNewY(pt.Y) };
+
+        return bounds;
     }
 
     private static Bounds CalculateViewBox(SvgLayer doc) {
@@ -37,30 +41,30 @@ public static class SvgWriter {
             switch (e) {
                 case Path p:
                     foreach (var pp in p.Parts) {
-                        ExtendBounds(ref result, pp.PointTo);
+                        result = ExtendBounds(result, pp.PointTo);
                     }
 
                     break;
                 case Shape shape:
 
-                    ExtendBounds(ref result, shape.OuterContour.StartPoint);
+                    result = ExtendBounds(result, shape.OuterContour.StartPoint);
                     foreach (var pp in shape.OuterContour.Parts)
-                        ExtendBounds(ref result, pp.PointTo);
+                        result = ExtendBounds(result, pp.PointTo);
 
                     foreach (var ic in shape.InnerContours) {
-                        ExtendBounds(ref result, ic.StartPoint);
+                        result = ExtendBounds(result, ic.StartPoint);
                         foreach (var pp in ic.Parts)
-                            ExtendBounds(ref result, pp.PointTo);
+                            result = ExtendBounds(result, pp.PointTo);
                     }
 
                     break;
                 case Contour contour:
-                    ExtendBounds(ref result, contour.StartPoint);
+                    result = ExtendBounds(result, contour.StartPoint);
                     foreach (var pp in contour.Parts)
-                        ExtendBounds(ref result, pp.PointTo);
+                        result = ExtendBounds(result, pp.PointTo);
                     break;
                 case Dot dot:
-                    ExtendBounds(ref result, dot.CenterPoint);
+                    result = ExtendBounds(result, dot.CenterPoint);
                     break;
                 default: throw new NotImplementedException();
             }
@@ -68,8 +72,8 @@ public static class SvgWriter {
 
 
         var field = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.04 : result.GetHeight() * 0.04;
-        result.MinPoint = new Point(result.MinPoint.X - field, result.MinPoint.Y - field); 
-        result.MaxPoint = new Point(result.MaxPoint.X + field, result.MaxPoint.Y + field);  
+        result = result with { MinPoint = new Point(result.MinPoint.X - field, result.MinPoint.Y - field) };
+        result = result with { MaxPoint = new Point(result.MaxPoint.X + field, result.MaxPoint.Y + field) };  
         return result;
     }
 
