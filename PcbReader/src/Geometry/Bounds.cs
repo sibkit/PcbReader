@@ -30,7 +30,7 @@ public readonly struct Bounds {
     }
 
     public bool Contains(Point p) {
-        return p.X > MinX && p.X < MaxX && p.Y > MinY && p.Y < MaxY;
+        return p.X >= MinX && p.X <= MaxX && p.Y >= MinY && p.Y <= MaxY;
     }
     
     public bool IsIntersected(Bounds b) {

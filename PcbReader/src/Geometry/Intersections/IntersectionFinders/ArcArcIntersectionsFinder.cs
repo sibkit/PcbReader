@@ -46,6 +46,8 @@ public class ArcArcIntersectionsFinder: IIntersectionsFinder<ArcPathPart, ArcPat
     
     public List<Point> FindIntersections(ArcPathPart part1, ArcPathPart part2, IntersectionsSorting sorting) {
         
+        
+        
         var c1 = Geometry.ArcCenter(part1);
         var c2 = Geometry.ArcCenter(part2);
         

@@ -12,5 +12,19 @@ public class BoundsTest {
         Assert.True(b1.IsIntersected(new Bounds(-1,-1,1,1)));
     }
     
-    
+    [Fact]
+    public void TestContainsPoint() {
+        var b1 = new Bounds(0,0,5,5);
+        
+        Assert.True(b1.Contains(new Point(0,0)));
+        Assert.True(b1.Contains(new Point(5,5)));
+        Assert.True(b1.Contains(new Point(2,3)));
+        
+        Assert.False(b1.Contains(new Point(-1,0)));
+        Assert.False(b1.Contains(new Point(0,-1)));
+        Assert.False(b1.Contains(new Point(6,5)));
+        Assert.False(b1.Contains(new Point(2,5.0001)));
+        Assert.False(b1.Contains(new Point(-0.000001,2)));
+
+    }
 }
