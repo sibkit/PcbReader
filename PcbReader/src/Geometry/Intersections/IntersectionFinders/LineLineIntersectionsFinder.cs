@@ -2,8 +2,8 @@
 
 namespace PcbReader.Geometry.Intersections.IntersectionFinders;
 
-public class LineLineIntersectionsFinder: IIntersectionsFinder<ArcPathPart, ArcPathPart> {
-    public List<Point> FindIntersections(ArcPathPart part1, ArcPathPart part2, IntersectionsSorting sorting) {
+public class LineLineIntersectionsFinder: IIntersectionsFinder<LinePathPart, LinePathPart> {
+    public List<Point> FindIntersections(LinePathPart part1, LinePathPart part2, IntersectionsSorting sorting) {
         var x10 = part1.PointFrom.X;
         //var y10 = part1.PointFrom.Y;
         var x11 = part1.PointTo.X;
