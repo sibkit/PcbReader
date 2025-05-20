@@ -13,29 +13,21 @@ public static class SvgWriter {
     static SvgWriter() {
         
     }
-    
+
     private static Bounds ExtendBounds(Bounds bounds, Point pt) {
-        if (pt.X < bounds.MinPoint.X)
-            bounds = bounds with { MinPoint = bounds.MinPoint.WithNewX(pt.X) };
-        if (pt.X > bounds.MaxPoint.X)
-            bounds = bounds with { MaxPoint = bounds.MaxPoint.WithNewX(pt.X) };
-
-        if (pt.Y < bounds.MinPoint.Y)
-            bounds = bounds with { MinPoint = bounds.MinPoint.WithNewY(pt.Y) };
-        if (pt.Y > bounds.MaxPoint.Y)
-            bounds = bounds with { MaxPoint = bounds.MaxPoint.WithNewY(pt.Y) };
-
-        return bounds;
+        return new Bounds(
+            bounds.MinX < pt.X ? bounds.MinX : pt.X,
+            bounds.MinY < pt.Y ? bounds.MinY : pt.Y,
+            bounds.MaxX > pt.X ? bounds.MaxX : pt.X,
+            bounds.MaxY > pt.Y ? bounds.MaxY : pt.Y
+        );
     }
 
     private static Bounds CalculateViewBox(SvgLayer doc) {
         // var leftTop = new Point(double.MaxValue, double.MaxValue);
         // var rightBottom = new Point(double.MinValue, double.MinValue);
 
-        var result = new Bounds {
-            MinPoint = new Point(double.MaxValue, double.MaxValue),
-            MaxPoint = new Point(double.MinValue, double.MinValue),
-        };
+        var result = new Bounds(double.MaxValue, double.MaxValue, double.MinValue, double.MinValue);
         
         foreach (var e in doc.Elements) {
             switch (e) {
@@ -72,8 +64,13 @@ public static class SvgWriter {
 
 
         var field = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.04 : result.GetHeight() * 0.04;
-        result = result with { MinPoint = new Point(result.MinPoint.X - field, result.MinPoint.Y - field) };
-        result = result with { MaxPoint = new Point(result.MaxPoint.X + field, result.MaxPoint.Y + field) };  
+        result = new Bounds(
+            result.MinPoint.X - field,
+            result.MinPoint.Y - field,
+            result.MaxPoint.X + field,
+            result.MaxPoint.Y + field
+        );
+
         return result;
     }
 

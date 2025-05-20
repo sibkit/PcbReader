@@ -1,9 +1,8 @@
 ﻿using PcbReader.Converters.PathEdit;
 using PcbReader.Geometry;
 using PcbReader.Geometry.Intersections;
-using PcbReader.Geometry.PathParts;
 
-namespace PcbReaderTest.Geometry.IntersectionsTest;
+namespace PcbReaderTest.GeometryTest.IntersectionsTest;
 
 public class IntersectionsTest {
     [Fact]

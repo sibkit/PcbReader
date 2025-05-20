@@ -71,11 +71,8 @@ public static class PathPartBounds {
             minY = pp.PointTo.Y;
             maxY = pp.PointFrom.Y;
         }
-        
-        return new Bounds {
-            MinPoint = new Point(minX, minY),
-            MaxPoint = new Point(maxX, maxY)
-        };
+
+        return new Bounds(minX, minY,maxX, maxY);
     }
 
     private static Quadrant GetQuadrant(Point centerPoint, Point point) {
@@ -138,9 +135,6 @@ public static class PathPartBounds {
             maxX = sp.X>ep.X ? sp.X : ep.X;
         }
 
-        return new Bounds {
-            MinPoint = new Point(minX, minY),
-            MaxPoint = new Point(maxX, maxY)
-        };
+        return new Bounds(minX, minY,maxX, maxY);
     }
 }
