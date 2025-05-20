@@ -1,6 +1,11 @@
-﻿namespace PcbReader.Geometry;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
-public class Contour: IVisible {
+
+namespace PcbReader.Geometry;
+
+public class Contour: IPathPartsOwner {
     public Point StartPoint { get; set; }
     public List<IPathPart> Parts { get; } = [];
+    
 }

@@ -12,68 +12,64 @@ public static class SvgWriter {
         
     }
     
-    private static void ExtendBounds(ref Point leftTop, ref Point rightBottom, Point pt) {
-        if(pt.X < leftTop.X)
-            leftTop.X = pt.X;
-        if(pt.X > rightBottom.X)
-            rightBottom.X = pt.X;
-        
-        if(pt.Y < leftTop.Y)
-            leftTop.Y = pt.Y;
-        if(pt.Y > rightBottom.Y)
-            rightBottom.Y = pt.Y;
+    private static void ExtendBounds(ref Bounds bounds, Point pt) {
+        if (pt.X < bounds.MinPoint.X)
+            bounds.MinPoint = bounds.MinPoint.WithNewX(pt.X);
+        if (pt.X > bounds.MaxPoint.X)
+            bounds.MaxPoint = bounds.MaxPoint.WithNewX(pt.X);
+
+        if (pt.Y < bounds.MinPoint.Y)
+            bounds.MinPoint = bounds.MinPoint.WithNewY(pt.Y);
+        if (pt.Y > bounds.MaxPoint.Y)
+            bounds.MaxPoint = bounds.MaxPoint.WithNewY(pt.Y);
     }
 
     private static Bounds CalculateViewBox(SvgLayer doc) {
-        var leftTop = new Point(double.MaxValue, double.MaxValue);
-        var rightBottom = new Point(double.MinValue, double.MinValue);
+        // var leftTop = new Point(double.MaxValue, double.MaxValue);
+        // var rightBottom = new Point(double.MinValue, double.MinValue);
 
+        var result = new Bounds {
+            MinPoint = new Point(double.MaxValue, double.MaxValue),
+            MaxPoint = new Point(double.MinValue, double.MinValue),
+        };
+        
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:
-                    foreach (var pp in p.Segments) {
-                        ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
+                    foreach (var pp in p.Parts) {
+                        ExtendBounds(ref result, pp.PointTo);
                     }
 
                     break;
                 case Shape shape:
 
-                    ExtendBounds(ref leftTop, ref rightBottom, shape.OuterContour.StartPoint);
+                    ExtendBounds(ref result, shape.OuterContour.StartPoint);
                     foreach (var pp in shape.OuterContour.Parts)
-                        ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
+                        ExtendBounds(ref result, pp.PointTo);
 
                     foreach (var ic in shape.InnerContours) {
-                        ExtendBounds(ref leftTop, ref rightBottom, ic.StartPoint);
+                        ExtendBounds(ref result, ic.StartPoint);
                         foreach (var pp in ic.Parts)
-                            ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
+                            ExtendBounds(ref result, pp.PointTo);
                     }
 
                     break;
                 case Contour contour:
-                    ExtendBounds(ref leftTop, ref rightBottom, contour.StartPoint);
+                    ExtendBounds(ref result, contour.StartPoint);
                     foreach (var pp in contour.Parts)
-                        ExtendBounds(ref leftTop, ref rightBottom, pp.PointTo);
+                        ExtendBounds(ref result, pp.PointTo);
                     break;
                 case Dot dot:
-                    ExtendBounds(ref leftTop, ref rightBottom, dot.Point);
+                    ExtendBounds(ref result, dot.CenterPoint);
                     break;
                 default: throw new NotImplementedException();
             }
         }
 
-        var result = new Bounds {
-            StartPoint = leftTop,
-            EndPoint = rightBottom,
-        };
+
         var field = result.GetWidth() > result.GetHeight() ? result.GetWidth() * 0.04 : result.GetHeight() * 0.04;
-        result.StartPoint = result.StartPoint with {
-            X = result.StartPoint.X - field,
-            Y = result.StartPoint.Y - field
-        };
-        result.EndPoint = result.EndPoint with {
-            X = result.EndPoint.X + field,
-            Y = result.EndPoint.Y + field
-        };
+        result.MinPoint = new Point(result.MinPoint.X - field, result.MinPoint.Y - field); 
+        result.MaxPoint = new Point(result.MaxPoint.X + field, result.MaxPoint.Y + field);  
         return result;
     }
 
@@ -98,7 +94,7 @@ public static class SvgWriter {
     static void WritePath(StreamWriter writer, Path path) {
         var sp = path.StartPoint;
         writer.Write("\n<path d=\"M  " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
-        foreach (var pp in path.Segments) 
+        foreach (var pp in path.Parts) 
             WritePathPart(writer, pp);
         if (path.StrokeWidth > 0.00000001) {
             writer.Write("\" stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
@@ -119,7 +115,7 @@ public static class SvgWriter {
     }
 
     static void WriteDot(StreamWriter writer, Dot dot) {
-        writer.Write("<circle cx=\"" + Math.Round(dot.Point.X, 6) + "\" cy=\"" + Math.Round(dot.Point.Y, 6) + "\" r=\"" + Math.Round(dot.Diameter / 2, 6) + "\" fill=\"black\"/>");
+        writer.Write("<circle cx=\"" + Math.Round(dot.CenterPoint.X, 6) + "\" cy=\"" + Math.Round(dot.CenterPoint.Y, 6) + "\" r=\"" + Math.Round(dot.Diameter / 2, 6) + "\" fill=\"black\"/>");
     }
 
     public static void Write(SvgLayer doc, string fileName) {
@@ -127,8 +123,8 @@ public static class SvgWriter {
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
 
         swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
-                  Math.Round(vbr.StartPoint.X,6)+ " "+
-                  Math.Round(vbr.StartPoint.Y,6)+" "+ 
+                  Math.Round(vbr.MinPoint.X,6)+ " "+
+                  Math.Round(vbr.MinPoint.Y,6)+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
         swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\"0\">");

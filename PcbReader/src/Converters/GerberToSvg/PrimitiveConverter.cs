@@ -53,12 +53,12 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         var r = Calc(circle.Diameter) / 2;
         var cx = Calc(circle.CenterX);
         var cy = Calc(circle.CenterY);
-        var painter = new PathPartsPainter(cx-r, cy);
+        var painter = new PathPartsPainter<Contour>(cx-r, cy);
         painter.ArcToInc(2*r,0, r, RotationDirection.ClockWise, false);
         painter.ArcToInc(-2*r,0,r, RotationDirection.ClockWise, false);
 
         return new Shape {
-            OuterContour = painter.CreateContour()
+            OuterContour = painter.PartsOwner
         };
     }
 
@@ -69,7 +69,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         var r = Calc(polygon.Diameter) / 2;
         var cx = Calc(polygon.CenterX);
         var cy = Calc(polygon.CenterY);
-        var painter = new PathPartsPainter(cx+r, cy);
+        var painter = new PathPartsPainter<Contour>(cx+r, cy);
         var vc = (int)Calc(polygon.VerticesCount);
         var angle = Math.PI * 2 / vc;
         for (var i = 0; i < vc; i++) {
@@ -80,7 +80,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         }
 
         return new Shape {
-            OuterContour = painter.CreateContour()
+            OuterContour = painter.PartsOwner
         };
     }
 }

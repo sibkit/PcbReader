@@ -49,12 +49,13 @@ public static class GerberToSvgConverter {
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
-                    result.Segments.Add(new LinePathPart {
-                        PointTo = line.EndPoint
+                    result.Parts.Add(new LinePathPart {
+                        PointFrom = startPartPoint,
+                        PointTo = line.EndPoint,
                     });
                     break;
                 case GerberArcPart arc:
-                    result.Segments.AddRange(ConvertArcPath(startPartPoint, arc));
+                    result.Parts.AddRange(ConvertArcPath(startPartPoint, arc, result));
                     startPartPoint = arc.EndPoint;
                     break;
                 default:
@@ -64,7 +65,7 @@ public static class GerberToSvgConverter {
         return result;
     }
     
-    static List<ArcPathPart> ConvertArcPath(Point gsp, GerberArcPart gap) {
+    static List<ArcPathPart> ConvertArcPath(Point gsp, GerberArcPart gap, IPathPartsOwner owner) {
         var result = new List<ArcPathPart>();
         //var cx = gsp.X + gap.IOffset;
         //var cy = gsp.Y - gap.JOffset;
@@ -86,13 +87,17 @@ public static class GerberToSvgConverter {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = false,
-                PointTo = new Point(mpx, mpy)
+                PointFrom = gsp,
+                PointTo = new Point(mpx, mpy),
+                Owner = owner
             };
             var part2 = new ArcPathPart {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = true,
-                PointTo = gsp
+                PointFrom = new Point(mpx, mpy),
+                PointTo = gsp,
+                Owner = owner
             };
             result.Add(part1);
             result.Add(part2);
@@ -103,6 +108,8 @@ public static class GerberToSvgConverter {
                 PointTo = gap.EndPoint,
                 Radius = tr,
                 IsLargeArc = arcWay.IsLarge,
+                PointFrom = gsp,
+                Owner = owner,
             };
             result.Add(part);
         }
@@ -110,39 +117,37 @@ public static class GerberToSvgConverter {
     }
 
 
-    static void InvertAxis(IPathPart pathPart) {
-        switch (pathPart) {
-            case LinePathPart line:
-                line.PointTo = line.PointTo with { Y = -line.PointTo.Y };
-                break;
-            case ArcPathPart arc:
-                arc.PointTo = arc.PointTo with { Y = -arc.PointTo.Y };
-                arc.RotationDirection = arc.RotationDirection.Invert();
-                break;
-        }
+    static IPathPart InvertAxis(IPathPart pathPart, IPathPartsOwner newOwner) {
+        return pathPart switch {
+            LinePathPart line => new LinePathPart {
+                PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
+                PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y)
+            },
+            ArcPathPart arc => new ArcPathPart {
+                PointTo = arc.PointTo.WithNewY(-arc.PointTo.Y),
+                PointFrom = arc.PointFrom.WithNewY(-arc.PointFrom.Y),
+                IsLargeArc = arc.IsLargeArc,
+                RotationDirection = arc.RotationDirection.Invert(),
+                Owner = newOwner,
+                Radius = arc.Radius,
+            },
+            _ => throw new Exception("GerberToSvgConverter: InvertAxis")
+        };
     }
 
-    static void InvertAxis(Contour ctx) {
-        ctx.StartPoint = ctx.StartPoint with { Y = -ctx.StartPoint.Y };
+    static void InvertAxis(IPathPartsOwner ctx) {
+        ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
         foreach (var p in ctx.Parts) {
-            InvertAxis(p);
+            InvertAxis(p, ctx);
         }
     }
 
     static void InvertAxis(SvgLayer layer) {
         foreach (var e in layer.Elements) {
             switch (e) {
-                case Path pth:
-                    pth.StartPoint = pth.StartPoint with { Y = -pth.StartPoint.Y };
-                    foreach (var p in pth.Segments) {
-                        InvertAxis(p);
-                    }
-                    break;
-                case Contour ctr:
-                    ctr.StartPoint = ctr.StartPoint with { Y = -ctr.StartPoint.Y };
-                    foreach (var p in ctr.Parts) {
-                        InvertAxis(p);
-                    }
+
+                case IPathPartsOwner ctr:
+                    InvertAxis(ctr);
                     break;
                 case Shape shape:
                         InvertAxis(shape.OuterContour);

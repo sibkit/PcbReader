@@ -1,34 +1,47 @@
 ﻿using PcbReader.Geometry.PathParts;
-using PcbReader.Layers.Gerber.Reading.Macro.Syntax;
 
-namespace PcbReader.Geometry;
+namespace PcbReader.Geometry.Intersections;
 
 public static class Intersections {
     
-    public static List<Point> FindIntersections(Point p1, IPathPart s1, Point p2, IPathPart s2)
-    {
-        var intersections = s1 switch {
-            LinePathPart part when s2 is LinePathPart pathPart => FindLinesIntersections(p1, part, p2, pathPart),
-            ArcPathPart part when s2 is ArcPathPart pathPart => FindArcsIntersections(p1, part, p2, pathPart),
-            ArcPathPart part when s2 is LinePathPart pathPart => FindLineArcIntersections(p2, pathPart, p1, part),
-            LinePathPart part when s2 is ArcPathPart pathPart => FindLineArcIntersections(p1, part, p2, pathPart),
+    public static List<Point> FindIntersections(IPathPart pp1, IPathPart pp2) {
+        if (pp1.Owner == pp2.Owner)
+            throw new Exception("Intersections: FindIntersections (PathParts of one owner)");
+        
+        var intersections = pp1 switch {
+            LinePathPart part when pp2 is LinePathPart pathPart => FindLinesIntersections( part, pathPart),
+            ArcPathPart part when pp2 is ArcPathPart pathPart => FindArcsIntersections(part, pathPart),
+            ArcPathPart part when pp2 is LinePathPart pathPart => FindLineArcIntersections(pathPart, part),
+            LinePathPart part when pp2 is ArcPathPart pathPart => FindLineArcIntersections(part, pathPart),
             _ => throw new Exception("Intersector: FindIntersections => Cannot define segment(s)")
         };
-        var result = intersections.Where(isp => isp != p2).ToList();
+
+        var result = new List<Point>();
+        var s1b = PathPartBounds.GetBounds(pp1);
+        var s2b = PathPartBounds.GetBounds(pp2);
+        foreach (var intersection in intersections) {
+            if (!s1b.Contains(intersection))
+                continue;
+            if (!s2b.Contains(intersection))
+                continue;
+            result.Add(intersection);
+        }
+
+        //var result = intersections.Where(isp => isp != p2 and PathPartBounds.GetBounds()).ToList();
         return result;
     }
 
-    private static List<Point> FindLinesIntersections(Point pa, LinePathPart sa, Point pb, LinePathPart sb) {
+    private static List<Point> FindLinesIntersections(LinePathPart sa, LinePathPart sb) {
 
         var result = new List<Point>();
 
-        var ax1 = pa.X;
-        var ay1 = pa.Y;
+        var ax1 = sa.PointFrom.X;
+        var ay1 = sa.PointFrom.Y;
         var ax2 = sa.PointTo.X;
         var ay2 = sa.PointTo.Y;
 
-        var bx1 = pb.X;
-        var by1 = pb.Y;
+        var bx1 = sb.PointFrom.X;
+        var by1 = sb.PointFrom.Y;
         var bx2 = sb.PointTo.X;
         var by2 = sb.PointTo.Y;
 
@@ -46,18 +59,18 @@ public static class Intersections {
         var x = (da * hb / db - ha) / (1 - da / db);
         var y = (x + hb) / db;
 
-        if (x >= pa.X && x >= pb.X && x < sa.PointTo.X && x < sb.PointTo.X && y >= pa.Y && y >= pb.Y && y < sa.PointTo.Y && y < sb.PointTo.Y)
+        if (x >= ax1 && x >= bx1 && x < ax2 && x < bx2 && y >= ay1 && y >= by1 && y < ay2 && y < by2)
             result.Add(new Point(x, y));
 
         return result;
     }
 
-    private static List<Point> FindLineArcIntersections(Point pa, LinePathPart sa, Point pb, ArcPathPart sb) {
+    private static List<Point> FindLineArcIntersections(LinePathPart sa,  ArcPathPart sb) {
         var result = new List<Point>();
-        var cp = Geometry.ArcCenter(pb, sb.PointTo, sb.Radius, sb.RotationDirection, sb.IsLargeArc);
+        var cp = Geometry.ArcCenter(sb);
 
-        var ax1 = pa.X;
-        var ay1 = pa.Y;
+        var ax1 = sb.PointFrom.X;
+        var ay1 = sb.PointFrom.Y;
         var ax2 = sa.PointTo.X;
         var ay2 = sa.PointTo.Y;
         
@@ -91,26 +104,26 @@ public static class Intersections {
         return [p1, p2];
     }
 
-    private static List<Point> FindArcsIntersections(Point pa, ArcPathPart sa, Point pb, ArcPathPart sb) {
+    private static List<Point> FindArcsIntersections(ArcPathPart sa, ArcPathPart sb) {
 
-        if (Math.Abs(pa.X - pb.X) < Geometry.Accuracy && Math.Abs(pa.Y - pb.Y) < Geometry.Accuracy) {
+        if (Math.Abs(sa.PointFrom.X - sb.PointFrom.X) < Geometry.Accuracy && Math.Abs(sa.PointFrom.Y - sb.PointFrom.Y) < Geometry.Accuracy) {
             return [];
         }
         
-        var c1 = Geometry.ArcCenter(pa, sa.PointTo, sa.Radius, sa.RotationDirection, sa.IsLargeArc);
-        var c2 = Geometry.ArcCenter(pb, sb.PointTo, sb.Radius, sb.RotationDirection, sb.IsLargeArc);
+        var c1 = Geometry.ArcCenter(sa);
+        var c2 = Geometry.ArcCenter(sb);
         
         var r1 = sa.Radius;
         var r2 = sb.Radius;
 
         var result = Math.Abs(c1.X - c2.X) > Geometry.Accuracy ? 
-            FindArcsIntersectionsByX(c1, r1, c2, r2) : 
-            FindArcsIntersectionsByY(c1, r1, c2, r2);
+            FindCirclesIntersectionsByX(c1, r1, c2, r2) : 
+            FindCirclesIntersectionsByY(c1, r1, c2, r2);
         
         return result;
     }
 
-    private static List<Point> FindArcsIntersectionsByY(Point c1, double r1, Point c2, double r2) {
+    private static List<Point> FindCirclesIntersectionsByY(Point c1, double r1, Point c2, double r2) {
         //[ 1] (x-xc1)^2+(y-yc1)^2 = r1^2
         //[ 2] (x-xc2)^2+(y-yc2)^2 = r2^2
         //-----------------------------------
@@ -163,7 +176,7 @@ public static class Intersections {
         return [p1, p2];
     }
 
-    private static List<Point> FindArcsIntersectionsByX(Point c1, double r1, Point c2, double r2) {
+    private static List<Point> FindCirclesIntersectionsByX(Point c1, double r1, Point c2, double r2) {
         //[ 1] (x-xc1)^2+(y-yc1)^2 = r1^2
         //[ 2] (x-xc2)^2+(y-yc2)^2 = r2^2
         //-----------------------------------
@@ -205,8 +218,7 @@ public static class Intersections {
         var y2 = (-b - Math.Sqrt(d)) / (2 * a);
         var x1 = (f1 - y1 * dyc) / dxc;
         var x2 = (f1 - y2 * dyc) / dxc;
-
-
+        
         var p1 = new Point(x1+c1.X, y1+c1.Y);
         var p2 = new Point(x2+c1.X, y2+c1.Y);
 
@@ -214,7 +226,6 @@ public static class Intersections {
             return [p1];
 
         return [p1, p2];
-        
         
         // var result = new List<Point> {
         //     new(x1 + c1.X, y1 + c1.Y),

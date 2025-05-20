@@ -1,14 +1,18 @@
 ﻿namespace PcbReader.Geometry;
 
 public struct Bounds {
-    public Point StartPoint { get; set; }
-    public Point EndPoint { get; set; }
+    public Point MinPoint { get; set; }
+    public Point MaxPoint { get; set; }
 
     public double GetWidth() {
-        return EndPoint.X - StartPoint.X;
+        return MaxPoint.X - MinPoint.X;
     }
 
     public double GetHeight() {
-        return EndPoint.Y - StartPoint.Y;
+        return MaxPoint.Y - MinPoint.Y;
+    }
+
+    public bool Contains(Point p) {
+        return p.X > MinPoint.X && p.X < MaxPoint.X && p.Y > MinPoint.Y && p.Y < MaxPoint.Y;
     }
 }

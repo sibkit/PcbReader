@@ -1,8 +1,8 @@
 ﻿namespace PcbReader.Geometry;
 
-public class Path: IVisible {
+public class Path: IPathPartsOwner {
     public Point StartPoint { get; set; }
     public double StrokeWidth { get; init; }
-    public List<IPathPart> Segments { get; } = [];
+    public List<IPathPart> Parts { get; } = [];
 
 }

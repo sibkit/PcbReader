@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Geometry;
 
-public class Dot: IVisible {
-    public Point Point{get;set;}
-    public double Diameter{get;set;}
+public struct Dot: IVisible {
+    public Point CenterPoint{get;init;}
+    public double Diameter{get;init;}
 }
