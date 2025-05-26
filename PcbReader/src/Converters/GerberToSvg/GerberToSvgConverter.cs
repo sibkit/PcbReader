@@ -52,6 +52,7 @@ public static class GerberToSvgConverter {
                     result.Parts.Add(new LinePathPart {
                         PointFrom = startPartPoint,
                         PointTo = line.EndPoint,
+                        Owner = result
                     });
                     break;
                 case GerberArcPart arc:
@@ -121,7 +122,8 @@ public static class GerberToSvgConverter {
         return pathPart switch {
             LinePathPart line => new LinePathPart {
                 PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
-                PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y)
+                PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y),
+                Owner = newOwner
             },
             ArcPathPart arc => new ArcPathPart {
                 PointTo = arc.PointTo.WithNewY(-arc.PointTo.Y),

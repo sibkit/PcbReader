@@ -20,7 +20,8 @@ public class PathPartsPainter<T> where T : class, IPathPartsOwner, new() {
 
        PartsOwner.Parts.Add(new LinePathPart {
            PointFrom = _curPoint,
-           PointTo = new Point(x,y)
+           PointTo = new Point(x,y),
+           Owner = PartsOwner
        });
        _curPoint = new Point(x, y);
    }
@@ -28,7 +29,8 @@ public class PathPartsPainter<T> where T : class, IPathPartsOwner, new() {
 
         PartsOwner.Parts.Add(new LinePathPart {
             PointFrom = _curPoint,
-            PointTo = new Point(_curPoint.X + x, _curPoint.Y + y)
+            PointTo = new Point(_curPoint.X + x, _curPoint.Y + y),
+            Owner = PartsOwner
         });
         _curPoint= new Point(_curPoint.X + x, _curPoint.Y + y);
     }

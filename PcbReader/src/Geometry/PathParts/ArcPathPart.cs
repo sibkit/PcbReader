@@ -85,38 +85,3 @@ public class ArcPathPart : IPathPart {
     } 
 }
 
-[Flags]
-public enum Quadrant {
-    None = 0,
-    I = 1,
-    II = 2,
-    III = 4,
-    IV = 8,
-    I_II = I | II,
-    II_III = II | III,
-    III_IV = III | IV,
-    IV_I = IV |I
-}
-
-public static class QuadrantExtensions
-{
-    public static Quadrant Next(this Quadrant quadrant) {
-        return quadrant switch {
-            Quadrant.I => Quadrant.II,
-            Quadrant.II => Quadrant.III,
-            Quadrant.III => Quadrant.IV,
-            Quadrant.IV => Quadrant.I,
-            _ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
-        };
-    }
-    
-    public static Quadrant Prev(this Quadrant quadrant) {
-        return quadrant switch {
-            Quadrant.I => Quadrant.IV,
-            Quadrant.IV => Quadrant.III,
-            Quadrant.III => Quadrant.II,
-            Quadrant.II => Quadrant.I,
-            _ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
-        };
-    }
-}
