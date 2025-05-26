@@ -4,7 +4,7 @@ namespace PcbReader.Geometry.Intersections.IntersectionFinders;
 
 public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder<ArcPathPart, ArcPathPart> {
     
-    public List<Point> FindIntersectionPoints(ArcPathPart part1, ArcPathPart part2, IntersectionsSorting sorting) {
+    public List<Point> FindIntersectionPoints(ArcPathPart part1, ArcPathPart part2) {
         if (!part1.Bounds.IsIntersected(part2.Bounds))
             return [];
         

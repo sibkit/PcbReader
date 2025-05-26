@@ -3,7 +3,7 @@
 namespace PcbReader.Geometry.Intersections.IntersectionFinders;
 
 public class LineWithLineIntersectionPointsFinder: IIntersectionPointsFinder<LinePathPart, LinePathPart> {
-    public List<Point> FindIntersectionPoints(LinePathPart part1, LinePathPart part2, IntersectionsSorting sorting) {
+    public List<Point> FindIntersectionPoints(LinePathPart part1, LinePathPart part2) {
         var p1X1 = part1.PointFrom.X;
         var p1Y1 = part1.PointFrom.Y;
         var p1X2 = part1.PointTo.X;

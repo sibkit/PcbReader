@@ -6,7 +6,7 @@ public class LineWithCircleIntersectionPointsFinder : IIntersectionPointsFinder<
 
 
 
-    public List<Point> FindIntersectionPoints(LinePathPart part1, ArcPathPart part2, IntersectionsSorting sorting) {
+    public List<Point> FindIntersectionPoints(LinePathPart part1, ArcPathPart part2) {
         
         var p2C = Geometry.ArcCenter(part2);
         
