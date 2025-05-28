@@ -1,9 +1,10 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
 using PcbReader.Core;
-using PcbReader.Core.PathParts;
+using PcbReader.Core.GraphicElements;
+using PcbReader.Core.GraphicElements.PathParts;
 using PcbReader.Layers.Svg.Entities;
-using Path = PcbReader.Core.Path;
+using Path = PcbReader.Core.GraphicElements.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
 
@@ -39,19 +40,19 @@ public static class SvgWriter {
                     break;
                 case Shape shape:
 
-                    result = ExtendBounds(result, shape.OuterContour.StartPoint);
+                    result = ExtendBounds(result, shape.OuterContour.Parts[0].PointFrom);
                     foreach (var pp in shape.OuterContour.Parts)
                         result = ExtendBounds(result, pp.PointTo);
 
                     foreach (var ic in shape.InnerContours) {
-                        result = ExtendBounds(result, ic.StartPoint);
+                        result = ExtendBounds(result, ic.Parts[0].PointFrom);
                         foreach (var pp in ic.Parts)
                             result = ExtendBounds(result, pp.PointTo);
                     }
 
                     break;
                 case Contour contour:
-                    result = ExtendBounds(result, contour.StartPoint);
+                    result = ExtendBounds(result, contour.Parts[0].PointFrom);
                     foreach (var pp in contour.Parts)
                         result = ExtendBounds(result, pp.PointTo);
                     break;
@@ -93,8 +94,12 @@ public static class SvgWriter {
     }
 
     static void WritePath(StreamWriter writer, Path path) {
-        var sp = path.StartPoint;
-        writer.Write("\n<path d=\"M  " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
+        //var sp = path.StartPoint;
+        if(path.Parts.Count==0)
+            return;
+        var firstPart = path.Parts[0];
+        
+        writer.Write("\n<path d=\"M  " + Math.Round(firstPart.PointFrom.X, 6) + " " + Math.Round(firstPart.PointFrom.Y, 6) + " ");
         foreach (var pp in path.Parts) 
             WritePathPart(writer, pp);
         if (path.StrokeWidth > 0.00000001) {
@@ -104,7 +109,9 @@ public static class SvgWriter {
     }
 
     static void WriteContour(StreamWriter writer, Contour contour) {
-        var sp = contour.StartPoint;
+        if(contour.Parts.Count==0)
+            return;
+        var sp = contour.Parts[0].PointFrom;
         writer.Write("\n<path d=\"M  " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
         foreach (var pp in contour.Parts) 
             WritePathPart(writer, pp);

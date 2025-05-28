@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core.PathParts;
+﻿namespace PcbReader.Core.GraphicElements.PathParts;
 
 
 
@@ -8,7 +8,7 @@ public class ArcPathPart : IPathPart {
     
     public required Point PointTo { get; init; }
     public required Point PointFrom { get; init; }
-    public required PathPartsOwner Owner { get; init; }
+
     
     public required double Radius { get; init; }
     public required bool IsLargeArc { get; init; } = false;
@@ -82,6 +82,17 @@ public class ArcPathPart : IPathPart {
             }
             return _bounds.Value;
         }
-    } 
+    }
+
+    public IPathPart GetReversed() {
+        var result = new ArcPathPart {
+            PointTo = PointFrom,
+            PointFrom = PointTo,
+            Radius = Radius,
+            IsLargeArc = IsLargeArc,
+            RotationDirection = RotationDirection.Invert()
+        };
+        return result;
+    }
 }
 

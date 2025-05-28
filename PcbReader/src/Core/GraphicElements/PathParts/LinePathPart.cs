@@ -1,11 +1,10 @@
-﻿namespace PcbReader.Core.PathParts;
+﻿namespace PcbReader.Core.GraphicElements.PathParts;
 
 public class LinePathPart: IPathPart {
     private Bounds? _bounds;
     
     public required Point PointTo { get; init; }
     public required Point PointFrom { get; init; }
-    public required PathPartsOwner Owner { get; init; }
 
     public Bounds Bounds {
         get {
@@ -35,5 +34,13 @@ public class LinePathPart: IPathPart {
             }
             return _bounds.Value;
         }
+    }
+
+    public IPathPart GetReversed() {
+        var result = new LinePathPart {
+            PointFrom = PointTo,
+            PointTo = PointFrom
+        };
+        return result;
     }
 }

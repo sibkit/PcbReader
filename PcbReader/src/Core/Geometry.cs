@@ -1,4 +1,4 @@
-﻿using PcbReader.Core.PathParts;
+﻿using PcbReader.Core.GraphicElements.PathParts;
 
 namespace PcbReader.Core;
 

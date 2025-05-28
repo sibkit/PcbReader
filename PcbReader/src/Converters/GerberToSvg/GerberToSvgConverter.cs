@@ -1,17 +1,17 @@
 ﻿
 using System.Net.Http.Headers;
 using PcbReader.Core;
-using PcbReader.Core.PathParts;
+using PcbReader.Core.GraphicElements;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
-using ArcPathPart = PcbReader.Core.PathParts.ArcPathPart;
+using ArcPathPart = PcbReader.Core.GraphicElements.PathParts.ArcPathPart;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
-using IPathPart = PcbReader.Core.IPathPart;
-using LinePathPart = PcbReader.Core.PathParts.LinePathPart;
-using Path = PcbReader.Core.Path;
+using IPathPart = PcbReader.Core.GraphicElements.IPathPart;
+using LinePathPart = PcbReader.Core.GraphicElements.PathParts.LinePathPart;
+using Path = PcbReader.Core.GraphicElements.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
@@ -42,7 +42,7 @@ public static class GerberToSvgConverter {
     static Path ConvertPath(PathPaintOperation operation) {
         var result = new Path {
             StrokeWidth = operation.Aperture.Diameter,
-            StartPoint = operation.StartPoint,
+            //StartPoint = operation.StartPoint,
         };
 
         var startPartPoint = operation.StartPoint;
@@ -51,8 +51,7 @@ public static class GerberToSvgConverter {
                 case GerberLinePart line:
                     result.Parts.Add(new LinePathPart {
                         PointFrom = startPartPoint,
-                        PointTo = line.EndPoint,
-                        Owner = result
+                        PointTo = line.EndPoint
                     });
                     break;
                 case GerberArcPart arc:
@@ -90,7 +89,6 @@ public static class GerberToSvgConverter {
                 IsLargeArc = false,
                 PointFrom = gsp,
                 PointTo = new Point(mpx, mpy),
-                Owner = owner
             };
             var part2 = new ArcPathPart {
                 RotationDirection = arcWay.RotationDirection,
@@ -98,7 +96,6 @@ public static class GerberToSvgConverter {
                 IsLargeArc = true,
                 PointFrom = new Point(mpx, mpy),
                 PointTo = gsp,
-                Owner = owner
             };
             result.Add(part1);
             result.Add(part2);
@@ -110,7 +107,6 @@ public static class GerberToSvgConverter {
                 Radius = tr,
                 IsLargeArc = arcWay.IsLarge,
                 PointFrom = gsp,
-                Owner = owner,
             };
             result.Add(part);
         }
@@ -123,14 +119,12 @@ public static class GerberToSvgConverter {
             LinePathPart line => new LinePathPart {
                 PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
                 PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y),
-                Owner = newOwner
             },
             ArcPathPart arc => new ArcPathPart {
                 PointTo = arc.PointTo.WithNewY(-arc.PointTo.Y),
                 PointFrom = arc.PointFrom.WithNewY(-arc.PointFrom.Y),
                 IsLargeArc = arc.IsLargeArc,
                 RotationDirection = arc.RotationDirection.Invert(),
-                Owner = newOwner,
                 Radius = arc.Radius,
             },
             _ => throw new Exception("GerberToSvgConverter: InvertAxis")
@@ -138,7 +132,7 @@ public static class GerberToSvgConverter {
     }
 
     static void InvertAxis(PathPartsOwner ctx) {
-        ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
+        //ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
         foreach (var p in ctx.Parts) {
             InvertAxis(p, ctx);
         }

@@ -1,5 +1,6 @@
 ﻿using PcbReader.Converters.PathEdit;
 using PcbReader.Core;
+using PcbReader.Core.GraphicElements;
 using PcbReader.Layers.Gerber.Entities.Apertures;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro.Expressions;

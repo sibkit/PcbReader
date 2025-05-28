@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core;
+﻿namespace PcbReader.Core.GraphicElements;
 
 public class Shape: IGraphicElement {
     

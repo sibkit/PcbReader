@@ -1,15 +1,17 @@
 ﻿using PcbReader.Core;
-using PcbReader.Core.PathParts;
-using Path = PcbReader.Core.Path;
+using PcbReader.Core.GraphicElements;
+using PcbReader.Core.GraphicElements.PathParts;
+using Path = PcbReader.Core.GraphicElements.Path;
 
 namespace PcbReader.Converters.PathEdit;
 
 public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
     public T PartsOwner { get; } = new T();
-
+    private Point _startPoint;
+    
     public PathPartsPainter(double x, double y) {
-        PartsOwner.StartPoint = new Point(x, y);
+        _startPoint = new Point(x, y);
         _curPoint = new Point(x, y);
     }
     
@@ -20,8 +22,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
        PartsOwner.Parts.Add(new LinePathPart {
            PointFrom = _curPoint,
-           PointTo = new Point(x,y),
-           Owner = PartsOwner
+           PointTo = new Point(x,y)
        });
        _curPoint = new Point(x, y);
    }
@@ -29,8 +30,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
         PartsOwner.Parts.Add(new LinePathPart {
             PointFrom = _curPoint,
-            PointTo = new Point(_curPoint.X + x, _curPoint.Y + y),
-            Owner = PartsOwner
+            PointTo = new Point(_curPoint.X + x, _curPoint.Y + y)
         });
         _curPoint= new Point(_curPoint.X + x, _curPoint.Y + y);
     }
@@ -44,8 +44,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
                 _curPoint.Y - y),
             IsLargeArc = isLarge,
             Radius = radius,
-            RotationDirection = direction,
-            Owner = PartsOwner
+            RotationDirection = direction
         });
     }
 

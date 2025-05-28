@@ -1,10 +1,10 @@
-﻿namespace PcbReader.Core;
+﻿namespace PcbReader.Core.GraphicElements;
 
 public abstract class PathPartsOwner: IGraphicElement {
     private Bounds? _bounds = new Bounds();
-    
-    public List<IPathPart> Parts { get; }
-    public Point StartPoint { get; set; }
+
+    public List<IPathPart> Parts { get; } = [];
+    //public Point StartPoint { get; set; }
     
     public void UpdateBounds() {
         foreach (var p in Parts) {

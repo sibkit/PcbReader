@@ -1,5 +1,6 @@
-﻿using PcbReader.Core.Intersections.IntersectionFinders;
-using PcbReader.Core.PathParts;
+﻿using PcbReader.Core.GraphicElements;
+using PcbReader.Core.GraphicElements.PathParts;
+using PcbReader.Core.Intersections.IntersectionFinders;
 
 namespace PcbReader.Core.Intersections;
 

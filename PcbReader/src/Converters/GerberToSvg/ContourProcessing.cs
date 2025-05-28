@@ -1,6 +1,6 @@
 ﻿using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
 using PcbReader.Layers.Svg.Entities;
-using Path = PcbReader.Core.Path;
+using Path = PcbReader.Core.GraphicElements.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
