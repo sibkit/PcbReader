@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using PcbReader.Geometry;
+using PcbReader.Core;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;

@@ -1,4 +1,4 @@
-﻿using PcbReader.Geometry;
+﻿using PcbReader.Core;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities.Apertures;
 

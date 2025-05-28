@@ -1,9 +1,9 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
-using PcbReader.Geometry;
-using PcbReader.Geometry.PathParts;
+using PcbReader.Core;
+using PcbReader.Core.PathParts;
 using PcbReader.Layers.Svg.Entities;
-using Path = PcbReader.Geometry.Path;
+using Path = PcbReader.Core.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
 

@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Geometry.Intersections;
+﻿namespace PcbReader.Core.Intersections;
 
 public class Intersection {
     public required Point Point { get; init; }

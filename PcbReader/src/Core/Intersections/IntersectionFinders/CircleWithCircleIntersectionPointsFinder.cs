@@ -1,6 +1,6 @@
-﻿using PcbReader.Geometry.PathParts;
+﻿using PcbReader.Core.PathParts;
 
-namespace PcbReader.Geometry.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Intersections.IntersectionFinders;
 
 public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder<ArcPathPart, ArcPathPart> {
     

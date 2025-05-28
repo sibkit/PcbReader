@@ -1,6 +1,6 @@
-﻿using PcbReader.Geometry.PathParts;
+﻿using PcbReader.Core.PathParts;
 
-namespace PcbReader.Geometry;
+namespace PcbReader.Core;
 
 public readonly struct ArcWay(RotationDirection direction, bool isLarge) {
     public RotationDirection RotationDirection { get; init; } = direction;

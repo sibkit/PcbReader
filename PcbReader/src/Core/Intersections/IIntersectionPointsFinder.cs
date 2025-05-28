@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Geometry.Intersections;
+﻿namespace PcbReader.Core.Intersections;
 
 public interface IIntersectionPointsFinder<in TF, in TS> 
     where TF : IPathPart

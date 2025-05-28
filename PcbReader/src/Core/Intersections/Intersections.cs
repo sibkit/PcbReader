@@ -1,7 +1,7 @@
-﻿using PcbReader.Geometry.Intersections.IntersectionFinders;
-using PcbReader.Geometry.PathParts;
+﻿using PcbReader.Core.Intersections.IntersectionFinders;
+using PcbReader.Core.PathParts;
 
-namespace PcbReader.Geometry.Intersections;
+namespace PcbReader.Core.Intersections;
 
 public static class Intersections {
     

@@ -1,4 +1,4 @@
-﻿using PcbReader.Geometry;
+﻿using PcbReader.Core;
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
 using ApplicationException = System.ApplicationException;

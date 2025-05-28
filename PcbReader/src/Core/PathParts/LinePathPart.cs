@@ -1,11 +1,11 @@
-﻿namespace PcbReader.Geometry.PathParts;
+﻿namespace PcbReader.Core.PathParts;
 
 public class LinePathPart: IPathPart {
     private Bounds? _bounds;
     
     public required Point PointTo { get; init; }
     public required Point PointFrom { get; init; }
-    public required IPathPartsOwner Owner { get; init; }
+    public required PathPartsOwner Owner { get; init; }
 
     public Bounds Bounds {
         get {

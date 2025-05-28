@@ -1,8 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using PcbReader.Converters.PathEdit;
-using PcbReader.Geometry;
-using PcbReader.Geometry.Intersections;
-using PcbReader.Geometry.Intersections.IntersectionFinders;
+using PcbReader.Core;
+using PcbReader.Core.Intersections;
 
 namespace PcbReaderTest.GeometryTest.IntersectionsTest;
 

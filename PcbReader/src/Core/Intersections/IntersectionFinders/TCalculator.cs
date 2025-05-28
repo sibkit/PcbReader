@@ -1,7 +1,6 @@
-﻿using System.IO.Enumeration;
-using PcbReader.Geometry.PathParts;
+﻿using PcbReader.Core.PathParts;
 
-namespace PcbReader.Geometry.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Intersections.IntersectionFinders;
 
 public static class TCalculator {
     

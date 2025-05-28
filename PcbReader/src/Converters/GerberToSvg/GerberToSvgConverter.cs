@@ -1,17 +1,17 @@
 ﻿
 using System.Net.Http.Headers;
-using PcbReader.Geometry;
-using PcbReader.Geometry.PathParts;
+using PcbReader.Core;
+using PcbReader.Core.PathParts;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
-using ArcPathPart = PcbReader.Geometry.PathParts.ArcPathPart;
+using ArcPathPart = PcbReader.Core.PathParts.ArcPathPart;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
-using IPathPart = PcbReader.Geometry.IPathPart;
-using LinePathPart = PcbReader.Geometry.PathParts.LinePathPart;
-using Path = PcbReader.Geometry.Path;
+using IPathPart = PcbReader.Core.IPathPart;
+using LinePathPart = PcbReader.Core.PathParts.LinePathPart;
+using Path = PcbReader.Core.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 
@@ -66,7 +66,7 @@ public static class GerberToSvgConverter {
         return result;
     }
     
-    static List<ArcPathPart> ConvertArcPath(Point gsp, GerberArcPart gap, IPathPartsOwner owner) {
+    static List<ArcPathPart> ConvertArcPath(Point gsp, GerberArcPart gap, PathPartsOwner owner) {
         var result = new List<ArcPathPart>();
         //var cx = gsp.X + gap.IOffset;
         //var cy = gsp.Y - gap.JOffset;
@@ -80,7 +80,7 @@ public static class GerberToSvgConverter {
             Math.Pow(cx - gap.EndPoint.X, 2) +
             Math.Pow(cy - gap.EndPoint.Y, 2));
         var tr = (r2 + r1) / 2; //true radius
-        var arcWay = Geometry.Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy));
+        var arcWay = Geometry.ArcWay(gsp, gap.EndPoint, new Point(cx, cy));
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
@@ -118,7 +118,7 @@ public static class GerberToSvgConverter {
     }
 
 
-    static IPathPart InvertAxis(IPathPart pathPart, IPathPartsOwner newOwner) {
+    static IPathPart InvertAxis(IPathPart pathPart, PathPartsOwner newOwner) {
         return pathPart switch {
             LinePathPart line => new LinePathPart {
                 PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
@@ -137,7 +137,7 @@ public static class GerberToSvgConverter {
         };
     }
 
-    static void InvertAxis(IPathPartsOwner ctx) {
+    static void InvertAxis(PathPartsOwner ctx) {
         ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
         foreach (var p in ctx.Parts) {
             InvertAxis(p, ctx);
@@ -148,7 +148,7 @@ public static class GerberToSvgConverter {
         foreach (var e in layer.Elements) {
             switch (e) {
 
-                case IPathPartsOwner ctr:
+                case PathPartsOwner ctr:
                     InvertAxis(ctr);
                     break;
                 case Shape shape:

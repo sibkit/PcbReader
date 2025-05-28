@@ -1,10 +1,10 @@
-﻿using PcbReader.Geometry;
-using PcbReader.Geometry.PathParts;
-using Path = PcbReader.Geometry.Path;
+﻿using PcbReader.Core;
+using PcbReader.Core.PathParts;
+using Path = PcbReader.Core.Path;
 
 namespace PcbReader.Converters.PathEdit;
 
-public class PathPartsPainter<T> where T : class, IPathPartsOwner, new() {
+public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
     public T PartsOwner { get; } = new T();
 

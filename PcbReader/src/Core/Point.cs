@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Geometry;
+﻿namespace PcbReader.Core;
 
 public readonly struct Point(double x, double y) : IEquatable<Point> {
     public double X { get; } = x;

@@ -1,9 +1,9 @@
-﻿namespace PcbReader.Geometry;
+﻿namespace PcbReader.Core;
 
 public interface IPathPart {
     Point PointFrom { get; }
     Point PointTo { get; }
-    IPathPartsOwner Owner { get; }
+    PathPartsOwner Owner { get; }
 
     Bounds Bounds { get; }
 }
