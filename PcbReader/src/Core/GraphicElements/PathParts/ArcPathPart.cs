@@ -2,7 +2,7 @@
 
 
 
-public class ArcPathPart : IPathPart {
+public class ArcPathPart : IPathPart, ICloneable {
 
     private Bounds? _bounds;
     
@@ -93,6 +93,10 @@ public class ArcPathPart : IPathPart {
             RotationDirection = RotationDirection.Invert()
         };
         return result;
+    }
+
+    public object Clone() {
+        return MemberwiseClone();
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Core.GraphicElements.PathParts;
 
-public class LinePathPart: IPathPart {
+public class LinePathPart: IPathPart, ICloneable {
     private Bounds? _bounds;
     
     public required Point PointTo { get; init; }
@@ -42,5 +42,9 @@ public class LinePathPart: IPathPart {
             PointTo = PointFrom
         };
         return result;
+    }
+
+    public object Clone() {
+        return MemberwiseClone();
     }
 }
