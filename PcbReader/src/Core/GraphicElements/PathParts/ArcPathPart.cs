@@ -6,20 +6,24 @@ public class ArcPathPart : IPathPart, ICloneable {
 
     private Bounds? _bounds;
     
-    public required Point PointTo { get; init; }
-    public required Point PointFrom { get; init; }
+    public required Point PointTo { get; set; }
+    public required Point PointFrom { get; set; }
 
     
     public required double Radius { get; init; }
-    public required bool IsLargeArc { get; init; } = false;
+    public required bool IsLargeArc { get; set; } = false;
     public required RotationDirection RotationDirection { get; set; } = 0;
     
     
     private static Quadrant GetQuadrant(Point centerPoint, Point point) {
-        if (centerPoint.Y < point.Y) {
-            return point.X < centerPoint.X ? Quadrant.II : Quadrant.I;
+        if (centerPoint.Y <= point.Y) {
+            return point.X <= centerPoint.X ? Quadrant.II : Quadrant.I;
         }
-        return point.X < centerPoint.X ? Quadrant.III : Quadrant.IV;
+        return point.X <= centerPoint.X ? Quadrant.III : Quadrant.IV;
+    }
+
+    public void UpdateBounds() {
+        _bounds = null;
     }
     
     public Bounds Bounds {
@@ -36,7 +40,7 @@ public class ArcPathPart : IPathPart, ICloneable {
 
                 var quadrants = Quadrant.None;
         
-                if (this.RotationDirection == RotationDirection.CounterClockwise) {
+                if (RotationDirection == RotationDirection.CounterClockwise) {
                     while (epq != spq) {
                         quadrants |= spq;
                         spq = spq.Next();
@@ -47,7 +51,8 @@ public class ArcPathPart : IPathPart, ICloneable {
                         spq = spq.Prev();
                     }
                 }
-        
+                quadrants |= spq;
+
                 double minX;
                 double minY;
                 double maxX;

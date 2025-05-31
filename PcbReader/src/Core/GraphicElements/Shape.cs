@@ -9,4 +9,10 @@ public class Shape: IGraphicElement {
     public Bounds GetBounds() {
         return OuterContour.GetBounds();
     }
+
+    public void UpdateBounds() {
+        OuterContour.UpdateBounds();
+        foreach(var ic in InnerContours)
+            ic.UpdateBounds();
+    }
 }

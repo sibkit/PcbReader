@@ -1,13 +1,11 @@
-﻿using PcbReader.Core;
-using PcbReader.Core.GraphicElements;
+﻿using PcbReader.Core.GraphicElements;
 using PcbReader.Core.GraphicElements.PathParts;
-using Path = PcbReader.Core.GraphicElements.Path;
 
-namespace PcbReader.Converters.PathEdit;
+namespace PcbReader.Core.PathEdit;
 
 public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
-    public T PartsOwner { get; } = new T();
+    public T Root { get; } = new T();
     private Point _startPoint;
     
     public PathPartsPainter(double x, double y) {
@@ -20,7 +18,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
    public void LineToAbs(double x, double y) {
 
-       PartsOwner.Parts.Add(new LinePathPart {
+       Root.Parts.Add(new LinePathPart {
            PointFrom = _curPoint,
            PointTo = new Point(x,y)
        });
@@ -28,7 +26,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
    }
     public void LineToInc(double x, double y) {
 
-        PartsOwner.Parts.Add(new LinePathPart {
+        Root.Parts.Add(new LinePathPart {
             PointFrom = _curPoint,
             PointTo = new Point(_curPoint.X + x, _curPoint.Y + y)
         });
@@ -38,7 +36,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
     public void ArcToInc(double x, double y, double radius, RotationDirection direction, bool isLarge) {
         _curPoint = new Point(_curPoint.X + x, _curPoint.Y + y);
         
-        PartsOwner.Parts.Add(new ArcPathPart {
+        Root.Parts.Add(new ArcPathPart {
             PointTo = _curPoint,
             PointFrom = new Point(_curPoint.X - x,
                 _curPoint.Y - y),
@@ -58,7 +56,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
         var betta = Math.Acos((x - rotationCenter.X) / r);
 
         switch (direction) {
-            case RotationDirection.ClockWise:
+            case RotationDirection.Clockwise:
                 return (x + r * Math.Cos(angle), y - r * Math.Sin(angle));
             case RotationDirection.CounterClockwise:
                 return (rotationCenter.X + x, rotationCenter.Y - y);

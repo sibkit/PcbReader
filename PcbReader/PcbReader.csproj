@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="src\Converters\ExcellonToSvg\" />
-    <Folder Include="src\Core\ContourOperations\" />
     <Folder Include="src\Project\" />
   </ItemGroup>
 

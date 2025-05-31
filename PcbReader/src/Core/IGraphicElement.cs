@@ -2,4 +2,5 @@
 
 public interface IGraphicElement {
     Bounds GetBounds();
+    void UpdateBounds();
 } 

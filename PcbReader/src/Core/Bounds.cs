@@ -13,8 +13,8 @@ public readonly struct Bounds {
     public Bounds(Point minPoint, Point maxPoint) : this(minPoint.X, minPoint.Y, maxPoint.X, maxPoint.Y) { }
 
     public Bounds(double minX, double minY, double maxX, double maxY) {
-        if(minX > maxX || minY > maxY)
-            throw new Exception("Bounds: minPoint must be greater than or equal to maxPoint");
+        // if(minX > maxX || minY > maxY)
+        //     throw new Exception("Bounds: minPoint must be greater than or equal to maxPoint");
         MinX = minX;
         MinY = minY;
         MaxX = maxX;

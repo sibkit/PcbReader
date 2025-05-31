@@ -1,6 +1,6 @@
-﻿using PcbReader.Converters.PathEdit;
-using PcbReader.Core;
+﻿using PcbReader.Core;
 using PcbReader.Core.GraphicElements;
+using PcbReader.Core.PathEdit;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.Apertures;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
@@ -31,15 +31,15 @@ public class ApertureConverter(GerberLayer layer) {
         pOuter.ArcToInc(2 * r, 0, r, RotationDirection.CounterClockwise, false);
         pOuter.ArcToInc(-2 * r, 0, r, RotationDirection.CounterClockwise, false);
         var result = new Shape {
-            OuterContour = pOuter.PartsOwner
+            OuterContour = pOuter.Root
         };
 
 
         if (circle.HoleDiameter is { } hd and > 0.000001) {
             var pInner = new PathPartsPainter<Contour>(coordinate.X - r, coordinate.Y);
-            pInner.ArcToInc(2 * r, 0, r, RotationDirection.ClockWise, false);
-            pInner.ArcToInc(-2 * r, 0, r, RotationDirection.ClockWise, false);
-            result.InnerContours.Add(pInner.PartsOwner);
+            pInner.ArcToInc(2 * r, 0, r, RotationDirection.Clockwise, false);
+            pInner.ArcToInc(-2 * r, 0, r, RotationDirection.Clockwise, false);
+            result.InnerContours.Add(pInner.Root);
         }
 
         return result;
@@ -54,15 +54,15 @@ public class ApertureConverter(GerberLayer layer) {
         outerPainter.LineToInc(0, -rect.YSize);
         
         var result = new Shape {
-            OuterContour = outerPainter.PartsOwner
+            OuterContour = outerPainter.Root
         };
         
         if (rect.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
             var innerPainter = new PathPartsPainter<Contour>(coordinate.X - r, coordinate.Y);
-            innerPainter.ArcToInc(2 * r, 0, r, RotationDirection.ClockWise, false);
-            innerPainter.ArcToInc(-2 * r, 0, r, RotationDirection.ClockWise, false);
-            result.InnerContours.Add(innerPainter.PartsOwner);
+            innerPainter.ArcToInc(2 * r, 0, r, RotationDirection.Clockwise, false);
+            innerPainter.ArcToInc(-2 * r, 0, r, RotationDirection.Clockwise, false);
+            result.InnerContours.Add(innerPainter.Root);
         }
 
         return result;
@@ -79,7 +79,7 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.ArcToInc(-2 * br, 0, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(0, -(obRound.YSize - 2 * br));
             result = new Shape {
-                OuterContour = outerPainter.PartsOwner
+                OuterContour = outerPainter.Root
             };
         } else {
             var br = obRound.XSize / 2;
@@ -89,18 +89,18 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.ArcToInc(0, 2 * br, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(-(obRound.XSize - 2 * br), 0);
             result = new Shape {
-                OuterContour = outerPainter.PartsOwner
+                OuterContour = outerPainter.Root
             };
         }
 
         if (obRound.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
             var innerPainter = new PathPartsPainter<Contour>(coordinate.X - r, coordinate.Y);
-            innerPainter.ArcToInc(r, r, r, RotationDirection.ClockWise, false);
-            innerPainter.ArcToInc(r, -r, r, RotationDirection.ClockWise, false);
-            innerPainter.ArcToInc(-r, -r, r, RotationDirection.ClockWise, false);
-            innerPainter.ArcToInc(-r, r, r, RotationDirection.ClockWise, false);
-            result.InnerContours.Add(innerPainter.PartsOwner);
+            innerPainter.ArcToInc(r, r, r, RotationDirection.Clockwise, false);
+            innerPainter.ArcToInc(r, -r, r, RotationDirection.Clockwise, false);
+            innerPainter.ArcToInc(-r, -r, r, RotationDirection.Clockwise, false);
+            innerPainter.ArcToInc(-r, r, r, RotationDirection.Clockwise, false);
+            result.InnerContours.Add(innerPainter.Root);
         }
 
         return result;

@@ -28,6 +28,28 @@ public static class TCalculator {
             _ => throw new ArgumentOutOfRangeException(nameof(pp), pp, null)
         };
     }
+
+    public static Point CalculatePoint(IPathPart pp, double t) {
+        return pp switch {
+            LinePathPart linePart => CalculatePoint(linePart, t),
+            ArcPathPart arcPart => CalculatePoint(arcPart, t),
+            _ => throw new ArgumentOutOfRangeException(nameof(pp), pp, null)
+        };
+    }
+
+    public static Point CalculatePoint(LinePathPart pp, double t) {
+        return new Point(
+            pp.PointFrom.X + t * (pp.PointTo.X - pp.PointFrom.X),
+            pp.PointFrom.Y + t * (pp.PointTo.Y - pp.PointFrom.Y)
+        );
+    }
+
+    public static Point CalculatePoint(ArcPathPart pp, double t) {
+        return new Point(
+            pp.PointFrom.X + t * (pp.PointTo.X - pp.PointFrom.X),
+            pp.PointFrom.Y + t * (pp.PointTo.Y - pp.PointFrom.Y)
+        );
+    }
     
     public static double CalculateT(LinePathPart part, Point ip) {
         var dx = Math.Abs(part.PointTo.X - part.PointFrom.X);
@@ -58,14 +80,13 @@ public static class TCalculator {
         var ipPrX = ip.X-cp.X;
         var ipPrY = ip.Y-cp.Y;
         
-        
         var startAngle = PositiveNormalize(Math.Atan2(spPrY, spPrX));
         var endAngle = PositiveNormalize(Math.Atan2(epPrY, epPrX));
         var intersectionAngle = PositiveNormalize(Math.Atan2(ipPrY, ipPrX));
         
         double fullArcAngle;
         switch (part.RotationDirection) {
-            case RotationDirection.ClockWise:
+            case RotationDirection.Clockwise:
                 //знак с минусом
                 fullArcAngle = NegativeNormalize(endAngle - startAngle);
                 return NegativeNormalize(intersectionAngle-startAngle) / fullArcAngle;
@@ -74,7 +95,7 @@ public static class TCalculator {
                 fullArcAngle = PositiveNormalize(endAngle - startAngle);
                 return PositiveNormalize(intersectionAngle-startAngle) / fullArcAngle;
             default:
-                throw new Exception("ArcArcIntersectionsFinder : CalculateT");
+                throw new Exception("TCalculator : CalculateT");
         }
     }
 }

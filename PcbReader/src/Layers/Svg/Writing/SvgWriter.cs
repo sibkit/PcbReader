@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using PcbReader.Core;
 using PcbReader.Core.GraphicElements;
 using PcbReader.Core.GraphicElements.PathParts;
@@ -12,7 +13,7 @@ namespace PcbReader.Layers.Svg.Writing;
 public static class SvgWriter {
 
     static SvgWriter() {
-        
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
     }
 
     private static Bounds ExtendBounds(Bounds bounds, Point pt) {
@@ -34,6 +35,7 @@ public static class SvgWriter {
             switch (e) {
                 case Path p:
                     foreach (var pp in p.Parts) {
+                        result = ExtendBounds(result, pp.PointFrom);
                         result = ExtendBounds(result, pp.PointTo);
                     }
 
@@ -41,20 +43,29 @@ public static class SvgWriter {
                 case Shape shape:
 
                     result = ExtendBounds(result, shape.OuterContour.Parts[0].PointFrom);
-                    foreach (var pp in shape.OuterContour.Parts)
+                    foreach (var pp in shape.OuterContour.Parts) {
+                        result = ExtendBounds(result, pp.PointFrom);
                         result = ExtendBounds(result, pp.PointTo);
+                    }
+                        
 
                     foreach (var ic in shape.InnerContours) {
-                        result = ExtendBounds(result, ic.Parts[0].PointFrom);
-                        foreach (var pp in ic.Parts)
+
+                        foreach (var pp in ic.Parts) {
+                            result = ExtendBounds(result, ic.Parts[0].PointFrom);
                             result = ExtendBounds(result, pp.PointTo);
+                        }
+                            
                     }
 
                     break;
                 case Contour contour:
-                    result = ExtendBounds(result, contour.Parts[0].PointFrom);
-                    foreach (var pp in contour.Parts)
+
+                    foreach (var pp in contour.Parts) {
                         result = ExtendBounds(result, pp.PointTo);
+                        result = ExtendBounds(result, contour.Parts[0].PointFrom);
+                    }
+                        
                     break;
                 case Dot dot:
                     result = ExtendBounds(result, dot.CenterPoint);
@@ -75,6 +86,7 @@ public static class SvgWriter {
         return result;
     }
 
+    private static List<Bounds> _pathPartsBounds = [];
     static void WritePathPart(StreamWriter writer, IPathPart pathPart) {
         switch (pathPart) {
             case LinePathPart l:
@@ -86,11 +98,12 @@ public static class SvgWriter {
                              Math.Round(a.Radius, 8) + " " +
                              "0 " +
                              (a.IsLargeArc ? "1 " : "0 ") +
-                             (a.RotationDirection == RotationDirection.ClockWise ? "1 " : "0 ") +
+                             (a.RotationDirection == RotationDirection.Clockwise ? "1 " : "0 ") +
                              Math.Round(a.PointTo.X, 8) + " " +
                              Math.Round(a.PointTo.Y, 8) + " ");
                 break;
         }
+        _pathPartsBounds.Add(pathPart.Bounds);
     }
 
     static void WritePath(StreamWriter writer, Path path) {
@@ -123,19 +136,20 @@ public static class SvgWriter {
     }
 
     static void WriteDot(StreamWriter writer, Dot dot) {
-        writer.Write("<circle cx=\"" + Math.Round(dot.CenterPoint.X, 6) + "\" cy=\"" + Math.Round(dot.CenterPoint.Y, 6) + "\" r=\"" + Math.Round(dot.Diameter / 2, 6) + "\" fill=\"black\"/>");
+        writer.Write("<circle cx=\"" + Math.Round(dot.CenterPoint.X, 6) + "\" cy=\"" + Math.Round(dot.CenterPoint.Y, 6) + "\" r=\"" + Math.Round(dot.Diameter / 2, 6) + "\" fill=\"red\"/>");
     }
 
     public static void Write(SvgLayer doc, string fileName) {
         using var swr = new StreamWriter(fileName);
+        
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
 
         swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
-                  Math.Round(vbr.MinPoint.X,6)+ " "+
+                   Math.Round(vbr.MinPoint.X,6)+ " "+
                   Math.Round(vbr.MinPoint.Y,6)+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
-        swr.Write("\n<g fill=\"none\" stroke=\"red\"  stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\"0\">");
+        swr.Write("\n<g fill=\"none\" stroke=\"red\" stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\"0\">");
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:
@@ -151,9 +165,19 @@ public static class SvgWriter {
                     WriteDot(swr, dot);
                     break;
             }
+            AddBoundsRect(swr,e.GetBounds());
         }
+
+        foreach (var b in _pathPartsBounds) {
+            AddBoundsRect(swr,b);
+        }
+        
         swr.Write("\n</g>");
         swr.Write("\n</svg>");
         swr.Flush();
+    }
+
+    static void AddBoundsRect(StreamWriter writer, Bounds b) {
+        writer.Write("\n<rect x=\""+Math.Round(b.MinX)+"\" y=\""+Math.Round(b.MinY)+"\" width=\""+Math.Round(b.GetWidth())+"\" height=\""+Math.Round(b.GetHeight())+"\" fill=\"none\" stroke=\"yellow\" stroke-width=\"0.4px\"/>");
     }
 }

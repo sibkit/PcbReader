@@ -3,9 +3,13 @@
 public class LinePathPart: IPathPart, ICloneable {
     private Bounds? _bounds;
     
-    public required Point PointTo { get; init; }
-    public required Point PointFrom { get; init; }
+    public required Point PointTo { get; set; }
+    public required Point PointFrom { get; set; }
 
+    public void UpdateBounds() {
+        _bounds = null;
+    }
+    
     public Bounds Bounds {
         get {
             if (_bounds == null) {

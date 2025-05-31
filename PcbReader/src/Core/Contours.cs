@@ -4,8 +4,7 @@ using PcbReader.Core.GraphicElements.PathParts;
 namespace PcbReader.Core;
 
 public static class Contours {
-
-
+    
     private static Contour Simplify(Contour contour) {
 
         var result = new Contour();
@@ -15,17 +14,39 @@ public static class Contours {
                 case LinePathPart lpp:
                     result.Parts.Add((LinePathPart)lpp.Clone());
                     break;
+                case ArcPathPart app:
+                    
+                    break;
             }
         }
         return result;
     }
+
+
+    // private static double GetRotationAngle(IPathPart pp) {
+    //     switch (pp) {
+    //         case LinePathPart lpp:
+    //             
+    //             break;
+    //         case ArcPathPart app:
+    //             var cp = Geometry.ArcCenter(app);
+    //             var angle = Geometry.CalculateAngle(app.PointFrom, app.PointTo, cp);
+    //             return app.RotationDirection switch {
+    //                 RotationDirection.ClockWise => angle * (-1),
+    //                 RotationDirection.CounterClockwise => angle,
+    //                 _ => throw new Exception("Contours: GetRotationAngle(1)")
+    //             };
+    //         default:
+    //             throw new Exception("Contours: GetRotationAngle(2)");
+    //     }
+    // }
     
     public static RotationDirection GetRotationDirection(Contour contour) {
-        contour = Simplify(contour);
+        //contour = Simplify(contour);
         if(contour.Parts.Count<2)
             throw new ApplicationException("Контур состоит менее чем из 2-х частей");
-        foreach (IPathPart pp in contour.Parts) {
-            
+        foreach (var pp in contour.Parts) {
+
         }
 
         throw new NotImplementedException();

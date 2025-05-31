@@ -17,19 +17,49 @@ public static class Geometry {
     public static Point ArcCenter(ArcPathPart pp) {
         //находим центр окружности через точки пересечения окружностей с центрами в sp и ep.
         //rd 
-        var sp = pp.PointFrom; 
+        var sp = pp.PointFrom;
         var ep = pp.PointTo;
+        
         
         var p0 = new Point((ep.X + sp.X) / 2, (ep.Y + sp.Y) / 2);
         var d = LineLength(sp, ep);
-        var h = Math.Sqrt(Math.Pow(pp.Radius, 2) - Math.Pow(d / 2, 2));
-        var p1 = new Point(p0.X + (ep.Y - sp.Y) * h / d, p0.Y - (ep.X - sp.X) * h / d);
-        var p2 = new Point(p0.X - (ep.X - sp.Y) * h / d, p0.Y - (ep.X - sp.X) * h / d);
-        return pp.RotationDirection == RotationDirection.ClockWise ? (pp.IsLargeArc ? p2 : p1) : (pp.IsLargeArc ? p1 : p2);
+        var a = d / 2;
+        var h = Math.Sqrt(pp.Radius*pp.Radius - a*a);
+        
+        // var x1 = p0.X+(h/d)*(ep.Y-sp.Y);
+        // var y1 = p0.Y-(h/d)*(ep.X-sp.X);    
+        //
+        // var x2 = p0.X - (h/d)*(ep.Y-sp.Y);
+        
+        var p1 = new Point(
+            p0.X + (ep.Y - sp.Y) * h / d, 
+            p0.Y - (ep.X - sp.X) * h / d
+            );
+        var p2 = new Point(
+            p0.X - (ep.Y - sp.Y) * h / d, 
+            p0.Y + (ep.X - sp.X) * h / d
+            );
+        return pp.RotationDirection == RotationDirection.Clockwise ? (pp.IsLargeArc ? p2 : p1) : (pp.IsLargeArc ? p1 : p2);
+    }
+
+    public static Point ArcMiddlePoint(ArcPathPart arc) {
+        var cp = ArcCenter(arc);
+        var theta = Math.Atan2(arc.PointFrom.Y - cp.Y, arc.PointFrom.X - cp.X);
+        var beta = CalculateAngle(arc.PointFrom, arc.PointTo, cp) / 2;
+        return arc.RotationDirection == RotationDirection.CounterClockwise
+            ? new Point(
+                cp.X + arc.Radius*Math.Cos(theta + beta),
+                cp.Y + arc.Radius*Math.Sin(theta + beta)
+            )
+            : new Point(
+                cp.X + arc.Radius*Math.Cos(theta - beta),
+                cp.Y + arc.Radius*Math.Sin(theta - beta)
+            );
+
     }
 
     public static ArcWay ArcWay(Point sp, Point ep, Point cp) {
-        var angle = ArcAngle(sp, ep, cp);
+        var angle = CalculateAngle(sp, ep, cp);
 
         var vecA = new Vector(ep - sp);
         var vecB = new Vector(cp - sp);
@@ -37,10 +67,10 @@ public static class Geometry {
         
         return crossProduct > 0 ? 
             new ArcWay(RotationDirection.CounterClockwise, angle > Math.PI) : 
-            new ArcWay(RotationDirection.ClockWise, angle > Math.PI);
+            new ArcWay(RotationDirection.Clockwise, angle > Math.PI);
     }
 
-    public static double ArcAngle(Point sp, Point ep, Point cp) {
+    public static double CalculateAngle(Point sp, Point ep, Point cp) {
         //|a|*|b|*cos(θ) = xa * xb + ya * yb
         var x1 = sp.X - cp.X;
         var x2 = ep.X - cp.X;

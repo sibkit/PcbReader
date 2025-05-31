@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization;
-using PcbReader.Converters.PathEdit;
 using PcbReader.Core;
 using PcbReader.Core.GraphicElements;
 using PcbReader.Core.Intersections;
+using PcbReader.Core.PathEdit;
 
 namespace PcbReaderTest.GeometryTest.IntersectionsTest;
 
@@ -12,14 +12,14 @@ public class IntersectionsTest {
         var p1 = new PathPartsPainter<Contour>(10,10);
         p1.LineToInc(0,30);
         p1.LineToInc(30,0);
-        p1.ArcToInc(-30,-30,30,RotationDirection.ClockWise,false);
-        var c1 = p1.PartsOwner;
+        p1.ArcToInc(-30,-30,30,RotationDirection.Clockwise,false);
+        var c1 = p1.Root;
         
         var p2 = new PathPartsPainter<Contour>(20,10);
-        p2.ArcToInc(20,20,20,RotationDirection.ClockWise,false);
+        p2.ArcToInc(20,20,20,RotationDirection.Clockwise,false);
         p2.LineToInc(0,-20);
         p2.LineToInc(-20,0);
-        var c2 = p2.PartsOwner;
+        var c2 = p2.Root;
         
         var is1 = Intersections.FindIntersections(c1.Parts[2], c2.Parts[0]);
         Assert.Equal(2, is1.Count);
@@ -41,14 +41,14 @@ public class IntersectionsTest {
         p1.LineToInc(-40,-10);
         p1.LineToInc(-10,40);
         p1.LineToInc(40,10);
-        var c1 = p1.PartsOwner;
+        var c1 = p1.Root;
         
         var p2 = new PathPartsPainter<Contour>(20,10);
         p2.LineToInc(-10,-40);
         p2.LineToInc(-40,10);
         p2.LineToInc(10,40);
         p2.LineToInc(40,-10);
-        var c2 = p2.PartsOwner;
+        var c2 = p2.Root;
 
         var is1 = Intersections.FindIntersections(c1.Parts[0], c2.Parts[3]);
         Assert.Single(is1);
@@ -64,16 +64,16 @@ public class IntersectionsTest {
     [Fact]
     public void TestLineArcIntersections() {
         var p1 = new PathPartsPainter<Contour>(10,10);
-        p1.ArcToInc(20,0,10,RotationDirection.ClockWise,false);
-        p1.ArcToInc(-20,0,10,RotationDirection.ClockWise,false);
-        var c1 = p1.PartsOwner;
+        p1.ArcToInc(20,0,10,RotationDirection.Clockwise,false);
+        p1.ArcToInc(-20,0,10,RotationDirection.Clockwise,false);
+        var c1 = p1.Root;
         
         var p2 = new PathPartsPainter<Contour>(5,10);
         p2.LineToInc(0,5);
         p2.LineToInc(15,0);
         p2.LineToInc(15,-5);
         p2.LineToInc(-30,0);
-        var c2 = p2.PartsOwner;
+        var c2 = p2.Root;
         
         var is2 = Intersections.FindIntersections(c1.Parts[0], c2.Parts[2]);
         Assert.Single(is2);

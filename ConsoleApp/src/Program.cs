@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
 using PcbReader.Converters;
 using PcbReader.Converters.GerberToSvg;
-using PcbReader.Converters.PathEdit;
 using PcbReader.Core;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
@@ -19,7 +18,7 @@ public static class Program {
 
     [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args) {
-        //CalculateResult();
+        CalculateResult();
         //MacroTest.MacroAmTest();
         return;
         TestGeometry();
@@ -80,15 +79,26 @@ public static class Program {
         var aw = Geometry.ArcWay(new Point(1,2), new Point(2,1), new Point(1,1));
         Console.WriteLine("d");
     }
+
+    static string GetText(string text, int charsCount) {
+        if (text.Length < charsCount) {
+            var d = charsCount - text.Length;
+            for (var i = 0; i < d; i++)
+                text += " ";
+            return text;
+        } else {
+            return text[..charsCount];
+        }
+    }
     
     static void CalculateResult() {
         var callsCountPerDay = 60m;
-        var avgSellPrice = 30000m;
-        var clientOrdersPerDay = 0.03m;
-        var resultChance = 0.75m;
-        
+        var avgSellPrice = 1000m;
+        var clientOrdersPerDay = 0.12m;
+        var resultChance = 0.5m;
         var clientsCount = 0m;
-
+        var chanceLowingPerDay = 0.0001m;
+        
         var nfi = new NumberFormatInfo {
             CurrencyDecimalSeparator = ".",
             CurrencyGroupSeparator = " ",
@@ -97,19 +107,30 @@ public static class Program {
         };
 
         var perMonth = 0m;
-        for (int d = 1; d < 180; d++) {
+        for (int d = 1; d < 1201; d++) {
             var newClients = Math.Floor((decimal)Random.Shared.NextDouble()*2 * callsCountPerDay * resultChance);
             clientsCount+=newClients;
             var orders = Math.Floor((decimal)Random.Shared.NextDouble()*2*clientsCount * clientOrdersPerDay);
             var sum = (decimal)Random.Shared.NextDouble()*2* orders * avgSellPrice;
 
-            Console.WriteLine($"Day: {d}; clients: {clientsCount.ToString("N",nfi)}; sum: {sum.ToString("N",nfi)}; perMonth: {(sum*21m).ToString("N",nfi)}");
+            // Console.WriteLine(
+            //     GetText($"Day: {d}", 10) +
+            //     GetText($"Clients: {clientsCount.ToString("N", nfi)}", 18) +
+            //     GetText($"Sum: {sum.ToString("N", nfi)}", 18) +
+            //     GetText($"PerMonth: {(sum * 21m).ToString("N", nfi)}", 24)
+            // );
             
             perMonth += sum;
             if (d!=0 && d % 20 == 0) {
                 Console.WriteLine("Всего за месяц: "+perMonth.ToString("N",nfi));
                 perMonth = 0;
             }
+
+            if (resultChance > chanceLowingPerDay) {
+                resultChance -= chanceLowingPerDay;
+            }
+            
+            
         }
         
     }

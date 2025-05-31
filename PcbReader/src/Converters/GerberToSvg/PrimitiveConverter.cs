@@ -1,6 +1,6 @@
-﻿using PcbReader.Converters.PathEdit;
-using PcbReader.Core;
+﻿using PcbReader.Core;
 using PcbReader.Core.GraphicElements;
+using PcbReader.Core.PathEdit;
 using PcbReader.Layers.Gerber.Entities.Apertures;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro;
 using PcbReader.Layers.Gerber.Entities.Apertures.Macro.Expressions;
@@ -55,11 +55,11 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         var cx = Calc(circle.CenterX);
         var cy = Calc(circle.CenterY);
         var painter = new PathPartsPainter<Contour>(cx-r, cy);
-        painter.ArcToInc(2*r,0, r, RotationDirection.ClockWise, false);
-        painter.ArcToInc(-2*r,0,r, RotationDirection.ClockWise, false);
+        painter.ArcToInc(2*r,0, r, RotationDirection.Clockwise, false);
+        painter.ArcToInc(-2*r,0,r, RotationDirection.Clockwise, false);
 
         return new Shape {
-            OuterContour = painter.PartsOwner
+            OuterContour = painter.Root
         };
     }
 
@@ -81,7 +81,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         }
 
         return new Shape {
-            OuterContour = painter.PartsOwner
+            OuterContour = painter.Root
         };
     }
 }

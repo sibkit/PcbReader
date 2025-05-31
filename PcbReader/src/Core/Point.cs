@@ -23,7 +23,7 @@ public readonly struct Point(double x, double y) : IEquatable<Point> {
     }
 
     public bool Equals(Point other) {
-        return X.Equals(other.X) && Y.Equals(other.Y);
+        return Math.Abs(X-other.X)<Geometry.Accuracy && Math.Abs(Y-other.Y)<Geometry.Accuracy;
     }
 
     public override int GetHashCode() {
