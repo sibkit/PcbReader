@@ -54,7 +54,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         var r = Calc(circle.Diameter) / 2;
         var cx = Calc(circle.CenterX);
         var cy = Calc(circle.CenterY);
-        var painter = new PathPartsPainter<Contour>(cx-r, cy);
+        var painter = new Painter<Contour>(cx-r, cy);
         painter.ArcToInc(2*r,0, r, RotationDirection.Clockwise, false);
         painter.ArcToInc(-2*r,0,r, RotationDirection.Clockwise, false);
 
@@ -70,7 +70,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         var r = Calc(polygon.Diameter) / 2;
         var cx = Calc(polygon.CenterX);
         var cy = Calc(polygon.CenterY);
-        var painter = new PathPartsPainter<Contour>(cx+r, cy);
+        var painter = new Painter<Contour>(cx+r, cy);
         var vc = (int)Calc(polygon.VerticesCount);
         var angle = Math.PI * 2 / vc;
         for (var i = 0; i < vc; i++) {

@@ -2,7 +2,7 @@
 
 
 
-public class ArcPathPart : IPathPart, ICloneable {
+public class Arc : ICurve, ICloneable {
 
     private Bounds? _bounds;
     
@@ -38,8 +38,14 @@ public class ArcPathPart : IPathPart, ICloneable {
                 var spq = GetQuadrant(cp,sp);
                 var epq = GetQuadrant(cp, ep);
 
+                if (spq == epq && IsLargeArc) {
+                    _bounds = new Bounds(cp.X-Radius, cp.Y-Radius, cp.X+Radius, cp.Y+Radius);
+                    return _bounds.Value;
+                }
+                
                 var quadrants = Quadrant.None;
         
+                
                 if (RotationDirection == RotationDirection.CounterClockwise) {
                     while (epq != spq) {
                         quadrants |= spq;
@@ -89,8 +95,8 @@ public class ArcPathPart : IPathPart, ICloneable {
         }
     }
 
-    public IPathPart GetReversed() {
-        var result = new ArcPathPart {
+    public ICurve GetReversed() {
+        var result = new Arc {
             PointTo = PointFrom,
             PointFrom = PointTo,
             Radius = Radius,

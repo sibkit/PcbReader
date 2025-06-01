@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Core.GraphicElements.PathParts;
 
-public class LinePathPart: IPathPart, ICloneable {
+public class Line: ICurve, ICloneable {
     private Bounds? _bounds;
     
     public required Point PointTo { get; set; }
@@ -40,8 +40,8 @@ public class LinePathPart: IPathPart, ICloneable {
         }
     }
 
-    public IPathPart GetReversed() {
-        var result = new LinePathPart {
+    public ICurve GetReversed() {
+        var result = new Line {
             PointFrom = PointTo,
             PointTo = PointFrom
         };

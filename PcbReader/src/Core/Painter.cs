@@ -3,12 +3,12 @@ using PcbReader.Core.GraphicElements.PathParts;
 
 namespace PcbReader.Core.PathEdit;
 
-public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
+public class Painter<T> where T :  CurvesOwner, new() {
 
     public T Root { get; } = new T();
     private Point _startPoint;
     
-    public PathPartsPainter(double x, double y) {
+    public Painter(double x, double y) {
         _startPoint = new Point(x, y);
         _curPoint = new Point(x, y);
     }
@@ -18,7 +18,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
 
    public void LineToAbs(double x, double y) {
 
-       Root.Parts.Add(new LinePathPart {
+       Root.Parts.Add(new Line {
            PointFrom = _curPoint,
            PointTo = new Point(x,y)
        });
@@ -26,7 +26,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
    }
     public void LineToInc(double x, double y) {
 
-        Root.Parts.Add(new LinePathPart {
+        Root.Parts.Add(new Line {
             PointFrom = _curPoint,
             PointTo = new Point(_curPoint.X + x, _curPoint.Y + y)
         });
@@ -36,7 +36,7 @@ public class PathPartsPainter<T> where T :  PathPartsOwner, new() {
     public void ArcToInc(double x, double y, double radius, RotationDirection direction, bool isLarge) {
         _curPoint = new Point(_curPoint.X + x, _curPoint.Y + y);
         
-        Root.Parts.Add(new ArcPathPart {
+        Root.Parts.Add(new Arc {
             PointTo = _curPoint,
             PointFrom = new Point(_curPoint.X - x,
                 _curPoint.Y - y),

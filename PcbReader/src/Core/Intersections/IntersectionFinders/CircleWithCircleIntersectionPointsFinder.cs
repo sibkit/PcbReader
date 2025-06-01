@@ -2,9 +2,9 @@
 
 namespace PcbReader.Core.Intersections.IntersectionFinders;
 
-public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder<ArcPathPart, ArcPathPart> {
+public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder<Arc, Arc> {
     
-    public List<Point> FindIntersectionPoints(ArcPathPart part1, ArcPathPart part2) {
+    public List<Point> FindIntersectionPoints(Arc part1, Arc part2) {
         if (!part1.Bounds.IsIntersected(part2.Bounds))
             return [];
         

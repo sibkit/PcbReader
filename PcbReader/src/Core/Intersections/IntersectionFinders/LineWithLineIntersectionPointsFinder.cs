@@ -2,8 +2,8 @@
 
 namespace PcbReader.Core.Intersections.IntersectionFinders;
 
-public class LineWithLineIntersectionPointsFinder: IIntersectionPointsFinder<LinePathPart, LinePathPart> {
-    public List<Point> FindIntersectionPoints(LinePathPart part1, LinePathPart part2) {
+public class LineWithLineIntersectionPointsFinder: IIntersectionPointsFinder<Line, Line> {
+    public List<Point> FindIntersectionPoints(Line part1, Line part2) {
         var p1X1 = part1.PointFrom.X;
         var p1Y1 = part1.PointFrom.Y;
         var p1X2 = part1.PointTo.X;

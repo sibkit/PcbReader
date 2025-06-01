@@ -5,63 +5,49 @@ namespace PcbReader.Core.Intersections.IntersectionFinders;
 
 public static class TCalculator {
     
-    private static double PositiveNormalize(double angle) {
-        return angle switch {
-            <= 0 => PositiveNormalize(angle + Math.PI),
-            > Math.PI*2d => PositiveNormalize(angle - Math.PI),
-            _ => angle
+
+
+    public static double CalculateT(ICurve curve, Point ip) {
+        return curve switch {
+            Line line => CalculateT(line, ip),
+            Arc arc => CalculateT(arc, ip),
+            _ => throw new ArgumentOutOfRangeException(nameof(curve), curve, null)
         };
     }
 
-    private static double NegativeNormalize(double angle) {
-        return angle switch {
-            >= 0 => NegativeNormalize(angle - Math.PI),
-            < -Math.PI*2d => NegativeNormalize(angle + Math.PI),
-            _ => angle
+    public static Point CalculatePoint(ICurve curve, double t) {
+        return curve switch {
+            Line linePart => CalculatePoint(linePart, t),
+            Arc arcPart => CalculatePoint(arcPart, t),
+            _ => throw new ArgumentOutOfRangeException(nameof(curve), curve, null)
         };
     }
 
-    public static double CalculateT(IPathPart pp, Point ip) {
-        return pp switch {
-            LinePathPart linePart => CalculateT(linePart, ip),
-            ArcPathPart arcPart => CalculateT(arcPart, ip),
-            _ => throw new ArgumentOutOfRangeException(nameof(pp), pp, null)
-        };
-    }
-
-    public static Point CalculatePoint(IPathPart pp, double t) {
-        return pp switch {
-            LinePathPart linePart => CalculatePoint(linePart, t),
-            ArcPathPart arcPart => CalculatePoint(arcPart, t),
-            _ => throw new ArgumentOutOfRangeException(nameof(pp), pp, null)
-        };
-    }
-
-    public static Point CalculatePoint(LinePathPart pp, double t) {
+    public static Point CalculatePoint(Line line, double t) {
         return new Point(
-            pp.PointFrom.X + t * (pp.PointTo.X - pp.PointFrom.X),
-            pp.PointFrom.Y + t * (pp.PointTo.Y - pp.PointFrom.Y)
+            line.PointFrom.X + t * (line.PointTo.X - line.PointFrom.X),
+            line.PointFrom.Y + t * (line.PointTo.Y - line.PointFrom.Y)
         );
     }
 
-    public static Point CalculatePoint(ArcPathPart pp, double t) {
+    public static Point CalculatePoint(Arc arc, double t) {
         return new Point(
-            pp.PointFrom.X + t * (pp.PointTo.X - pp.PointFrom.X),
-            pp.PointFrom.Y + t * (pp.PointTo.Y - pp.PointFrom.Y)
+            arc.PointFrom.X + t * (arc.PointTo.X - arc.PointFrom.X),
+            arc.PointFrom.Y + t * (arc.PointTo.Y - arc.PointFrom.Y)
         );
     }
     
-    public static double CalculateT(LinePathPart part, Point ip) {
-        var dx = Math.Abs(part.PointTo.X - part.PointFrom.X);
-        var dy = Math.Abs(part.PointTo.Y - part.PointFrom.Y);
+    public static double CalculateT(Line line, Point ip) {
+        var dx = Math.Abs(line.PointTo.X - line.PointFrom.X);
+        var dy = Math.Abs(line.PointTo.Y - line.PointFrom.Y);
         if (dx > dy) {
-            return (ip.X - part.PointFrom.X) / (part.PointTo.X - part.PointFrom.X);
+            return (ip.X - line.PointFrom.X) / (line.PointTo.X - line.PointFrom.X);
         } else {
-            return (ip.Y - part.PointFrom.Y) / (part.PointTo.Y - part.PointFrom.Y);
+            return (ip.Y - line.PointFrom.Y) / (line.PointTo.Y - line.PointFrom.Y);
         }
     }
     
-    public static double CalculateT(ArcPathPart part, Point ip) {
+    public static double CalculateT(Arc arc, Point ip) {
         //sp - startPoint
         //ep - endPoint
         //ip - intersectionPoint
@@ -69,33 +55,49 @@ public static class TCalculator {
         //PrX - X axe projection
         //PrY - Y axe projection
 
-        var cp = Geometry.ArcCenter(part);
+        var cp = Geometry.ArcCenter(arc);
         
-        var spPrX = part.PointFrom.X-cp.X;
-        var spPrY = part.PointFrom.Y-cp.Y;
+        var spPrX = arc.PointFrom.X-cp.X;
+        var spPrY = arc.PointFrom.Y-cp.Y;
         
-        var epPrX = part.PointTo.X-cp.X;
-        var epPrY = part.PointTo.Y-cp.Y;
+        var epPrX = arc.PointTo.X-cp.X;
+        var epPrY = arc.PointTo.Y-cp.Y;
         
         var ipPrX = ip.X-cp.X;
         var ipPrY = ip.Y-cp.Y;
         
-        var startAngle = PositiveNormalize(Math.Atan2(spPrY, spPrX));
-        var endAngle = PositiveNormalize(Math.Atan2(epPrY, epPrX));
-        var intersectionAngle = PositiveNormalize(Math.Atan2(ipPrY, ipPrX));
+        var startAngle = PositiveNormalizeAngle(Math.Atan2(spPrY, spPrX));
+        var endAngle = PositiveNormalizeAngle(Math.Atan2(epPrY, epPrX));
+        var intersectionAngle = PositiveNormalizeAngle(Math.Atan2(ipPrY, ipPrX));
         
         double fullArcAngle;
-        switch (part.RotationDirection) {
+        switch (arc.RotationDirection) {
             case RotationDirection.Clockwise:
                 //знак с минусом
-                fullArcAngle = NegativeNormalize(endAngle - startAngle);
-                return NegativeNormalize(intersectionAngle-startAngle) / fullArcAngle;
+                fullArcAngle = NegativeNormalizeAngle(endAngle - startAngle);
+                return NegativeNormalizeAngle(intersectionAngle-startAngle) / fullArcAngle;
             case RotationDirection.CounterClockwise:
                 //знак с плюсом
-                fullArcAngle = PositiveNormalize(endAngle - startAngle);
-                return PositiveNormalize(intersectionAngle-startAngle) / fullArcAngle;
+                fullArcAngle = PositiveNormalizeAngle(endAngle - startAngle);
+                return PositiveNormalizeAngle(intersectionAngle-startAngle) / fullArcAngle;
             default:
                 throw new Exception("TCalculator : CalculateT");
         }
+    }
+    
+    public static double PositiveNormalizeAngle(double angle) {
+        return angle switch {
+            <= 0 => PositiveNormalizeAngle(angle + Math.PI),
+            > Math.PI*2d => PositiveNormalizeAngle(angle - Math.PI),
+            _ => angle
+        };
+    }
+
+    public  static double NegativeNormalizeAngle(double angle) {
+        return angle switch {
+            >= 0 => NegativeNormalizeAngle(angle - Math.PI),
+            < -Math.PI*2d => NegativeNormalizeAngle(angle + Math.PI),
+            _ => angle
+        };
     }
 }

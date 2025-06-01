@@ -9,13 +9,13 @@ namespace PcbReaderTest.GeometryTest.IntersectionsTest;
 public class IntersectionsTest {
     [Fact]
     public void TestArcArcIntersection() {
-        var p1 = new PathPartsPainter<Contour>(10,10);
+        var p1 = new Painter<Contour>(10,10);
         p1.LineToInc(0,30);
         p1.LineToInc(30,0);
         p1.ArcToInc(-30,-30,30,RotationDirection.Clockwise,false);
         var c1 = p1.Root;
         
-        var p2 = new PathPartsPainter<Contour>(20,10);
+        var p2 = new Painter<Contour>(20,10);
         p2.ArcToInc(20,20,20,RotationDirection.Clockwise,false);
         p2.LineToInc(0,-20);
         p2.LineToInc(-20,0);
@@ -36,14 +36,14 @@ public class IntersectionsTest {
 
     [Fact]
     public void TestLineLineIntersections() {
-        var p1 = new PathPartsPainter<Contour>(10,20);
+        var p1 = new Painter<Contour>(10,20);
         p1.LineToInc(10,-40);
         p1.LineToInc(-40,-10);
         p1.LineToInc(-10,40);
         p1.LineToInc(40,10);
         var c1 = p1.Root;
         
-        var p2 = new PathPartsPainter<Contour>(20,10);
+        var p2 = new Painter<Contour>(20,10);
         p2.LineToInc(-10,-40);
         p2.LineToInc(-40,10);
         p2.LineToInc(10,40);
@@ -63,12 +63,12 @@ public class IntersectionsTest {
 
     [Fact]
     public void TestLineArcIntersections() {
-        var p1 = new PathPartsPainter<Contour>(10,10);
+        var p1 = new Painter<Contour>(10,10);
         p1.ArcToInc(20,0,10,RotationDirection.Clockwise,false);
         p1.ArcToInc(-20,0,10,RotationDirection.Clockwise,false);
         var c1 = p1.Root;
         
-        var p2 = new PathPartsPainter<Contour>(5,10);
+        var p2 = new Painter<Contour>(5,10);
         p2.LineToInc(0,5);
         p2.LineToInc(15,0);
         p2.LineToInc(15,-5);

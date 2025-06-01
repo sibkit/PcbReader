@@ -1,7 +1,5 @@
 ﻿namespace PcbReader.Core.GraphicElements;
 
-public class Contour: PathPartsOwner {
+public class Contour: CurvesOwner {
     
-
-
 }

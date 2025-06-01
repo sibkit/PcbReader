@@ -1,11 +1,11 @@
 ﻿namespace PcbReader.Core.GraphicElements;
 
-public interface IPathPart {
+public interface ICurve {
     Point PointFrom { get; }
     Point PointTo { get; }
 
     void UpdateBounds();
     Bounds Bounds { get; }
 
-    IPathPart GetReversed();
+    ICurve GetReversed();
 }

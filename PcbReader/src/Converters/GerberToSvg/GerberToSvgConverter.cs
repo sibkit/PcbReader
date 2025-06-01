@@ -2,15 +2,13 @@
 using System.Net.Http.Headers;
 using PcbReader.Core;
 using PcbReader.Core.GraphicElements;
+using PcbReader.Core.GraphicElements.PathParts;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
-using ArcPathPart = PcbReader.Core.GraphicElements.PathParts.ArcPathPart;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
-using IPathPart = PcbReader.Core.GraphicElements.IPathPart;
-using LinePathPart = PcbReader.Core.GraphicElements.PathParts.LinePathPart;
 using Path = PcbReader.Core.GraphicElements.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
@@ -35,7 +33,7 @@ public static class GerberToSvgConverter {
                     throw new Exception("GerberToSvgConverter: Convert");
             }
         }
-        InvertAxis(result);
+        //InvertAxis(result);
         return result;
     }
     
@@ -49,7 +47,7 @@ public static class GerberToSvgConverter {
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
-                    result.Parts.Add(new LinePathPart {
+                    result.Parts.Add(new Line {
                         PointFrom = startPartPoint,
                         PointTo = line.EndPoint
                     });
@@ -65,8 +63,8 @@ public static class GerberToSvgConverter {
         return result;
     }
     
-    static List<ArcPathPart> ConvertArcPath(Point gsp, GerberArcPart gap, PathPartsOwner owner) {
-        var result = new List<ArcPathPart>();
+    static List<Arc> ConvertArcPath(Point gsp, GerberArcPart gap, CurvesOwner owner) {
+        var result = new List<Arc>();
         //var cx = gsp.X + gap.IOffset;
         //var cy = gsp.Y - gap.JOffset;
         var cx = gap.EndPoint.X < gsp.X ? gsp.X - gap.IOffset : gsp.X + gap.IOffset;
@@ -83,14 +81,14 @@ public static class GerberToSvgConverter {
         if (gsp == gap.EndPoint) {
             var mpx = cx + (cx - gsp.X);
             var mpy = cy + (cy - gsp.Y);
-            var part1 = new ArcPathPart {
+            var part1 = new Arc {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = false,
                 PointFrom = gsp,
                 PointTo = new Point(mpx, mpy),
             };
-            var part2 = new ArcPathPart {
+            var part2 = new Arc {
                 RotationDirection = arcWay.RotationDirection,
                 Radius = tr,
                 IsLargeArc = true,
@@ -101,7 +99,7 @@ public static class GerberToSvgConverter {
             result.Add(part2);
         } else {
             
-            var part = new ArcPathPart {
+            var part = new Arc {
                 RotationDirection = arcWay.RotationDirection, //Invert, because gerber and svg has different axis layout
                 PointTo = gap.EndPoint,
                 Radius = tr,
@@ -114,46 +112,5 @@ public static class GerberToSvgConverter {
     }
 
 
-    static IPathPart InvertAxis(IPathPart pathPart, PathPartsOwner newOwner) {
-        return pathPart switch {
-            LinePathPart line => new LinePathPart {
-                PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
-                PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y),
-            },
-            ArcPathPart arc => new ArcPathPart {
-                PointTo = arc.PointTo.WithNewY(-arc.PointTo.Y),
-                PointFrom = arc.PointFrom.WithNewY(-arc.PointFrom.Y),
-                IsLargeArc = arc.IsLargeArc,
-                RotationDirection = arc.RotationDirection.Invert(),
-                Radius = arc.Radius,
-            },
-            _ => throw new Exception("GerberToSvgConverter: InvertAxis")
-        };
-    }
-
-    static void InvertAxis(PathPartsOwner ctx) {
-        //ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
-        foreach (var p in ctx.Parts) {
-            InvertAxis(p, ctx);
-        }
-    }
-
-    static void InvertAxis(SvgLayer layer) {
-        foreach (var e in layer.Elements) {
-            switch (e) {
-
-                case PathPartsOwner ctr:
-                    InvertAxis(ctr);
-                    break;
-                case Shape shape:
-                        InvertAxis(shape.OuterContour);
-                    foreach (var ic in shape.InnerContours)
-                        InvertAxis(ic);
-                    break;
-                default:
-                    throw new Exception("GerberToSvgConverter: InvertAxis");
-            }
-        }
-    }
 }
 

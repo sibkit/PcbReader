@@ -11,10 +11,10 @@ public static class Contours {
 
         for (var i = 0; i < contour.Parts.Count; i++) {
             switch (contour.Parts[i]) {
-                case LinePathPart lpp:
-                    result.Parts.Add((LinePathPart)lpp.Clone());
+                case Line lpp:
+                    result.Parts.Add((Line)lpp.Clone());
                     break;
-                case ArcPathPart app:
+                case Arc app:
                     
                     break;
             }

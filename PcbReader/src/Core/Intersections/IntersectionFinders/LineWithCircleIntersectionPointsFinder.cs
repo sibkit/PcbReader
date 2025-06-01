@@ -2,11 +2,11 @@
 
 namespace PcbReader.Core.Intersections.IntersectionFinders;
 
-public class LineWithCircleIntersectionPointsFinder : IIntersectionPointsFinder<LinePathPart, ArcPathPart> {
+public class LineWithCircleIntersectionPointsFinder : IIntersectionPointsFinder<Line, Arc> {
 
 
 
-    public List<Point> FindIntersectionPoints(LinePathPart part1, ArcPathPart part2) {
+    public List<Point> FindIntersectionPoints(Line part1, Arc part2) {
         
         var p2C = Geometry.ArcCenter(part2);
         

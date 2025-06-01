@@ -87,23 +87,23 @@ public static class SvgWriter {
     }
 
     private static List<Bounds> _pathPartsBounds = [];
-    static void WritePathPart(StreamWriter writer, IPathPart pathPart) {
-        switch (pathPart) {
-            case LinePathPart l:
+    static void WritePathPart(StreamWriter writer, ICurve curve) {
+        switch (curve) {
+            case Line l:
                 writer.Write("L " + Math.Round(l.PointTo.X, 6) + " " + Math.Round(l.PointTo.Y, 6) + " ");
                 break;
-            case ArcPathPart a:
+            case Arc a:
                 writer.Write("A " +
                              Math.Round(a.Radius, 8) + " " +
                              Math.Round(a.Radius, 8) + " " +
                              "0 " +
                              (a.IsLargeArc ? "1 " : "0 ") +
-                             (a.RotationDirection == RotationDirection.Clockwise ? "1 " : "0 ") +
+                             (a.RotationDirection == RotationDirection.Clockwise ? "0 " : "1 ") +
                              Math.Round(a.PointTo.X, 8) + " " +
                              Math.Round(a.PointTo.Y, 8) + " ");
                 break;
         }
-        _pathPartsBounds.Add(pathPart.Bounds);
+        _pathPartsBounds.Add(curve.Bounds);
     }
 
     static void WritePath(StreamWriter writer, Path path) {
@@ -165,11 +165,11 @@ public static class SvgWriter {
                     WriteDot(swr, dot);
                     break;
             }
-            AddBoundsRect(swr,e.GetBounds());
+            AddBoundsRect(swr,e.GetBounds(),"yellow");
         }
 
         foreach (var b in _pathPartsBounds) {
-            AddBoundsRect(swr,b);
+            AddBoundsRect(swr,b,"orange");
         }
         
         swr.Write("\n</g>");
@@ -177,7 +177,7 @@ public static class SvgWriter {
         swr.Flush();
     }
 
-    static void AddBoundsRect(StreamWriter writer, Bounds b) {
-        writer.Write("\n<rect x=\""+Math.Round(b.MinX)+"\" y=\""+Math.Round(b.MinY)+"\" width=\""+Math.Round(b.GetWidth())+"\" height=\""+Math.Round(b.GetHeight())+"\" fill=\"none\" stroke=\"yellow\" stroke-width=\"0.4px\"/>");
+    static void AddBoundsRect(StreamWriter writer, Bounds b, string color) {
+        writer.Write("\n<rect x=\""+Math.Round(b.MinX)+"\" y=\""+Math.Round(b.MinY)+"\" width=\""+Math.Round(b.GetWidth())+"\" height=\""+Math.Round(b.GetHeight())+"\" fill=\"none\" stroke=\""+color+"\" stroke-width=\"0.4px\"/>");
     }
 }

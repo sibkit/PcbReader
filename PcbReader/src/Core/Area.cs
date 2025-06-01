@@ -10,7 +10,7 @@ public class Area {
         foreach (var e in GraphicElements) {
             switch (e) {
 
-                case PathPartsOwner ctr:
+                case CurvesOwner ctr:
                     InvertYAxe(ctr);
                     break;
                 case Shape shape:
@@ -19,7 +19,7 @@ public class Area {
                         InvertYAxe(ic);
                     break;
                 case Dot dot:
-                    dot.CenterPoint = new Point(dot.CenterPoint.X, -dot.CenterPoint.Y);
+                    dot.CenterPoint = new Point(dot.CenterPoint.X, -1*dot.CenterPoint.Y);
                     break;
                 default:
                     throw new Exception("GerberToSvgConverter: InvertAxis");
@@ -28,24 +28,24 @@ public class Area {
         }
     }
     
-    static void InvertYAxe(IPathPart pathPart) {
+    static void InvertYAxe(ICurve curve) {
 
-        switch (pathPart) {
-            case LinePathPart line:
-                line.PointFrom = new Point(line.PointFrom.X, -line.PointFrom.Y);
-                line.PointTo = new Point(line.PointTo.X, -line.PointTo.Y);
+        switch (curve) {
+            case Line line:
+                line.PointFrom = new Point(line.PointFrom.X, -1*line.PointFrom.Y);
+                line.PointTo = new Point(line.PointTo.X, -1*line.PointTo.Y);
                 break;
-            case ArcPathPart arc:
-                arc.PointFrom = new Point(arc.PointFrom.X, -arc.PointFrom.Y);
-                arc.PointTo = new Point(arc.PointTo.X, -arc.PointTo.Y);
-               // arc.RotationDirection = arc.RotationDirection.Invert();
+            case Arc arc:
+                arc.PointFrom = new Point(arc.PointFrom.X, -1*arc.PointFrom.Y);
+                arc.PointTo = new Point(arc.PointTo.X, -1*arc.PointTo.Y);
+                arc.RotationDirection = arc.RotationDirection.Invert();
                 break;
             default:
                 throw new Exception("Area: InvertAxis");
         }
     }
 
-    static void InvertYAxe(PathPartsOwner ctx) {
+    static void InvertYAxe(CurvesOwner ctx) {
         //ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
         foreach (var p in ctx.Parts) {
             InvertYAxe(p);

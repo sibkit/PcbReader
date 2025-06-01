@@ -1,12 +1,14 @@
 ﻿namespace PcbReader.Core.GraphicElements;
 
-public abstract class PathPartsOwner: IGraphicElement {
+public abstract class CurvesOwner: IGraphicElement {
     private Bounds? _bounds = new Bounds();
 
-    public List<IPathPart> Parts { get; } = [];
+    public List<ICurve> Parts { get; } = [];
     
     public void UpdateBounds() {
         _bounds = null;
+        foreach (var p in Parts)
+            p.UpdateBounds();
     }
 
 

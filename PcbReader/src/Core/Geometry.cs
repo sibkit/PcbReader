@@ -9,12 +9,12 @@ public readonly struct ArcWay(RotationDirection direction, bool isLarge) {
 
 public static class Geometry {
 
-    public static double Accuracy { get; } = 0.000000001;
+    public static double Accuracy { get; } = 0.00000000001;
     public static double LineLength(Point sp, Point ep){
         return Math.Sqrt(Math.Pow(ep.X-sp.X,2)+Math.Pow(ep.Y-sp.Y,2));
     }
     
-    public static Point ArcCenter(ArcPathPart pp) {
+    public static Point ArcCenter(Arc pp) {
         //находим центр окружности через точки пересечения окружностей с центрами в sp и ep.
         //rd 
         var sp = pp.PointFrom;
@@ -42,19 +42,24 @@ public static class Geometry {
         return pp.RotationDirection == RotationDirection.Clockwise ? (pp.IsLargeArc ? p2 : p1) : (pp.IsLargeArc ? p1 : p2);
     }
 
-    public static Point ArcMiddlePoint(ArcPathPart arc) {
+    public static Point ArcMiddlePoint(Arc arc) {
         var cp = ArcCenter(arc);
         var theta = Math.Atan2(arc.PointFrom.Y - cp.Y, arc.PointFrom.X - cp.X);
-        var beta = CalculateAngle(arc.PointFrom, arc.PointTo, cp) / 2;
-        return arc.RotationDirection == RotationDirection.CounterClockwise
-            ? new Point(
-                cp.X + arc.Radius*Math.Cos(theta + beta),
-                cp.Y + arc.Radius*Math.Sin(theta + beta)
-            )
-            : new Point(
-                cp.X + arc.Radius*Math.Cos(theta - beta),
-                cp.Y + arc.Radius*Math.Sin(theta - beta)
-            );
+        
+        var beta = CalculateAngle(arc.PointFrom, arc.PointTo, cp);
+        beta = arc.RotationDirection switch {
+            RotationDirection.Clockwise => NegativeNormalize(beta),
+            RotationDirection.CounterClockwise => PositiveNormalize(beta),
+            _ => beta
+        };
+
+        var mb = beta / 2;
+
+        return new Point(
+            cp.X + arc.Radius * Math.Cos(theta + mb),
+            cp.Y + arc.Radius * Math.Sin(theta + mb)
+        );
+
 
     }
 
@@ -71,16 +76,25 @@ public static class Geometry {
     }
 
     public static double CalculateAngle(Point sp, Point ep, Point cp) {
-        //|a|*|b|*cos(θ) = xa * xb + ya * yb
-        var x1 = sp.X - cp.X;
-        var x2 = ep.X - cp.X;
-        var y1 = sp.Y - cp.Y;
-        var y2 = ep.Y - cp.Y;
-        var d1 = Math.Sqrt((x1 * x1 + y1 * y1));
-        var d2 = Math.Sqrt((x2 * x2 + y2 * y2));
-        return Math.Acos((x1*x2 + y1*y2)/(d1*d2));
+        return  Math.Atan2(ep.Y - cp.Y, ep.X - cp.X) - Math.Atan2(sp.Y - cp.Y, sp.X - cp.X);
     }
 
+
+    public static double PositiveNormalize(double angle) {
+        return angle switch {
+            <= 0 => PositiveNormalize(angle + 2*Math.PI),
+            > Math.PI*2d => PositiveNormalize(angle - 2*Math.PI),
+            _ => angle
+        };
+    }
+    
+    public static double NegativeNormalize(double angle) {
+        return angle switch {
+            >= 0 => NegativeNormalize(angle - 2*Math.PI),
+            < -Math.PI*2d => NegativeNormalize(angle + 2*Math.PI),
+            _ => angle
+        };
+    }
     
     private static Quadrant GetQuadrant(double prX, double prY) {
         if (prX >= 0) {
@@ -89,8 +103,6 @@ public static class Geometry {
             return prY >= 0 ? Quadrant.II : Quadrant.III;
         }
     }
-    
-
 }
 
 [Flags]
