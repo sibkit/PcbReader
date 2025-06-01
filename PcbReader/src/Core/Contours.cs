@@ -14,8 +14,16 @@ public static class Contours {
                 case Line lpp:
                     result.Parts.Add((Line)lpp.Clone());
                     break;
-                case Arc app:
-                    
+                case Arc arc:
+                    var mp = Geometry.ArcMiddlePoint(arc);
+                    result.Parts.Add(new Line {
+                        PointFrom = arc.PointFrom,
+                        PointTo = mp,
+                    });
+                    result.Parts.Add(new Line {
+                        PointFrom = mp,
+                        PointTo = arc.PointTo,
+                    });
                     break;
             }
         }
@@ -23,35 +31,38 @@ public static class Contours {
     }
 
 
-    // private static double GetRotationAngle(IPathPart pp) {
-    //     switch (pp) {
-    //         case LinePathPart lpp:
-    //             
-    //             break;
-    //         case ArcPathPart app:
-    //             var cp = Geometry.ArcCenter(app);
-    //             var angle = Geometry.CalculateAngle(app.PointFrom, app.PointTo, cp);
-    //             return app.RotationDirection switch {
-    //                 RotationDirection.ClockWise => angle * (-1),
-    //                 RotationDirection.CounterClockwise => angle,
-    //                 _ => throw new Exception("Contours: GetRotationAngle(1)")
-    //             };
-    //         default:
-    //             throw new Exception("Contours: GetRotationAngle(2)");
-    //     }
-    // }
-    
-    public static RotationDirection GetRotationDirection(Contour contour) {
-        //contour = Simplify(contour);
-        if(contour.Parts.Count<2)
-            throw new ApplicationException("Контур состоит менее чем из 2-х частей");
-        foreach (var pp in contour.Parts) {
+    private static double GetRotationAngle(Line curLine, Line prevLine) {
+        var th1 = Math.Atan2(prevLine.PointTo.Y - prevLine.PointFrom.Y, prevLine.PointTo.X - prevLine.PointFrom.X);
+        var th2 = Math.Atan2(curLine.PointTo.Y - curLine.PointFrom.Y, curLine.PointTo.X - curLine.PointFrom.X);
+        return Angles.PiNormalize(th1 - th2);
+    }
 
+    public static RotationDirection GetRotationDirection(Contour contour) {
+        contour = Simplify(contour);
+        if (contour.Parts.Count < 2)
+            throw new ApplicationException("Контур состоит менее чем из 2-х частей");
+        var resultAngle = 0d;
+        var prevLine = (Line)contour.Parts[^1];
+        foreach (var curve in contour.Parts) {
+            switch (curve) {
+                case Line line:
+                    resultAngle += GetRotationAngle(line, prevLine);
+                    prevLine = line;
+                    break;
+                default:
+                    throw new Exception("Contours: GetRotationDirection(1)");
+            }
         }
 
-        throw new NotImplementedException();
+        if (Math.Abs(resultAngle - Math.PI * 2) < Geometry.Accuracy)
+            return RotationDirection.Clockwise;
+        else if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
+            return RotationDirection.CounterClockwise;
+        else
+            throw new Exception("Contours: GetRotationDirection(2)");
+
     }
-    
+
     public static Contour GetReversed(Contour contour) {
         var result = new Contour();
         for (var i = contour.Parts.Count - 1; i >= 0; i--) {
