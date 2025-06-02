@@ -29,11 +29,11 @@ public class ArcMiddlePointTest {
         var c = painter.Root;
         area.GraphicElements.Add(c);
         area.GraphicElements.Add(new Dot {
-            CenterPoint = Geometry.ArcMiddlePoint((Arc)c.Parts[0]),
+            CenterPoint = Geometry.ArcMiddlePoint((Arc)c.Curves[0]),
             Diameter = 2
         }); 
         area.GraphicElements.Add(new Dot {
-            CenterPoint = Geometry.ArcMiddlePoint((Arc)c.Parts[1]),
+            CenterPoint = Geometry.ArcMiddlePoint((Arc)c.Curves[1]),
             Diameter = 2
         }); 
         // area.GraphicElements.Add(new Dot {
@@ -44,10 +44,7 @@ public class ArcMiddlePointTest {
         //     CenterPoint = Geometry.ArcMiddlePoint((ArcPathPart)c.Parts[7]),
         //     Diameter = 2
         // }); 
-        
-       
-        
-        
+
         area.InvertYAxe();
 
         var svg = LvfToSvgConverter.Convert(area);

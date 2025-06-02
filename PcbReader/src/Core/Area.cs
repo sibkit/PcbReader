@@ -47,7 +47,7 @@ public class Area {
 
     static void InvertYAxe(CurvesOwner ctx) {
         //ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
-        foreach (var p in ctx.Parts) {
+        foreach (var p in ctx.Curves) {
             InvertYAxe(p);
         }
     }

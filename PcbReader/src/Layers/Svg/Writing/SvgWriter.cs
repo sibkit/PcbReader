@@ -34,7 +34,7 @@ public static class SvgWriter {
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:
-                    foreach (var pp in p.Parts) {
+                    foreach (var pp in p.Curves) {
                         result = ExtendBounds(result, pp.PointFrom);
                         result = ExtendBounds(result, pp.PointTo);
                     }
@@ -42,8 +42,8 @@ public static class SvgWriter {
                     break;
                 case Shape shape:
 
-                    result = ExtendBounds(result, shape.OuterContour.Parts[0].PointFrom);
-                    foreach (var pp in shape.OuterContour.Parts) {
+                    result = ExtendBounds(result, shape.OuterContour.Curves[0].PointFrom);
+                    foreach (var pp in shape.OuterContour.Curves) {
                         result = ExtendBounds(result, pp.PointFrom);
                         result = ExtendBounds(result, pp.PointTo);
                     }
@@ -51,8 +51,8 @@ public static class SvgWriter {
 
                     foreach (var ic in shape.InnerContours) {
 
-                        foreach (var pp in ic.Parts) {
-                            result = ExtendBounds(result, ic.Parts[0].PointFrom);
+                        foreach (var pp in ic.Curves) {
+                            result = ExtendBounds(result, ic.Curves[0].PointFrom);
                             result = ExtendBounds(result, pp.PointTo);
                         }
                             
@@ -61,9 +61,9 @@ public static class SvgWriter {
                     break;
                 case Contour contour:
 
-                    foreach (var pp in contour.Parts) {
+                    foreach (var pp in contour.Curves) {
                         result = ExtendBounds(result, pp.PointTo);
-                        result = ExtendBounds(result, contour.Parts[0].PointFrom);
+                        result = ExtendBounds(result, contour.Curves[0].PointFrom);
                     }
                         
                     break;
@@ -108,12 +108,12 @@ public static class SvgWriter {
 
     static void WritePath(StreamWriter writer, Path path) {
         //var sp = path.StartPoint;
-        if(path.Parts.Count==0)
+        if(path.Curves.Count==0)
             return;
-        var firstPart = path.Parts[0];
+        var firstPart = path.Curves[0];
         
         writer.Write("\n<path d=\"M  " + Math.Round(firstPart.PointFrom.X, 6) + " " + Math.Round(firstPart.PointFrom.Y, 6) + " ");
-        foreach (var pp in path.Parts) 
+        foreach (var pp in path.Curves) 
             WritePathPart(writer, pp);
         if (path.StrokeWidth > 0.00000001) {
             writer.Write("\" stroke-width=\""+Math.Round(path.StrokeWidth,8)+"\"");
@@ -122,11 +122,11 @@ public static class SvgWriter {
     }
 
     static void WriteContour(StreamWriter writer, Contour contour) {
-        if(contour.Parts.Count==0)
+        if(contour.Curves.Count==0)
             return;
-        var sp = contour.Parts[0].PointFrom;
+        var sp = contour.Curves[0].PointFrom;
         writer.Write("\n<path d=\"M  " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
-        foreach (var pp in contour.Parts) 
+        foreach (var pp in contour.Curves) 
             WritePathPart(writer, pp);
         writer.Write("Z\" fill=\"black\"/>");
     }
@@ -165,7 +165,7 @@ public static class SvgWriter {
                     WriteDot(swr, dot);
                     break;
             }
-            AddBoundsRect(swr,e.GetBounds(),"yellow");
+            AddBoundsRect(swr,e.Bounds,"yellow");
         }
 
         foreach (var b in _pathPartsBounds) {

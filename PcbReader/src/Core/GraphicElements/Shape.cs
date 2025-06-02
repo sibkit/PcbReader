@@ -6,9 +6,7 @@ public class Shape: IGraphicElement {
     public List<Contour> InnerContours { get; } = [];
 
 
-    public Bounds GetBounds() {
-        return OuterContour.GetBounds();
-    }
+    public Bounds Bounds => OuterContour.Bounds;
 
     public void UpdateBounds() {
         OuterContour.UpdateBounds();

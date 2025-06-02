@@ -18,7 +18,7 @@ public class Painter<T> where T :  CurvesOwner, new() {
 
    public void LineToAbs(double x, double y) {
 
-       Root.Parts.Add(new Line {
+       Root.Curves.Add(new Line {
            PointFrom = _curPoint,
            PointTo = new Point(x,y)
        });
@@ -26,7 +26,7 @@ public class Painter<T> where T :  CurvesOwner, new() {
    }
     public void LineToInc(double x, double y) {
 
-        Root.Parts.Add(new Line {
+        Root.Curves.Add(new Line {
             PointFrom = _curPoint,
             PointTo = new Point(_curPoint.X + x, _curPoint.Y + y)
         });
@@ -36,7 +36,7 @@ public class Painter<T> where T :  CurvesOwner, new() {
     public void ArcToInc(double x, double y, double radius, RotationDirection direction, bool isLarge) {
         _curPoint = new Point(_curPoint.X + x, _curPoint.Y + y);
         
-        Root.Parts.Add(new Arc {
+        Root.Curves.Add(new Arc {
             PointTo = _curPoint,
             PointFrom = new Point(_curPoint.X - x,
                 _curPoint.Y - y),

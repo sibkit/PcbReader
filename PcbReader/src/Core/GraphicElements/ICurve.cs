@@ -1,6 +1,8 @@
-﻿namespace PcbReader.Core.GraphicElements;
+﻿using PcbReader.Core.Intersections;
 
-public interface ICurve {
+namespace PcbReader.Core.GraphicElements;
+
+public interface ICurve: ICloneable {
     Point PointFrom { get; }
     Point PointTo { get; }
 

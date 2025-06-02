@@ -2,10 +2,11 @@
 
 
 
-public class Arc : ICurve, ICloneable {
+public class Arc : ICurve {
 
     private Bounds? _bounds;
-    
+    private ICurve _curveImplementation;
+
     public required Point PointTo { get; set; }
     public required Point PointFrom { get; set; }
 
@@ -105,6 +106,7 @@ public class Arc : ICurve, ICloneable {
         };
         return result;
     }
+
 
     public object Clone() {
         return MemberwiseClone();

@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Core.GraphicElements.PathParts;
 
-public class Line: ICurve, ICloneable {
+public class Line: ICurve {
     private Bounds? _bounds;
     
     public required Point PointTo { get; set; }

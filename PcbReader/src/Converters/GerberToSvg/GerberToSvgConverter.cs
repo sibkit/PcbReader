@@ -47,13 +47,13 @@ public static class GerberToSvgConverter {
         foreach (var op in operation.Parts) {
             switch (op) {
                 case GerberLinePart line:
-                    result.Parts.Add(new Line {
+                    result.Curves.Add(new Line {
                         PointFrom = startPartPoint,
                         PointTo = line.EndPoint
                     });
                     break;
                 case GerberArcPart arc:
-                    result.Parts.AddRange(ConvertArcPath(startPartPoint, arc, result));
+                    result.Curves.AddRange(ConvertArcPath(startPartPoint, arc, result));
                     startPartPoint = arc.EndPoint;
                     break;
                 default:

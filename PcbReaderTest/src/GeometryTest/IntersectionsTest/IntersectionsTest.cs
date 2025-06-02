@@ -21,13 +21,13 @@ public class IntersectionsTest {
         p2.LineToInc(-20,0);
         var c2 = p2.Root;
         
-        var is1 = Intersections.FindIntersections(c1.Parts[2], c2.Parts[0]);
+        var is1 = Intersections.FindIntersections(c1.Curves[2], c2.Curves[0]);
         Assert.Equal(2, is1.Count);
         
         Assert.True(is1[0].Point.X>is1[1].Point.X);
         Assert.True(is1[0].Point.Y>is1[1].Point.Y);
         
-        var is2 = Intersections.FindIntersections(c2.Parts[0], c1.Parts[2]);
+        var is2 = Intersections.FindIntersections(c2.Curves[0], c1.Curves[2]);
         Assert.Equal(2, is2.Count);
         
         Assert.True(is2[0].Point.X<is2[1].Point.X);
@@ -50,15 +50,15 @@ public class IntersectionsTest {
         p2.LineToInc(40,-10);
         var c2 = p2.Root;
 
-        var is1 = Intersections.FindIntersections(c1.Parts[0], c2.Parts[3]);
+        var is1 = Intersections.FindIntersections(c1.Curves[0], c2.Curves[3]);
         Assert.Single(is1);
         Assert.True(Math.Abs(is1[0].Point.X - 12d) < Geometry.Accuracy && Math.Abs(is1[0].Point.Y - 12d) < Geometry.Accuracy);
         
-        var is2 = Intersections.FindIntersections(c1.Parts[0], c2.Parts[0]);
+        var is2 = Intersections.FindIntersections(c1.Curves[0], c2.Curves[0]);
         Assert.Single(is2);
         Assert.True(Math.Abs(is2[0].Point.X - 16.25) < Geometry.Accuracy && Math.Abs(is2[0].Point.Y - (-5d)) < Geometry.Accuracy);
         
-        Assert.Empty(Intersections.FindIntersections(c1.Parts[0], c1.Parts[2]));
+        Assert.Empty(Intersections.FindIntersections(c1.Curves[0], c1.Curves[2]));
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class IntersectionsTest {
         p2.LineToInc(-30,0);
         var c2 = p2.Root;
         
-        var is2 = Intersections.FindIntersections(c1.Parts[0], c2.Parts[2]);
+        var is2 = Intersections.FindIntersections(c1.Curves[0], c2.Curves[2]);
         Assert.Single(is2);
         Assert.True(Math.Abs(is2[0].Point.X - 29.85) < 0.01);
     }

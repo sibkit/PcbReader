@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Core;
 
 public interface IGraphicElement {
-    Bounds GetBounds();
+    Bounds Bounds { get; }
     void UpdateBounds();
 } 
