@@ -1,21 +1,21 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Location.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Relations.Intersections;
 
-public class LineWithCircleIntersectionPointsFinder : IIntersectionPointsFinder<Line, Arc> {
+public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
 
 
 
-    public List<Point> FindIntersectionPoints(Line part1, Arc part2) {
+    public (List<Point> points, bool isIntersection) FindContactPoints(Line line, Arc arc) {
         
-        var p2C = Geometry.ArcCenter(part2);
+        var p2C = Geometry.ArcCenter(arc);
         
-        var p1X1 = part1.PointFrom.X - p2C.X;
-        var p1Y1 = part1.PointFrom.Y - p2C.Y;
+        var p1X1 = line.PointFrom.X - p2C.X;
+        var p1Y1 = line.PointFrom.Y - p2C.Y;
         
-        var p1X2 = part1.PointTo.X - p2C.X;
-        var p1Y2 = part1.PointTo.Y - p2C.Y;
+        var p1X2 = line.PointTo.X - p2C.X;
+        var p1Y2 = line.PointTo.Y - p2C.Y;
 
         var p1Dx = p1X2 - p1X1;
         var p1Dy = p1Y2 - p1Y1;
@@ -25,26 +25,26 @@ public class LineWithCircleIntersectionPointsFinder : IIntersectionPointsFinder<
         var c = p1Dx * p1Y1 - p1Dy * p1X1;
 
         var d = Math.Abs(c)/Math.Sqrt(a*a + b*b);
-        if (d > part2.Radius)
-            return [];
+        if (d > arc.Radius)
+            return ([], false);
         
         var zpX = -(a * c) / (a * a + b * b);
         var zpY = -(b * c) / (a * a + b * b);
 
-        if (Math.Abs(d - part2.Radius) < Geometry.Accuracy) {
-            return [new Point(zpX+p2C.X, zpY+p2C.Y)];
+        if (Math.Abs(d - arc.Radius) < Geometry.Accuracy) {
+            return ([new Point(zpX+p2C.X, zpY+p2C.Y)], true);
         }
         
-        var k = Math.Sqrt(part2.Radius*part2.Radius - d*d);
+        var k = Math.Sqrt(arc.Radius*arc.Radius - d*d);
 
         var mult = Math.Sqrt(k * k / (a * a + b * b));
         
         var pI1 = new Point(zpX + b * mult, zpY - a * mult);
         var pI2 = new Point(zpX - b * mult, zpY + a * mult);
 
-        return [
+        return ([
             new Point(pI1.X + p2C.X, pI1.Y + p2C.Y),
             new Point(pI2.X + p2C.X, pI2.Y + p2C.Y)
-        ];
+        ], true);
     }
 }

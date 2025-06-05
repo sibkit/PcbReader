@@ -2,7 +2,7 @@
 using PcbReader.Core.Entities.GraphicElements;
 using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Location.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Relations.Intersections;
 
 public static class TCalculator {
     

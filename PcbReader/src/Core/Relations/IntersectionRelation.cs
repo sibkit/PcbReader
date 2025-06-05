@@ -1,5 +1,5 @@
-﻿namespace PcbReader.Core.Location;
+﻿namespace PcbReader.Core.Relations;
 
 public class IntersectionRelation : IRelation {
-    public List<IntersectionPoint> Items = [];
+    public List<ContactPoint> Points = [];
 }

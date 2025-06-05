@@ -1,8 +1,7 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements;
 using PcbReader.Core.Entities.GraphicElements.Curves;
-using PcbReader.Core.Location;
-using PcbReader.Core.Location.Intersections;
+using PcbReader.Core.Relations;
 
 namespace PcbReader.Core;
 
@@ -85,7 +84,7 @@ public static class Contours {
 
         //находим все пересечения
         
-        var intersections = new List<IntersectionPoint>();
+        var intersections = new List<ContactPoint>();
         foreach (var curve in contour1.Curves) {
             foreach (var curve2 in contour2.Curves) {
                 //intersections.AddRange(IntersectionsFinder.FindIntersections(curve, curve2));
