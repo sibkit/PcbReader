@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Core;
+﻿using PcbReader.Core.Entities;
+
+namespace PcbReader.Core;
 
 public readonly struct Vector(double x, double y) {
 

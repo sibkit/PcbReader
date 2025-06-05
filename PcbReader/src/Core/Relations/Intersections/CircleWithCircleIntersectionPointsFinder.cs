@@ -1,6 +1,7 @@
-﻿using PcbReader.Core.GraphicElements.PathParts;
+﻿using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Location.Intersections.IntersectionFinders;
 
 public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder<Arc, Arc> {
     
@@ -11,30 +12,24 @@ public class CircleWithCircleIntersectionPointsFinder: IIntersectionPointsFinder
         var p1C = Geometry.ArcCenter(part1);
         var p2C = Geometry.ArcCenter(part2);
         
-        var p1Xc = p1C.X;
-        var p1Yc = p1C.Y;
-
-        var p2Xc = p2C.X;
-        var p2Yc = p2C.Y;
-        
         var p1R = part1.Radius;
         var p2R = part2.Radius;
 
-        var d = Math.Sqrt((p2Xc-p1Xc)*(p2Xc-p1Xc)+(p2Yc-p1Yc)*(p2Yc-p1Yc));
+        var d = Math.Sqrt((p2C.X-p1C.X)*(p2C.X-p1C.X)+(p2C.Y-p1C.Y)*(p2C.Y-p1C.Y));
         if(d>p1R+p2R || d<Math.Abs(p1R-p2R) || d==0)
             return [];
         
         var a = (p1R*p1R - p2R*p2R + d*d)/(2d*d);
         var h = Math.Sqrt(p1R*p1R - a*a);
 
-        var xm = p1Xc + (a / d) * (p2Xc - p1Xc);
-        var ym = p1Yc + (a / d) * (p2Yc - p1Yc);
+        var xm = p1C.X + (a / d) * (p2C.X - p1C.X);
+        var ym = p1C.Y + (a / d) * (p2C.Y - p1C.Y);
         
-        var x1 = xm+(h/d)*(p2Yc - p1Yc);
-        var y1 = ym-(h/d)*(p2Xc - p1Xc);
+        var x1 = xm+(h/d)*(p2C.Y - p1C.Y);
+        var y1 = ym-(h/d)*(p2C.X - p1C.X);
 
-        var x2 = xm-(h/d)*(p2Yc - p1Yc);
-        var y2 = ym+(h/d)*(p2Xc - p1Xc);
+        var x2 = xm-(h/d)*(p2C.Y - p1C.Y);
+        var y2 = ym+(h/d)*(p2C.X - p1C.X);
         
         if (double.IsNaN(x1) || double.IsNaN(y1)) {
             return [];

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Intrinsics;
 using PcbReader.Core;
-using PcbReader.Core.GraphicElements.PathParts;
+using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 
 
 namespace PcbReaderTest.GeometryTest;

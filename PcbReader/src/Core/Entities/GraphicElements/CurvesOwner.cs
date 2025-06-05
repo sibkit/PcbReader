@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core.GraphicElements;
+﻿namespace PcbReader.Core.Entities.GraphicElements;
 
 public abstract class CurvesOwner: IGraphicElement {
     private Bounds? _bounds = new Bounds();

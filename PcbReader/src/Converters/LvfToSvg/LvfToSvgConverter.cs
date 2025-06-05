@@ -1,6 +1,5 @@
 ﻿using PcbReader.Core;
-using PcbReader.Core.GraphicElements;
-using PcbReader.Core.GraphicElements.PathParts;
+using PcbReader.Core.Entities;
 using PcbReader.Layers.Svg.Entities;
 
 namespace PcbReader.Converters.LvfToSvg;

@@ -1,7 +1,7 @@
-﻿using PcbReader.Core.GraphicElements;
-using PcbReader.Core.GraphicElements.PathParts;
+﻿using PcbReader.Core.Entities.GraphicElements;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core;
+namespace PcbReader.Core.Entities;
 
 public class Area {
     public List<IGraphicElement> GraphicElements { get; } = [];

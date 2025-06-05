@@ -1,6 +1,8 @@
-﻿using PcbReader.Core.GraphicElements;
-using PcbReader.Core.Intersections;
-using PcbReader.Core.GraphicElements.PathParts;
+﻿using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements;
+using PcbReader.Core.Entities.GraphicElements.Curves;
+using PcbReader.Core.Location;
+using PcbReader.Core.Location.Intersections;
 
 namespace PcbReader.Core;
 
@@ -73,7 +75,7 @@ public static class Contours {
         return result;
     }
 
-    public static Contour Merge(Contour contour1, Contour contour2) {
+    public static Shape Merge(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
             return null;
         var result = new Contour();
@@ -81,22 +83,20 @@ public static class Contours {
         if (GetRotationDirection(contour1) != GetRotationDirection(contour2))
             contour2 = GetReversed(contour2);
 
+        //находим все пересечения
+        
+        var intersections = new List<IntersectionPoint>();
         foreach (var curve in contour1.Curves) {
-            var finded = false;
             foreach (var curve2 in contour2.Curves) {
-                var intersections = Intersections.Intersections.FindIntersections(curve, curve2);
-                if (intersections.Count != 0) {
-                    finded = true;
-                } else {
-                    
-                }
+                //intersections.AddRange(IntersectionsFinder.FindIntersections(curve, curve2));
             }
-            if(!finded)
-                result.Curves.Add(curve);
         }
         
         
         
-        return result;
+        return new Shape {
+            OuterContour = null
+        };
     }
 }
+

@@ -5,6 +5,7 @@ using System.Runtime.Intrinsics.Arm;
 using PcbReader.Converters;
 using PcbReader.Converters.GerberToSvg;
 using PcbReader.Core;
+using PcbReader.Core.Entities;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading;

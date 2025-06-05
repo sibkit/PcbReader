@@ -1,6 +1,6 @@
 ﻿using PcbReader.Core;
-using PcbReader.Core.GraphicElements;
-using PcbReader.Core.PathEdit;
+using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements;
 
 namespace PcbReaderTest.GeometryTest;
 

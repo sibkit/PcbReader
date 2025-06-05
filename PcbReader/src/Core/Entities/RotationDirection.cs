@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core;
+﻿namespace PcbReader.Core.Entities;
 
 public enum RotationDirection {
     Clockwise,

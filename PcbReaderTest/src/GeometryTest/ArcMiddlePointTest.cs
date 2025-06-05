@@ -1,8 +1,8 @@
 ﻿using PcbReader.Converters.LvfToSvg;
 using PcbReader.Core;
-using PcbReader.Core.GraphicElements;
-using PcbReader.Core.GraphicElements.PathParts;
-using PcbReader.Core.PathEdit;
+using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
 

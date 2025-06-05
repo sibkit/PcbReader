@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core.GraphicElements;
+﻿namespace PcbReader.Core.Entities.GraphicElements;
 
 public class Dot: IGraphicElement {
     public Point CenterPoint{get; set; }

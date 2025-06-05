@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Core;
+﻿using PcbReader.Core.Entities;
+
+namespace PcbReader.Core;
 
 public static class Angles {
     public static double CalculateAngle(Point sp, Point ep, Point cp) {

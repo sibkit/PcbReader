@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core.GraphicElements.PathParts;
+﻿namespace PcbReader.Core.Entities.GraphicElements.Curves;
 
 
 

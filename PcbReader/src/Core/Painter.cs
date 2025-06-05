@@ -1,7 +1,8 @@
-﻿using PcbReader.Core.GraphicElements;
-using PcbReader.Core.GraphicElements.PathParts;
+﻿using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.PathEdit;
+namespace PcbReader.Core;
 
 public class Painter<T> where T :  CurvesOwner, new() {
 

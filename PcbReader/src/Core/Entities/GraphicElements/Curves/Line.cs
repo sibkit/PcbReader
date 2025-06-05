@@ -1,4 +1,4 @@
-﻿namespace PcbReader.Core.GraphicElements.PathParts;
+﻿namespace PcbReader.Core.Entities.GraphicElements.Curves;
 
 public class Line: ICurve {
     private Bounds? _bounds;
@@ -18,7 +18,7 @@ public class Line: ICurve {
                 double maxX;
                 double maxY;
 
-                if (PointFrom.X > PointTo.X) {
+                if (PointFrom.X < PointTo.X) {
                     minX = PointFrom.X;
                     maxX = PointTo.X;
                 } else {
@@ -26,7 +26,7 @@ public class Line: ICurve {
                     maxX = PointFrom.X;
                 }
 
-                if (PointFrom.Y > PointTo.Y) {
+                if (PointFrom.Y < PointTo.Y) {
                     minY = PointFrom.Y;
                     maxY = PointTo.Y;
                 } else {

@@ -1,15 +1,16 @@
 ﻿
 using System.Net.Http.Headers;
 using PcbReader.Core;
-using PcbReader.Core.GraphicElements;
-using PcbReader.Core.GraphicElements.PathParts;
+using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
-using Path = PcbReader.Core.GraphicElements.Path;
+using Path = PcbReader.Core.Entities.GraphicElements.Path;
 
 namespace PcbReader.Converters.GerberToSvg;
 

@@ -1,6 +1,7 @@
-﻿using PcbReader.Core.GraphicElements.PathParts;
+﻿using PcbReader.Core.Entities;
+using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Intersections.IntersectionFinders;
+namespace PcbReader.Core.Location.Intersections.IntersectionFinders;
 
 public class LineWithLineIntersectionPointsFinder: IIntersectionPointsFinder<Line, Line> {
     public List<Point> FindIntersectionPoints(Line part1, Line part2) {
