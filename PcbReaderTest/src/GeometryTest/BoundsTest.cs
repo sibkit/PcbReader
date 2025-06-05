@@ -29,7 +29,6 @@ public class BoundsTest {
         Assert.False(b1.Contains(new Point(6,5)));
         Assert.False(b1.Contains(new Point(2,5.0001)));
         Assert.False(b1.Contains(new Point(-0.000001,2)));
-
     }
 
     [Fact]

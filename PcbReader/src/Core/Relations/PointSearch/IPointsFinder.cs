@@ -1,10 +1,10 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements;
 
-namespace PcbReader.Core.Relations.Intersections;
+namespace PcbReader.Core.Relations.PointSearch;
 
 public interface IPointsFinder<in TF, in TS> 
     where TF : ICurve
     where TS: ICurve {
-    (List<Point> points, bool isIntersection) FindContactPoints(TF curve1, TS curve2);
+    (List<Point> points, bool isMatch) FindContactPoints(TF curve1, TS curve2);
 }

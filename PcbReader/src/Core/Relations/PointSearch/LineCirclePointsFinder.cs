@@ -1,13 +1,13 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Relations.Intersections;
+namespace PcbReader.Core.Relations.PointSearch;
 
 public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
 
 
 
-    public (List<Point> points, bool isIntersection) FindContactPoints(Line line, Arc arc) {
+    public (List<Point> points, bool isMatch) FindContactPoints(Line line, Arc arc) {
         
         var p2C = Geometry.ArcCenter(arc);
         
