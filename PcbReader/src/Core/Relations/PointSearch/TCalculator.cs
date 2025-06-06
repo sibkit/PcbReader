@@ -88,16 +88,16 @@ public static class TCalculator {
     
     public static double PositiveNormalizeAngle(double angle) {
         return angle switch {
-            <= 0 => PositiveNormalizeAngle(angle + Math.PI),
-            > Math.PI*2d => PositiveNormalizeAngle(angle - Math.PI),
+            <= 0 => PositiveNormalizeAngle(angle + 2*Math.PI),
+            > Math.PI*2d => PositiveNormalizeAngle(angle - 2*Math.PI),
             _ => angle
         };
     }
 
     public  static double NegativeNormalizeAngle(double angle) {
         return angle switch {
-            >= 0 => NegativeNormalizeAngle(angle - Math.PI),
-            < -Math.PI*2d => NegativeNormalizeAngle(angle + Math.PI),
+            >= 0 => NegativeNormalizeAngle(angle - 2*Math.PI),
+            < -Math.PI*2d => NegativeNormalizeAngle(angle + 2*Math.PI),
             _ => angle
         };
     }

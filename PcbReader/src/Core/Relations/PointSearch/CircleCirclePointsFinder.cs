@@ -6,8 +6,6 @@ namespace PcbReader.Core.Relations.PointSearch;
 public class CircleCirclePointsFinder: IPointsFinder<Arc, Arc> {
     
     public (List<Point> points, bool isMatch) FindContactPoints(Arc arc1, Arc arc2) {
-        if (!arc1.Bounds.IsIntersected(arc2.Bounds))
-            return ([], false);
         
         var p1C = Geometry.ArcCenter(arc1);
         var p2C = Geometry.ArcCenter(arc2);
