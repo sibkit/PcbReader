@@ -1,7 +1,7 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements;
 
-namespace PcbReader.Core.Relations.PointSearch;
+namespace PcbReader.Core.Relations.PointsSearch;
 
 public interface IPointsFinder<in TF, in TS> 
     where TF : ICurve

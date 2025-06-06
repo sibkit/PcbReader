@@ -1,7 +1,7 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Relations.PointSearch;
+namespace PcbReader.Core.Relations.PointsSearch;
 
 public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
 

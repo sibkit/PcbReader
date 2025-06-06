@@ -2,12 +2,10 @@
 using PcbReader.Core.Entities.GraphicElements;
 using PcbReader.Core.Entities.GraphicElements.Curves;
 
-namespace PcbReader.Core.Relations.PointSearch;
+namespace PcbReader.Core.Relations.PointsSearch;
 
 public static class TCalculator {
     
-
-
     public static double CalculateT(ICurve curve, Point ip) {
         return curve switch {
             Line line => CalculateT(line, ip),
@@ -67,38 +65,22 @@ public static class TCalculator {
         var ipPrX = ip.X-cp.X;
         var ipPrY = ip.Y-cp.Y;
         
-        var startAngle = PositiveNormalizeAngle(Math.Atan2(spPrY, spPrX));
-        var endAngle = PositiveNormalizeAngle(Math.Atan2(epPrY, epPrX));
-        var intersectionAngle = PositiveNormalizeAngle(Math.Atan2(ipPrY, ipPrX));
+        var startAngle = Angles.PositiveNormalize(Math.Atan2(spPrY, spPrX));
+        var endAngle = Angles.PositiveNormalize(Math.Atan2(epPrY, epPrX));
+        var intersectionAngle = Angles.PositiveNormalize(Math.Atan2(ipPrY, ipPrX));
         
         double fullArcAngle;
         switch (arc.RotationDirection) {
             case RotationDirection.Clockwise:
                 //знак с минусом
-                fullArcAngle = NegativeNormalizeAngle(endAngle - startAngle);
-                return NegativeNormalizeAngle(intersectionAngle-startAngle) / fullArcAngle;
+                fullArcAngle = Angles.NegativeNormalize(endAngle - startAngle);
+                return Angles.NegativeNormalize(intersectionAngle-startAngle) / fullArcAngle;
             case RotationDirection.CounterClockwise:
                 //знак с плюсом
-                fullArcAngle = PositiveNormalizeAngle(endAngle - startAngle);
-                return PositiveNormalizeAngle(intersectionAngle-startAngle) / fullArcAngle;
+                fullArcAngle = Angles.PositiveNormalize(endAngle - startAngle);
+                return Angles.PositiveNormalize(intersectionAngle-startAngle) / fullArcAngle;
             default:
                 throw new Exception("TCalculator : CalculateT");
         }
-    }
-    
-    public static double PositiveNormalizeAngle(double angle) {
-        return angle switch {
-            <= 0 => PositiveNormalizeAngle(angle + 2*Math.PI),
-            > Math.PI*2d => PositiveNormalizeAngle(angle - 2*Math.PI),
-            _ => angle
-        };
-    }
-
-    public  static double NegativeNormalizeAngle(double angle) {
-        return angle switch {
-            >= 0 => NegativeNormalizeAngle(angle - 2*Math.PI),
-            < -Math.PI*2d => NegativeNormalizeAngle(angle + 2*Math.PI),
-            _ => angle
-        };
     }
 }

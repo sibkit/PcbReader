@@ -1,7 +1,7 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements;
 using PcbReader.Core.Entities.GraphicElements.Curves;
-using PcbReader.Core.Relations.PointSearch;
+using PcbReader.Core.Relations.PointsSearch;
 
 namespace PcbReader.Core.Relations;
 
