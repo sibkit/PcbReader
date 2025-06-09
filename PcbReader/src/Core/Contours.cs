@@ -6,7 +6,7 @@ using PcbReader.Core.Relations;
 namespace PcbReader.Core;
 
 public static class Contours {
-    
+
     private static Contour Simplify(Contour contour) {
 
         var result = new Contour();
@@ -29,9 +29,9 @@ public static class Contours {
                     break;
             }
         }
+
         return result;
     }
-
 
     private static double GetRotationAngle(Line curLine, Line prevLine) {
         var th1 = Math.Atan2(prevLine.PointTo.Y - prevLine.PointFrom.Y, prevLine.PointTo.X - prevLine.PointFrom.X);
@@ -58,11 +58,9 @@ public static class Contours {
 
         if (Math.Abs(resultAngle - Math.PI * 2) < Geometry.Accuracy)
             return RotationDirection.Clockwise;
-        else if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
+        if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
             return RotationDirection.CounterClockwise;
-        else
-            throw new Exception("Contours: GetRotationDirection(2)");
-
+        throw new Exception("Contours: GetRotationDirection(2)");
     }
 
     public static Contour GetReversed(Contour contour) {
@@ -71,28 +69,91 @@ public static class Contours {
             var part = contour.Curves[i];
             result.Curves.Add(part.GetReversed());
         }
+
         return result;
     }
 
-    public static Shape Merge(Contour contour1, Contour contour2) {
+    public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
-            return null;
+            return contour1;
+        
         var result = new Contour();
 
         if (GetRotationDirection(contour1) != GetRotationDirection(contour2))
             contour2 = GetReversed(contour2);
 
         //находим все пересечения
-        
-        var intersections = new List<ContactPoint>();
         foreach (var curve in contour1.Curves) {
+            var contactPoints = new List<ContactPoint>();
             foreach (var curve2 in contour2.Curves) {
-                //intersections.AddRange(IntersectionsFinder.FindIntersections(curve, curve2));
+                var relation = RelationManager.DefineRelation(curve, curve2);
+                switch (relation) {
+                    case NotRelation:
+                        break;
+                    case IntersectionRelation ir:
+                        contactPoints.AddRange(ir.Points);
+                        break;
+                    case OverlappingRelation or:
+                        contactPoints.AddRange(or.Points);
+                        break;
+                    default:
+                        throw new Exception("Contours: Merge (Unknown Relation type: " + relation+")");
+                }
+            }
+
+            // if (contactPoints.Count == 0) {
+            //     result.Curves.Add((ICurve)curve.Clone());
+            // }
+            
+            contactPoints.Sort((x,x1)=>x.T.CompareTo(x1.T));
+            switch (curve) {
+                case Line line:
+                    var sp = line.PointFrom;
+                    foreach (var cp in contactPoints) {
+                        result.Curves.Add(new Line {
+                            PointFrom = sp,
+                            PointTo = cp.Point,
+                        });
+                        sp = cp.Point;
+                    }
+                    result.Curves.Add(new Line {
+                        PointFrom = sp,
+                        PointTo = line.PointTo,
+                    });
+                    break;
+                case Arc arc:
+                    var sp2 = arc.PointFrom;
+                    foreach (var cp in contactPoints) {
+                        result.Curves.Add(new Arc {
+                            PointFrom = sp2,
+                            PointTo = cp.Point,
+                            Radius = arc.Radius,
+                            RotationDirection = arc.RotationDirection,
+                            IsLargeArc = arc.IsLargeArc
+                        });
+                        sp2 = cp.Point;
+                    }
+                    result.Curves.Add(new Arc {
+                        PointFrom = sp2,
+                        PointTo = arc.PointTo,
+                        Radius = arc.Radius,
+                        RotationDirection = arc.RotationDirection,
+                        IsLargeArc = arc.IsLargeArc
+                    });
+                    break;
+                default:
+                    throw new Exception("Contours: Merge (Unknown Curve type: " + curve + ")");
             }
         }
-        
-        
-        
+
+        return result;
+    }
+    
+    public static Shape Merge(Contour contour1, Contour contour2) {
+        if (!contour1.Bounds.IsIntersected(contour2.Bounds))
+            return null;
+
+
         return new Shape {
             OuterContour = null
         };
