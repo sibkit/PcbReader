@@ -17,9 +17,11 @@ public class CircleCirclePointsFinder: IPointsFinder<Arc, Arc> {
         var p1R = arc1.Radius;
         var p2R = arc2.Radius;
 
+        var isMatch = Math.Abs(p1R - p2R) < Geometry.Accuracy && p1C == p2C;
+        
         var d = Math.Sqrt((p2C.X-p1C.X)*(p2C.X-p1C.X)+(p2C.Y-p1C.Y)*(p2C.Y-p1C.Y));
         if(d>p1R+p2R || d<Math.Abs(p1R-p2R) || d==0)
-            return ([], false);
+            return ([], isMatch);
         
         var a = (p1R*p1R - p2R*p2R + d*d)/(2d*d);
         var h = Math.Sqrt(p1R*p1R - a*a);
@@ -37,6 +39,12 @@ public class CircleCirclePointsFinder: IPointsFinder<Arc, Arc> {
             return ([], false);
         }
 
-        return ([new Point(x1, y1), new Point(x2, y2)], true);
+        var p1 = new Point(x1, y1);
+        var p2 = new Point(x2, y2);
+        
+        if(p1==p2)
+            return ([p1], isMatch);
+        
+        return ([p1, p2], isMatch);
     }
 }

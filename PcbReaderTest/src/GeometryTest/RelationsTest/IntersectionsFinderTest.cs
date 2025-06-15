@@ -23,7 +23,7 @@ public class IntersectionsFinderTest {
 
         var r1 = RelationManager.DefineRelation(c1.Curves[2], c2.Curves[0]);
 
-        if (r1 is IntersectionRelation ir1) {
+        if (r1 is ContactRelation ir1) {
             Assert.Equal(2, ir1.Points.Count);
 
             Assert.True(ir1.Points[0].Point.X > ir1.Points[1].Point.X);
@@ -34,7 +34,7 @@ public class IntersectionsFinderTest {
 
         var r2 = RelationManager.DefineRelation(c2.Curves[0], c1.Curves[2]);
         
-        if (r2 is IntersectionRelation ir2) {
+        if (r2 is ContactRelation ir2) {
             Assert.Equal(2, ir2.Points.Count);
 
             Assert.True(ir2.Points[0].Point.X < ir2.Points[1].Point.X);
@@ -61,7 +61,7 @@ public class IntersectionsFinderTest {
         var c2 = p2.Root;
 
         var r1 = RelationManager.DefineRelation(c1.Curves[0], c2.Curves[3]);
-        if (r1 is IntersectionRelation ir1) {
+        if (r1 is ContactRelation ir1) {
 
             Assert.Single(ir1.Points);
             Assert.True(Math.Abs(ir1.Points[0].Point.X - 12d) < Geometry.Accuracy && Math.Abs(ir1.Points[0].Point.Y - 12d) < Geometry.Accuracy);
@@ -69,7 +69,7 @@ public class IntersectionsFinderTest {
             Assert.Fail("Пересечения не найдены");
         }
 
-        if (r1 is IntersectionRelation ir2) {
+        if (r1 is ContactRelation ir2) {
             Assert.Single(ir2.Points);
             Assert.True(Math.Abs(ir2.Points[0].Point.X - 12) < Geometry.Accuracy && Math.Abs(ir2.Points[0].Point.Y - 12) < Geometry.Accuracy);
         } else {
@@ -96,9 +96,9 @@ public class IntersectionsFinderTest {
         var c2 = p2.Root;
         
         var r1 = RelationManager.DefineRelation(c1.Curves[0], c2.Curves[2]);
-        if(r1 is not IntersectionRelation)
+        if(r1 is not ContactRelation)
             Assert.Fail("Пересечения не найдены");
-        var ir1 = r1 as IntersectionRelation;
+        var ir1 = r1 as ContactRelation;
         Debug.Assert(ir1?.Points != null, "ir1?.Items != null");
         Assert.Single(ir1.Points);
         Assert.True(Math.Abs(ir1.Points[0].Point.X - 29.85) < 0.01);

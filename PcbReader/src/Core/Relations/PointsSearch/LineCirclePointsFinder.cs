@@ -4,9 +4,7 @@ using PcbReader.Core.Entities.GraphicElements.Curves;
 namespace PcbReader.Core.Relations.PointsSearch;
 
 public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
-
-
-
+    
     public (List<Point> points, bool isMatch) FindContactPoints(Line line, Arc arc) {
         
         var p2C = Geometry.ArcCenter(arc);
@@ -27,12 +25,13 @@ public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
         var d = Math.Abs(c)/Math.Sqrt(a*a + b*b);
         if (d > arc.Radius)
             return ([], false);
+
         
         var zpX = -(a * c) / (a * a + b * b);
         var zpY = -(b * c) / (a * a + b * b);
 
         if (Math.Abs(d - arc.Radius) < Geometry.Accuracy) {
-            return ([new Point(zpX+p2C.X, zpY+p2C.Y)], true);
+            return ([new Point(zpX+p2C.X, zpY+p2C.Y)], false);
         }
         
         var k = Math.Sqrt(arc.Radius*arc.Radius - d*d);
@@ -45,6 +44,6 @@ public class LineCirclePointsFinder : IPointsFinder<Line, Arc> {
         return ([
             new Point(pI1.X + p2C.X, pI1.Y + p2C.Y),
             new Point(pI2.X + p2C.X, pI2.Y + p2C.Y)
-        ], true);
+        ], false);
     }
 }

@@ -39,23 +39,31 @@ public static class RelationManager {
                     Point = baseCurve.PointFrom,
                     T = t1,
                     BaseT = 0,
+                    Curve = curve,
+                    BaseCurve = baseCurve
                 });}
             if(InRange(t2)) points.Add(new ContactPoint {
                     Point = baseCurve.PointTo,
                     T = t2,
                     BaseT = 1,
+                    Curve = curve,
+                    BaseCurve = baseCurve
                 });
             if (InRange(bt1) && curve.PointFrom != baseCurve.PointFrom && curve.PointFrom != baseCurve.PointTo)
                 points.Add(new ContactPoint {
                     Point = curve.PointFrom,
                     T = 0,
                     BaseT = bt1,
+                    Curve = curve,
+                    BaseCurve = baseCurve
                 });
             if (InRange(bt2) && curve.PointTo != baseCurve.PointTo && curve.PointTo != baseCurve.PointFrom)
                 points.Add(new ContactPoint {
                     Point = curve.PointTo,
                     T = 1,
                     BaseT = bt2,
+                    Curve = curve,
+                    BaseCurve = baseCurve
                 });
             points.Sort((a, b) => a.T.CompareTo(b.T));
             return new OverlappingRelation {
@@ -71,7 +79,9 @@ public static class RelationManager {
                     points.Add(new ContactPoint {
                         T = t1,
                         Point = pt,
-                        BaseT = t2
+                        BaseT = t2,
+                        Curve = curve,
+                        BaseCurve = baseCurve
                     });
                 }
             }
@@ -80,7 +90,7 @@ public static class RelationManager {
                 return new NotRelation();
         
             points.Sort((a, b) => a.T.CompareTo(b.T));
-            return new IntersectionRelation {
+            return new ContactRelation {
                 Points = points
             };
         }

@@ -73,15 +73,37 @@ public static class Contours {
         return result;
     }
 
+
+    public static ContactPoint FindExtremePoint(Line line, Contour contour) {
+        var contactPoints = new List<ContactPoint>();
+        foreach (var curve2 in contour.Curves) {
+            var relation = RelationManager.DefineRelation(line, curve2);
+            switch (relation) {
+                case NotRelation:
+                    break;
+                case ContactRelation ir:
+                    contactPoints.AddRange(ir.Points);
+                    break;
+                case OverlappingRelation or:
+                    contactPoints.AddRange(or.Points);
+                    break;
+                default:
+                    throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation + ")");
+            }
+        }
+
+        if (contactPoints.Count == 0)
+            return null;
+        contactPoints.Sort((a, b) => a.T.CompareTo(b.T));
+        return contactPoints[^1];
+    }
+
     public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
             return contour1;
         
         var result = new Contour();
-
-        if (GetRotationDirection(contour1) != GetRotationDirection(contour2))
-            contour2 = GetReversed(contour2);
-
+        
         //находим все пересечения
         foreach (var curve in contour1.Curves) {
             var contactPoints = new List<ContactPoint>();
@@ -90,14 +112,14 @@ public static class Contours {
                 switch (relation) {
                     case NotRelation:
                         break;
-                    case IntersectionRelation ir:
+                    case ContactRelation ir:
                         contactPoints.AddRange(ir.Points);
                         break;
                     case OverlappingRelation or:
                         contactPoints.AddRange(or.Points);
                         break;
                     default:
-                        throw new Exception("Contours: Merge (Unknown Relation type: " + relation+")");
+                        throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation+")");
                 }
             }
 
@@ -148,12 +170,30 @@ public static class Contours {
 
         return result;
     }
+
+    public static Point? FindExtremePoint(Contour contour1, Contour contour2) {
+        return null;
+    }
     
     public static Shape Merge(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
             return null;
 
+        var sp = contour1.Curves[0].PointFrom;
+        var epX = contour1.Bounds.MinX<contour2.Bounds.MinX? contour1.Bounds.MinX : contour2.Bounds.MinX;
+        var line = new Line {
+            PointFrom = sp,
+            PointTo = new Point(epX, sp.Y)
+        };
 
+        var sc1 = SplitByRelationPoints(contour1, contour2);
+        var sc2 = SplitByRelationPoints(contour2, contour1);
+       
+        if (GetRotationDirection(sc1) != GetRotationDirection(sc2))
+            sc2 = GetReversed(sc2);
+        
+        
+        
         return new Shape {
             OuterContour = null
         };

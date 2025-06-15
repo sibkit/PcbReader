@@ -33,4 +33,10 @@ public class ContoursTest {
         Assert.True(cs2.Curves[0].PointTo == new Point(50,40));
         Assert.True(cs2.Curves[7].PointTo == new Point(50,30));
     }
+
+
+    [Fact]
+    public void FindExtremePointTest() {
+        
+    }
 }
