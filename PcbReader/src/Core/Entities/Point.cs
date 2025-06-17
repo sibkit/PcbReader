@@ -27,7 +27,7 @@ public readonly struct Point(double x, double y) : IEquatable<Point> {
     }
 
     public override int GetHashCode() {
-        return HashCode.Combine(X, Y);
+        return HashCode.Combine(Math.Round(X,1), Math.Round(Y,1));
     }
 
     public Point WithNewX(double newX) {

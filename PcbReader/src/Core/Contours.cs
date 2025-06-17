@@ -6,7 +6,6 @@ using PcbReader.Core.Relations;
 namespace PcbReader.Core;
 
 public static class Contours {
-
     private static Contour Simplify(Contour contour) {
 
         var result = new Contour();
@@ -72,8 +71,7 @@ public static class Contours {
 
         return result;
     }
-
-
+    
     public static ContactPoint FindExtremePoint(Line line, Contour contour) {
         var contactPoints = new List<ContactPoint>();
         foreach (var curve2 in contour.Curves) {

@@ -3,10 +3,10 @@
 
 
 public class Arc : ICurve {
-
     private Bounds? _bounds;
-    private ICurve _curveImplementation;
 
+    public CurvesOwner Owner { get; set; }
+    
     public required Point PointTo { get; set; }
     public required Point PointFrom { get; set; }
 

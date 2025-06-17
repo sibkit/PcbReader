@@ -3,7 +3,10 @@
 public class Line: ICurve {
     private Bounds? _bounds;
     
+    public CurvesOwner Owner { get; set; }
+    
     public required Point PointTo { get; set; }
+    
     public required Point PointFrom { get; set; }
 
     public void UpdateBounds() {

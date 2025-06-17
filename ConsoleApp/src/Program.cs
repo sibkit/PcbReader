@@ -19,6 +19,9 @@ public static class Program {
 
     [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args) {
+        
+        PointsAccuracyHashing.HashPoints();
+        
         CalculateResult();
         //MacroTest.MacroAmTest();
         return;
