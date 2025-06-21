@@ -1,6 +1,7 @@
 ﻿using PcbReader.Core.Entities;
 using PcbReader.Core.Entities.GraphicElements;
 using PcbReader.Core.Entities.GraphicElements.Curves;
+using PcbReader.Core.Handling;
 using PcbReader.Core.Relations;
 
 namespace PcbReader.Core;
@@ -96,82 +97,8 @@ public static class Contours {
         return contactPoints[^1];
     }
 
-    public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
-        if (!contour1.Bounds.IsIntersected(contour2.Bounds))
-            return contour1;
-        
-        var result = new Contour();
-        
-        //находим все пересечения
-        foreach (var curve in contour1.Curves) {
-            var contactPoints = new List<ContactPoint>();
-            foreach (var curve2 in contour2.Curves) {
-                var relation = RelationManager.DefineRelation(curve, curve2);
-                switch (relation) {
-                    case NotRelation:
-                        break;
-                    case ContactRelation ir:
-                        contactPoints.AddRange(ir.Points);
-                        break;
-                    case OverlappingRelation or:
-                        contactPoints.AddRange(or.Points);
-                        break;
-                    default:
-                        throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation+")");
-                }
-            }
+  
 
-            // if (contactPoints.Count == 0) {
-            //     result.Curves.Add((ICurve)curve.Clone());
-            // }
-            
-            contactPoints.Sort((x,x1)=>x.T.CompareTo(x1.T));
-            switch (curve) {
-                case Line line:
-                    var sp = line.PointFrom;
-                    foreach (var cp in contactPoints) {
-                        result.Curves.Add(new Line {
-                            PointFrom = sp,
-                            PointTo = cp.Point,
-                        });
-                        sp = cp.Point;
-                    }
-                    result.Curves.Add(new Line {
-                        PointFrom = sp,
-                        PointTo = line.PointTo,
-                    });
-                    break;
-                case Arc arc:
-                    var sp2 = arc.PointFrom;
-                    foreach (var cp in contactPoints) {
-                        result.Curves.Add(new Arc {
-                            PointFrom = sp2,
-                            PointTo = cp.Point,
-                            Radius = arc.Radius,
-                            RotationDirection = arc.RotationDirection,
-                            IsLargeArc = arc.IsLargeArc
-                        });
-                        sp2 = cp.Point;
-                    }
-                    result.Curves.Add(new Arc {
-                        PointFrom = sp2,
-                        PointTo = arc.PointTo,
-                        Radius = arc.Radius,
-                        RotationDirection = arc.RotationDirection,
-                        IsLargeArc = arc.IsLargeArc
-                    });
-                    break;
-                default:
-                    throw new Exception("Contours: Merge (Unknown Curve type: " + curve + ")");
-            }
-        }
-
-        return result;
-    }
-
-    public static Point? FindExtremePoint(Contour contour1, Contour contour2) {
-        return null;
-    }
     
     public static Shape Merge(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
@@ -184,8 +111,8 @@ public static class Contours {
             PointTo = new Point(epX, sp.Y)
         };
 
-        var sc1 = SplitByRelationPoints(contour1, contour2);
-        var sc2 = SplitByRelationPoints(contour2, contour1);
+        var sc1 = ContoursHandler.SplitByRelationPoints(contour1, contour2);
+        var sc2 = ContoursHandler.SplitByRelationPoints(contour2, contour1);
        
         if (GetRotationDirection(sc1) != GetRotationDirection(sc2))
             sc2 = GetReversed(sc2);
