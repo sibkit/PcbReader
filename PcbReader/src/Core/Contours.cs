@@ -100,28 +100,6 @@ public static class Contours {
   
 
     
-    public static Shape Merge(Contour contour1, Contour contour2) {
-        if (!contour1.Bounds.IsIntersected(contour2.Bounds))
-            return null;
 
-        var sp = contour1.Curves[0].PointFrom;
-        var epX = contour1.Bounds.MinX<contour2.Bounds.MinX? contour1.Bounds.MinX : contour2.Bounds.MinX;
-        var line = new Line {
-            PointFrom = sp,
-            PointTo = new Point(epX, sp.Y)
-        };
-
-        var sc1 = ContoursHandler.SplitByRelationPoints(contour1, contour2);
-        var sc2 = ContoursHandler.SplitByRelationPoints(contour2, contour1);
-       
-        if (GetRotationDirection(sc1) != GetRotationDirection(sc2))
-            sc2 = GetReversed(sc2);
-        
-        
-        
-        return new Shape {
-            OuterContour = null
-        };
-    }
 }
 

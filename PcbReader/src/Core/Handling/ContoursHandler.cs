@@ -77,35 +77,16 @@ public static class ContoursHandler {
     }
 
 
-    public static Point RoundPoint(Point point) {
-        return new Point(Math.Round(point.X, 10), Math.Round(point.Y, 10));
-    }
+ 
 
-    private static void FillPointsMap(Contour contour, Dictionary<Point, List<TransitionPoint>> pointsMap) {
-        for (var i = 0; i < contour.Curves.Count; i++) {
-            var outCurve = contour.Curves[i];
-            var inCurve = i > 0 ? contour.Curves[i]:contour.Curves.Last();
-            var rp = RoundPoint(outCurve.PointFrom);
-            if(!pointsMap.ContainsKey(rp))
-                pointsMap.Add(rp, []);
-            pointsMap[rp].Add(new TransitionPoint {
-                Contour = contour,
-                InCurve = inCurve,
-                OutCurve = outCurve
-            });
-        }
+    
+
+
+
+    static ICurve MergeWalk(TransitionPoint tp, ICurve prevCurve, RotationDirection rd) {
+
+        return null;
     }
     
-    public static Dictionary<Point, List<TransitionPoint>> GetPointsMap(Contour contour1, Contour contour2) {
 
-        var c1 = SplitByRelationPoints(contour1, contour2);
-        if (c1 == contour1)
-            return null;
-        var c2 = SplitByRelationPoints(contour2, contour1);
-        
-        var result = new Dictionary<Point, List<TransitionPoint>>();
-        FillPointsMap(c1, result);
-        FillPointsMap(c2, result);
-        return result;
-    }
 }

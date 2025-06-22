@@ -11,8 +11,13 @@ public readonly struct ArcWay(RotationDirection direction, bool isLarge) {
 public static class Geometry {
 
     public static double Accuracy { get; } = 0.000_000_000_01;
-    public static double LineLength(Point sp, Point ep){
-        return Math.Sqrt(Math.Pow(ep.X-sp.X,2)+Math.Pow(ep.Y-sp.Y,2));
+
+    public static double LineLength(Point sp, Point ep) {
+        return Math.Sqrt(Math.Pow(ep.X - sp.X, 2) + Math.Pow(ep.Y - sp.Y, 2));
+    }
+
+    public static Point RoundPoint(Point point) {
+        return new Point(Math.Round(point.X, 10), Math.Round(point.Y, 10));
     }
     
     public static Point ArcCenter(Arc pp) {

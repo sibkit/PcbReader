@@ -46,10 +46,57 @@ public class ContoursTest {
         var y1 = r.NextDouble();
         var y2 = y1 + 0.000_000_000_001;
         
-        var p1 = ContoursHandler.RoundPoint(new Point(x1,y1));
-        var p2 = ContoursHandler.RoundPoint(new Point(x2,y2));
-        var p3 = ContoursHandler.RoundPoint(new Point(x1 + 0.000_000_000_1,y2 + 0.000_000_000_1));
+        var p1 = Geometry.RoundPoint(new Point(x1,y1));
+        var p2 = Geometry.RoundPoint(new Point(x2,y2));
+        var p3 = Geometry.RoundPoint(new Point(x1 + 0.000_000_000_1,y2 + 0.000_000_000_1));
         Assert.Equal(p1,p2);
         Assert.NotEqual(p1,p3);
+    }
+
+    [Fact]
+    public void TestPointsMap() {
+        // var p1 = new Painter<Contour>(10, 10);
+        // p1.LineToInc(0, 60);
+        // p1.LineToInc(40, 0);
+        // p1.LineToInc(0, -60);
+        // p1.LineToInc(-40, 0);
+        // var c1 = p1.Root;
+        //
+        // var p2 = new Painter<Contour>(40, 30);
+        // p2.LineToInc(20, 20);
+        // p2.LineToInc(-30, 30);
+        // p2.LineToInc(50,0);
+        // p2.LineToInc(0,-50);
+        // p2.LineToInc(-40,0);
+        // var c2 = p2.Root;
+        //
+        // var map = ContoursHandler.GetPointsMap(c1, c2);
+        // Assert.Equal(13, map.Count);
+    }
+
+    [Fact]
+    public void TestContoursWalker() {
+        var p1 = new Painter<Contour>(10, 10);
+        p1.LineToInc(0, 60);
+        p1.LineToInc(40, 0);
+        p1.LineToInc(0, -60);
+        p1.LineToInc(-40, 0);
+        var c1 = p1.Root;
+        
+        var p2 = new Painter<Contour>(40, 30);
+        p2.LineToInc(20, 20);
+        p2.LineToInc(-30, 30);
+        p2.LineToInc(50,0);
+        p2.LineToInc(0,-50);
+        p2.LineToInc(-40,0);
+        var c2 = p2.Root;
+        
+        var cw = new ContoursWalker {
+            Contour1 = c1,
+            Contour2 = c2
+        };
+
+        var mergedContour = cw.WalkMerge();
+        Assert.Equal(8, mergedContour.Curves.Count);
     }
 }
