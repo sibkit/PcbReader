@@ -9,9 +9,5 @@ public class TransitionPoint {
     public ICurve InCurve { get; init; }
     public ICurve OutCurve { get; init; }
     public Contour Contour { get; init; }
-
-    public bool InContour(double angle) {
-        return true;
-    }
 }
 

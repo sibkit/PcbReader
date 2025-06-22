@@ -90,13 +90,12 @@ public class ContoursTest {
         p2.LineToInc(0,-50);
         p2.LineToInc(-40,0);
         var c2 = p2.Root;
-        
-        var cw = new ContoursWalker {
-            Contour1 = c1,
-            Contour2 = c2
-        };
 
-        var mergedContour = cw.WalkMerge();
+        var cw = new ContoursWalker(c1, c2);
+
+        var mc1 = cw.Walk();
+        
+        var mergedContour = new ContoursWalker(c1, c2).WalkMerge();
         Assert.Equal(8, mergedContour.Curves.Count);
     }
 }

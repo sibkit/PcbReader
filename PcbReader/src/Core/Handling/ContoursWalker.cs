@@ -7,9 +7,30 @@ namespace PcbReader.Core.Handling;
 public class ContoursWalker {
     
     private readonly Dictionary<Point, List<TransitionPoint>> _pointsMap = new ();
+    private readonly List<ICurve> _placedCurves = [];
     
-    public Contour Contour1 { get; init; }
-    public Contour Contour2 { get; init; }
+    public Contour Contour1 { get; }
+    public Contour Contour2 { get; }
+
+    public ContoursWalker(Contour contour1, Contour contour2) {
+
+        
+        // if (Contour1 == Contour2)
+        //     return null;
+        // if(Contour1 == null || Contour2 == null)
+        //     return null;
+        // if (!Contour1.Bounds.IsIntersected(Contour2.Bounds))
+        //     return null;
+        
+        Contour1 = ContoursHandler.SplitByRelationPoints(contour1, contour2);
+        Contour2 = ContoursHandler.SplitByRelationPoints(contour2, contour1);
+       
+        if (Contours.GetRotationDirection(Contour1) != Contours.GetRotationDirection(Contour2))
+            Contour2 = Contours.GetReversed(Contour2);
+        
+        FillPointsMap(Contour1);
+        FillPointsMap(Contour2);
+    }
     
     private void FillPointsMap(Contour contour) {
         for (var i = 0; i < contour.Curves.Count; i++) {
@@ -63,6 +84,8 @@ public class ContoursWalker {
         var angle = double.PositiveInfinity;
         ICurve result = null;
         foreach (var tp in points) {
+            if(_placedCurves.Contains(tp.OutCurve))
+                continue;
             var a = contoursRd == RotationDirection.CounterClockwise ?
                 Angles.PositiveNormalize(Angles.CalculateAngle(inCurve.PointFrom, tp.OutCurve.PointTo, inCurve.PointTo)) :
                 Angles.PositiveNormalize(Angles.CalculateAngle(tp.OutCurve.PointTo, inCurve.PointFrom, inCurve.PointTo));
@@ -73,24 +96,40 @@ public class ContoursWalker {
         }
         return result;
     }
+
+
+    public List<Contour> Walk() {
+        List<Contour> result = [];
+        foreach (var startCurve in Contour1.Curves.Union(Contour2.Curves)) {
+            if (_placedCurves.Contains(startCurve))
+                continue;
+            var visitedCurves = new List<ICurve>();
+            var prevCurve = startCurve;
+            ICurve firstCurve = null;
+            while (true) {
+                visitedCurves.Add(prevCurve);
+                var curve = NextCurve(prevCurve, RotationDirection.Clockwise);
+                if(_placedCurves.Contains(curve))
+                    break;
+                if (visitedCurves.Contains(curve)) {
+                    firstCurve = curve;
+                    break;
+                }
+                prevCurve = curve;
+            }
+
+            if (firstCurve != null) {
+                var c = new Contour();
+                c.Curves.AddRange(visitedCurves.Skip(visitedCurves.IndexOf(firstCurve)));
+                _placedCurves.AddRange(c.Curves);
+                result.Add(c);
+            }
+        }
+        return result;
+    }
     
     public Contour WalkMerge() {
-        if (Contour1 == Contour2)
-            return null;
-        if(Contour1 == null || Contour2 == null)
-            return null;
-        if (!Contour1.Bounds.IsIntersected(Contour2.Bounds))
-            return null;
-        
-        var sc1 = ContoursHandler.SplitByRelationPoints(Contour1, Contour2);
-        var sc2 = ContoursHandler.SplitByRelationPoints(Contour2, Contour1);
-       
-        if (Contours.GetRotationDirection(sc1) != Contours.GetRotationDirection(sc2))
-            sc2 = Contours.GetReversed(sc2);
 
-        _pointsMap.Clear();
-        FillPointsMap(sc1);
-        FillPointsMap(sc2);
         
         var rd = Contours.GetRotationDirection(Contour1);
         var result = new Contour();

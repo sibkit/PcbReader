@@ -76,13 +76,6 @@ public static class ContoursHandler {
         return result;
     }
 
-
- 
-
-    
-
-
-
     static ICurve MergeWalk(TransitionPoint tp, ICurve prevCurve, RotationDirection rd) {
 
         return null;
