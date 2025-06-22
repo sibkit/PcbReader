@@ -47,7 +47,7 @@ public class ContoursWalker {
         }
     }
 
-    private ICurve FindFirstCurve() {
+    private ICurve FindOuterStartCurve() {
         Point? firstPoint = null;
         var minX = double.PositiveInfinity;
         foreach (var kvp in _pointsMap) {
@@ -97,35 +97,45 @@ public class ContoursWalker {
         return result;
     }
 
-
-    public List<Contour> Walk() {
-        List<Contour> result = [];
-        foreach (var startCurve in Contour1.Curves.Union(Contour2.Curves)) {
-            if (_placedCurves.Contains(startCurve))
-                continue;
-            var visitedCurves = new List<ICurve>();
-            var prevCurve = startCurve;
-            ICurve firstCurve = null;
-            while (true) {
-                visitedCurves.Add(prevCurve);
-                var curve = NextCurve(prevCurve, RotationDirection.Clockwise);
-                if(_placedCurves.Contains(curve))
-                    break;
-                if (visitedCurves.Contains(curve)) {
-                    firstCurve = curve;
-                    break;
-                }
-                prevCurve = curve;
+    public Contour WalkFrom(ICurve fromCurve) {
+        if (_placedCurves.Contains(fromCurve))
+            return null;
+        var visitedCurves = new List<ICurve>();
+        var prevCurve = fromCurve;
+        ICurve firstCurve = null;
+        while (true) {
+            visitedCurves.Add(prevCurve);
+            var curve = NextCurve(prevCurve, RotationDirection.Clockwise);
+            if(_placedCurves.Contains(curve))
+                break;
+            if (visitedCurves.Contains(curve)) {
+                firstCurve = curve;
+                break;
             }
-
-            if (firstCurve != null) {
-                var c = new Contour();
-                c.Curves.AddRange(visitedCurves.Skip(visitedCurves.IndexOf(firstCurve)));
-                _placedCurves.AddRange(c.Curves);
-                result.Add(c);
-            }
+            prevCurve = curve;
         }
-        return result;
+
+        if (firstCurve != null) {
+            var c = new Contour();
+            c.Curves.AddRange(visitedCurves.Skip(visitedCurves.IndexOf(firstCurve)));
+            _placedCurves.AddRange(c.Curves);
+            return c;
+        }
+        return null;
+    }
+
+    public ContoursWalkResult Walk() {
+
+        var outerContour = WalkFrom(FindOuterStartCurve());
+        var contours = Contour1.Curves
+            .Union(Contour2.Curves)
+            .Select(WalkFrom)
+            .Where(c => c != null)
+            .ToList();
+        return new ContoursWalkResult {
+            OuterContour = outerContour,
+            InnerContours = contours
+        };
     }
     
     public Contour WalkMerge() {
@@ -134,7 +144,7 @@ public class ContoursWalker {
         var rd = Contours.GetRotationDirection(Contour1);
         var result = new Contour();
 
-        var firstCurve = FindFirstCurve();
+        var firstCurve = FindOuterStartCurve();
         var curCurve = firstCurve;
         while (true) {
             curCurve = NextCurve(curCurve, rd);
