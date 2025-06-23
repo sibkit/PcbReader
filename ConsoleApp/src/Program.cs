@@ -3,15 +3,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
 using PcbReader.Converters;
-using PcbReader.Converters.GerberToSvg;
-using PcbReader.Core;
-using PcbReader.Core.Entities;
+using PcbReader.Converters.GerberToSpv;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
+using PcbReader.Spv;
+using PcbReader.Spv.Entities;
+using PcbReader.Spv.Entities.GraphicElements;
+using PcbReader.Spv.Handling;
 
 namespace ConsoleApp;
 
@@ -19,6 +21,29 @@ public static class Program {
 
     [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args) {
+        
+        var p1 = new Painter<Contour>(10, 10);
+        p1.LineToInc(0, 60);
+        p1.LineToInc(40, 0);
+        p1.LineToInc(0, -60);
+        p1.LineToInc(-40, 0);
+        var c1 = p1.Root;
+        
+        var p2 = new Painter<Contour>(40, 30);
+        p2.LineToInc(20, 20);
+        p2.LineToInc(-30, 30);
+        p2.LineToInc(50,0);
+        p2.LineToInc(0,-50);
+        p2.LineToInc(-40,0);
+        var c2 = p2.Root;
+        var t1 = System.DateTime.Now;
+        for (int i = 0; i < 1000_000; i++) {
+            var cw = new ContoursWalker(c1, c2);
+            var mc1 = cw.Walk();
+        }
+        var t2 = System.DateTime.Now;
+        Console.WriteLine("Mss:"+(t2-t1));
+        return;
         
         PointsAccuracyHashing.HashPoints();
         
@@ -182,7 +207,7 @@ public static class Program {
             Console.WriteLine("Обработка файла: " + fi.Name);
 
             var gl = ReadGerber(fi);
-            var svg = GerberToSvgConverter.Convert(gl);
+            var svg = GerberToSpvConverter.Convert(gl);
             WriteSvg(svg);
             Console.WriteLine("-----");
             Console.WriteLine("");

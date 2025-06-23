@@ -1,10 +1,10 @@
-﻿using PcbReader.Converters.LvfToSvg;
-using PcbReader.Core;
-using PcbReader.Core.Entities;
-using PcbReader.Core.Entities.GraphicElements;
-using PcbReader.Core.Entities.GraphicElements.Curves;
+﻿using PcbReader.Converters.SpvToSvg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
+using PcbReader.Spv;
+using PcbReader.Spv.Entities;
+using PcbReader.Spv.Entities.GraphicElements;
+using PcbReader.Spv.Entities.GraphicElements.Curves;
 
 namespace PcbReaderTest.GeometryTest;
 
@@ -47,7 +47,7 @@ public class ArcMiddlePointTest {
 
         area.InvertYAxe();
 
-        var svg = LvfToSvgConverter.Convert(area);
+        var svg = SpvToSvgConverter.Convert(area);
         SvgWriter.Write(svg,"tvg.svg");
     }
     

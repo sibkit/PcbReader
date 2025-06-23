@@ -1,4 +1,4 @@
-﻿using PcbReader.Core;
+﻿using PcbReader.Spv;
 
 namespace PcbReaderTest.GeometryTest;
 

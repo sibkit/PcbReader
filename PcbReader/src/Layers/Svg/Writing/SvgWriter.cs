@@ -1,12 +1,11 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using PcbReader.Core;
-using PcbReader.Core.Entities;
-using PcbReader.Core.Entities.GraphicElements;
-using PcbReader.Core.Entities.GraphicElements.Curves;
 using PcbReader.Layers.Svg.Entities;
-using Path = PcbReader.Core.Entities.GraphicElements.Path;
+using PcbReader.Spv.Entities;
+using PcbReader.Spv.Entities.GraphicElements;
+using PcbReader.Spv.Entities.GraphicElements.Curves;
+using Path = PcbReader.Spv.Entities.GraphicElements.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
 

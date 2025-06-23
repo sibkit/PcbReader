@@ -1,6 +1,5 @@
-﻿using PcbReader.Core;
-using PcbReader.Core.Entities;
-
+﻿using PcbReader.Spv;
+using PcbReader.Spv.Entities;
 
 namespace PcbReaderTest.GeometryTest;
 

@@ -1,9 +1,8 @@
-﻿
-using PcbReader.Core;
-using PcbReader.Core.Entities;
-using PcbReader.Core.Entities.GraphicElements;
-using PcbReader.Core.Entities.GraphicElements.Curves;
-using PcbReader.Core.Relations;
+﻿using PcbReader.Spv;
+using PcbReader.Spv.Entities;
+using PcbReader.Spv.Entities.GraphicElements;
+using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Relations;
 
 namespace PcbReaderTest.GeometryTest.RelationsTest;
 

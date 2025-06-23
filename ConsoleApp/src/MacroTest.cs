@@ -1,4 +1,4 @@
-﻿using PcbReader.Converters.GerberToSvg;
+﻿using PcbReader.Converters.GerberToSpv;
 
 namespace ConsoleApp;
 
@@ -7,7 +7,7 @@ public static class MacroTest {
         //var di = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\test_files\gerber\03");
         var fi = new FileInfo(Directory.GetCurrentDirectory() + @"\test_files\gerber\AM_EXAMPLES\AM_test.GTS");
         var gl = Program.ReadGerber(fi);
-        var svg = GerberToSvgConverter.Convert(gl);
+        var svg = GerberToSpvConverter.Convert(gl);
         Program.WriteSvg(svg);
     }
 }

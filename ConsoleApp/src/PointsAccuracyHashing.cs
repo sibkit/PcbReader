@@ -1,7 +1,4 @@
-﻿
-
-using PcbReader.Core.Entities;
-using PcbReader.Core.Handling;
+﻿using PcbReader.Spv.Entities;
 
 namespace ConsoleApp;
 

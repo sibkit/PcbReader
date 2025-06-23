@@ -1,9 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using PcbReader.Core;
-using PcbReader.Core.Entities;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Common.Reading;
+using PcbReader.Spv.Entities;
 
 namespace PcbReader.Layers.Excellon;
 

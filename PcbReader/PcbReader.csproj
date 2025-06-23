@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\Converters\ExcellonToSvg\" />
-    <Folder Include="src\Project\" />
+    <Folder Include="src\Converters\ExcellonToSpv\" />
   </ItemGroup>
 
 </Project>
