@@ -24,14 +24,14 @@ public class ContoursTest {
         p2.LineToInc(-40, 0);
         var c2 = p2.Root;
 
-        var cs1 = ContoursHandler.SplitByRelationPoints(c1, c2);
+        var cs1 = Contours.SplitByRelationPoints(c1, c2);
         Assert.True(cs1.Curves[1].PointTo == new Point(40, 70));
         Assert.True(cs1.Curves[2].PointTo == new Point(50, 70));
         Assert.True(cs1.Curves[3].PointTo == new Point(50, 60));
         Assert.True(cs1.Curves[4].PointTo == new Point(50, 40));
         Assert.True(cs1.Curves[5].PointTo == new Point(50, 30));
 
-        var cs2 = ContoursHandler.SplitByRelationPoints(c2, c1);
+        var cs2 = Contours.SplitByRelationPoints(c2, c1);
         Assert.True(cs2.Curves[0].PointTo == new Point(50, 40));
         Assert.True(cs2.Curves[7].PointTo == new Point(50, 30));
     }
@@ -91,10 +91,10 @@ public class ContoursTest {
         p2.LineToInc(-40, 0);
         var c2 = p2.Root;
 
-        var cw = new ContoursWalker(c1, c2);
-        var mc1 = cw.Walk();
-        
-        var mergedContour = new ContoursWalker(c1, c2).WalkMerge();
-        Assert.Equal(8, mergedContour.Curves.Count);
+        var ms = Contours.Merge(c1, c2);
+        Assert.Equal(8, ms.OuterContour.Curves.Count);
+        Assert.Single(ms.InnerContours);
+        // var mergedContour = new ContoursWalker(c1, c2).WalkMerge();
+        // Assert.Equal(8, mergedContour.Curves.Count);
     }
 }

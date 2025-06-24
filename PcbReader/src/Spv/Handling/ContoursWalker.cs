@@ -7,6 +7,7 @@ public class ContoursWalker {
     
     private readonly Dictionary<Point, List<TransitionPoint>> _pointsMap = new ();
     private readonly List<ICurve> _placedCurves = [];
+    private readonly RotationDirection _rotationDirection;
     
     public Contour Contour1 { get; }
     public Contour Contour2 { get; }
@@ -21,10 +22,12 @@ public class ContoursWalker {
         // if (!Contour1.Bounds.IsIntersected(Contour2.Bounds))
         //     return null;
         
-        Contour1 = ContoursHandler.SplitByRelationPoints(contour1, contour2);
-        Contour2 = ContoursHandler.SplitByRelationPoints(contour2, contour1);
-       
-        if (Contours.GetRotationDirection(Contour1) != Contours.GetRotationDirection(Contour2))
+        Contour1 = Contours.SplitByRelationPoints(contour1, contour2);
+        Contour2 = Contours.SplitByRelationPoints(contour2, contour1);
+
+        _rotationDirection = Contours.GetRotationDirection(Contour1);
+        
+        if (_rotationDirection != Contours.GetRotationDirection(Contour2))
             Contour2 = Contours.GetReversed(Contour2);
         
         FillPointsMap(Contour1);
@@ -123,7 +126,7 @@ public class ContoursWalker {
         return null;
     }
 
-    public ContoursWalkResult Walk() {
+    public Shape WalkMerge() {
 
         var outerContour = WalkFrom(FindOuterStartCurve());
         var contours = Contour1.Curves
@@ -131,27 +134,30 @@ public class ContoursWalker {
             .Select(WalkFrom)
             .Where(c => c != null)
             .ToList();
-        return new ContoursWalkResult {
+
+        var result = new Shape {
             OuterContour = outerContour,
-            InnerContours = contours
         };
-    }
-    
-    public Contour WalkMerge() {
-
-        
-        var rd = Contours.GetRotationDirection(Contour1);
-        var result = new Contour();
-
-        var firstCurve = FindOuterStartCurve();
-        var curCurve = firstCurve;
-        while (true) {
-            curCurve = NextCurve(curCurve, rd);
-            result.Curves.Add(curCurve);
-            if(curCurve == firstCurve)
-                break;
-        }
+        result.InnerContours.AddRange(contours.Where(c => Contours.GetRotationDirection(c) == _rotationDirection.Invert() ));
 
         return result;
     }
+    
+    // public Contour WalkMerge() {
+    //
+    //     
+    //     var rd = Contours.GetRotationDirection(Contour1);
+    //     var result = new Contour();
+    //
+    //     var firstCurve = FindOuterStartCurve();
+    //     var curCurve = firstCurve;
+    //     while (true) {
+    //         curCurve = NextCurve(curCurve, rd);
+    //         result.Curves.Add(curCurve);
+    //         if(curCurve == firstCurve)
+    //             break;
+    //     }
+    //
+    //     return result;
+    // }
 }
