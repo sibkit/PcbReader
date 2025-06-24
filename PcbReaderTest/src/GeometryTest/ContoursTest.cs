@@ -91,7 +91,7 @@ public class ContoursTest {
         p2.LineToInc(-40, 0);
         var c2 = p2.Root;
 
-        var ms = Contours.Merge(c1, c2);
+        var ms = Contours.Union(c1, c2);
         Assert.Equal(8, ms.OuterContour.Curves.Count);
         Assert.Single(ms.InnerContours);
         // var mergedContour = new ContoursWalker(c1, c2).WalkMerge();

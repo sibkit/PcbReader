@@ -144,9 +144,21 @@ public static class Contours {
     }
 
 
-    public static Shape Merge(Contour contour1, Contour contour2) {
+    public static Shape Union(Contour contour1, Contour contour2) {
         var cw = new ContoursWalker(contour1, contour2);
         return cw.WalkMerge();
+    }
+
+    public static Shape Subtract(Contour contour1, Contour contour2) {
+        return null;
+    }
+    
+    public static Shape Intersect(Contour contour1, Contour contour2) {
+        return null;
+    }
+    
+    public static Shape Exclude(Contour contour1, Contour contour2) {
+        return null;
     }
     
     // public static ContactPoint FindExtremePoint(Line line, Contour contour) {

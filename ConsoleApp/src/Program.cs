@@ -37,10 +37,12 @@ public static class Program {
         p2.LineToInc(-40,0);
         var c2 = p2.Root;
         var t1 = System.DateTime.Now;
-        for (int i = 0; i < 1000_000; i++) {
-            var cw = new ContoursWalker(c1, c2);
-            var mc1 = cw.Walk();
+        for (var i = 0; i < 1_000_000; i++) {
+            var mc1 = Contours.Union(c1, c2);
+            if (i % 100_000 == 0)
+                Console.WriteLine(mc1.OuterContour.Curves.Count);
         }
+
         var t2 = System.DateTime.Now;
         Console.WriteLine("Mss:"+(t2-t1));
         return;
