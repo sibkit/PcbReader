@@ -11,6 +11,6 @@ public interface ICurve: ICloneable {
     Bounds Bounds { get; }
 
     ICurve GetReversed();
-    
-    
+    void Reverse();
+
 }

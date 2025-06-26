@@ -51,6 +51,10 @@ public class Line: ICurve {
         return result;
     }
 
+    public void Reverse() {
+        (PointFrom, PointTo) = (PointTo, PointFrom);
+    }
+
     public object Clone() {
         return MemberwiseClone();
     }

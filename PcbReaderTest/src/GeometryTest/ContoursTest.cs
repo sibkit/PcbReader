@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices.ComTypes;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.InteropServices.ComTypes;
 using PcbReader.Converters.SpvToSvg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
@@ -95,7 +96,7 @@ public class ContoursTest {
         var c2 = p2.Root;
 
         var ms = Contours.Union(c1, c2);
-        Assert.Equal(8, ms.OuterContour.Curves.Count);
+        Assert.Equal(8, ms.OuterContours[0].Curves.Count);
         Assert.Single(ms.InnerContours);
         // var mergedContour = new ContoursWalker(c1, c2).WalkMerge();
         // Assert.Equal(8, mergedContour.Curves.Count);
@@ -142,14 +143,14 @@ public class ContoursTest {
         var contours = new List<Contour>();
 
         var p1 = new Painter<Contour>(20, 10);
-        p1.ArcToInc(0, 40, 22, RotationDirection.CounterClockwise, false);
+        p1.ArcToInc(0, 40, 20.2, RotationDirection.CounterClockwise, false);
         p1.ArcToInc(0, -40, 20, RotationDirection.Clockwise, false);
 
         contours.Add(p1.Root);
 
         var p2 = new Painter<Contour>(50, 10);
         p2.ArcToInc(0, 40, 20, RotationDirection.Clockwise, false);
-        p2.ArcToInc(0, -40, 22, RotationDirection.CounterClockwise, false);
+        p2.ArcToInc(0, -40, 20.2, RotationDirection.CounterClockwise, false);
 
         contours.Add(p2.Root);
 
@@ -178,8 +179,7 @@ public class ContoursTest {
         area.GraphicElements.Add(c1);
         area.InvertYAxe();
 
-        
-        SvgLayer layer = SpvToSvgConverter.Convert(area);
+        var layer = SpvToSvgConverter.Convert(area);
         SvgWriter.Write(layer,"D://3c.svg");
     }
 }

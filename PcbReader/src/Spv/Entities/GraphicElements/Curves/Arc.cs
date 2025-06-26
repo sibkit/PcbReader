@@ -87,6 +87,11 @@ public class Arc : ICurve {
         return result;
     }
 
+    public void Reverse() {
+        (PointTo, PointFrom) = (PointFrom, PointTo);
+        RotationDirection = RotationDirection.Invert();
+    }
+
 
     public object Clone() {
         return MemberwiseClone();

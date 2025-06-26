@@ -22,9 +22,7 @@ public  static class SpvToSvgConverter {
                     InvertAxis(ctr);
                     break;
                 case Shape shape:
-                    InvertAxis(shape.OuterContour);
-                    foreach (var ic in shape.InnerContours)
-                        InvertAxis(ic);
+                    InvertAxis(shape);
                     break;
                 case Dot dot:
                     dot.CenterPoint = new Point(dot.CenterPoint.X, -dot.CenterPoint.Y);
@@ -52,9 +50,16 @@ public  static class SpvToSvgConverter {
         };
     }
     
+    
+    static void InvertAxis(Shape shape) {
+        foreach (var p in shape.OuterContours) {
+            InvertAxis(p);
+        }
+        foreach (var p in shape.InnerContours) {
+            InvertAxis(p);
+        }
+    }
     static void InvertAxis(CurvesOwner ctx) {
-        
-        //ctx.StartPoint = ctx.StartPoint.WithNewY(-ctx.StartPoint.Y);
         foreach (var p in ctx.Curves) {
             InvertAxis(p);
         }

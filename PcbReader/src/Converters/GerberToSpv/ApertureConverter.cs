@@ -28,9 +28,7 @@ public class ApertureConverter(GerberLayer layer) {
         var pOuter = new Painter<Contour>(coordinate.X - r, coordinate.Y);
         pOuter.ArcToInc(2 * r, 0, r, RotationDirection.CounterClockwise, false);
         pOuter.ArcToInc(-2 * r, 0, r, RotationDirection.CounterClockwise, false);
-        var result = new Shape {
-            OuterContour = pOuter.Root
-        };
+        var result = new Shape(pOuter.Root);
 
 
         if (circle.HoleDiameter is { } hd and > 0.000001) {
@@ -51,9 +49,7 @@ public class ApertureConverter(GerberLayer layer) {
         outerPainter.LineToInc(-rect.XSize, 0);
         outerPainter.LineToInc(0, -rect.YSize);
         
-        var result = new Shape {
-            OuterContour = outerPainter.Root
-        };
+        var result = new Shape( outerPainter.Root);
         
         if (rect.HoleDiameter is { } hd and > 0.000001) {
             var r = hd / 2;
@@ -76,9 +72,7 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.LineToInc(0, obRound.YSize - 2 * br);
             outerPainter.ArcToInc(-2 * br, 0, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(0, -(obRound.YSize - 2 * br));
-            result = new Shape {
-                OuterContour = outerPainter.Root
-            };
+            result = new Shape( outerPainter.Root);
         } else {
             var br = obRound.XSize / 2;
             var outerPainter = new Painter<Contour>(coordinate.X - (obRound.XSize / 2 - br), coordinate.Y + br);
@@ -86,9 +80,7 @@ public class ApertureConverter(GerberLayer layer) {
             outerPainter.LineToInc(obRound.XSize - 2 * br, 0);
             outerPainter.ArcToInc(0, 2 * br, br, RotationDirection.CounterClockwise, false);
             outerPainter.LineToInc(-(obRound.XSize - 2 * br), 0);
-            result = new Shape {
-                OuterContour = outerPainter.Root
-            };
+            result = new Shape(outerPainter.Root);
         }
 
         if (obRound.HoleDiameter is { } hd and > 0.000001) {

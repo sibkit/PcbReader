@@ -1,10 +1,10 @@
 ﻿using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 
-namespace PcbReader.Spv.Handling;
+namespace PcbReader.Spv.Handling.ContourWalkers;
 
-public class ContoursWalker {
-    
+public class SubtractContoursWalker {
+        
     private readonly Dictionary<Point, List<TransitionPoint>> _pointsMap = new ();
     private readonly List<ICurve> _placedCurves = [];
     private readonly RotationDirection _rotationDirection;
@@ -12,22 +12,14 @@ public class ContoursWalker {
     public Contour Contour1 { get; }
     public Contour Contour2 { get; }
 
-    public ContoursWalker(Contour contour1, Contour contour2) {
+    public SubtractContoursWalker(Contour contour1, Contour contour2) {
 
-        
-        // if (Contour1 == Contour2)
-        //     return null;
-        // if(Contour1 == null || Contour2 == null)
-        //     return null;
-        // if (!Contour1.Bounds.IsIntersected(Contour2.Bounds))
-        //     return null;
-        
         Contour1 = Contours.SplitByRelationPoints(contour1, contour2);
         Contour2 = Contours.SplitByRelationPoints(contour2, contour1);
 
         _rotationDirection = Contours.GetRotationDirection(Contour1);
         
-        if (_rotationDirection != Contours.GetRotationDirection(Contour2))
+        if (_rotationDirection == Contours.GetRotationDirection(Contour2))
             Contour2 = Contours.GetReversed(Contour2);
         
         FillPointsMap(Contour1);
@@ -130,7 +122,7 @@ public class ContoursWalker {
         return null;
     }
 
-    public Shape WalkMerge() {
+    public Shape Walk() {
 
         var outerContour = WalkFrom(FindOuterStartCurve());
         var contours = Contour1.Curves
@@ -139,9 +131,7 @@ public class ContoursWalker {
             .Where(c => c != null)
             .ToList();
 
-        var result = new Shape {
-            OuterContour = outerContour,
-        };
+        var result = new Shape(outerContour);
         result.InnerContours.AddRange(contours.Where(c => {
             var rd = Contours.GetRotationDirection(c);
             return rd == _rotationDirection.Invert();
@@ -149,22 +139,4 @@ public class ContoursWalker {
 
         return result;
     }
-    
-    // public Contour WalkMerge() {
-    //
-    //     
-    //     var rd = Contours.GetRotationDirection(Contour1);
-    //     var result = new Contour();
-    //
-    //     var firstCurve = FindOuterStartCurve();
-    //     var curCurve = firstCurve;
-    //     while (true) {
-    //         curCurve = NextCurve(curCurve, rd);
-    //         result.Curves.Add(curCurve);
-    //         if(curCurve == firstCurve)
-    //             break;
-    //     }
-    //
-    //     return result;
-    // }
 }

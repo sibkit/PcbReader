@@ -1,6 +1,7 @@
 ﻿using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Handling.ContourWalkers;
 using PcbReader.Spv.Relations;
 
 namespace PcbReader.Spv.Handling;
@@ -158,12 +159,13 @@ public static class Contours {
 
 
     public static Shape Union(Contour contour1, Contour contour2) {
-        var cw = new ContoursWalker(contour1, contour2);
-        return cw.WalkMerge();
+        var cw = new UnionContoursWalker(contour1, contour2);
+        return cw.Walk();
     }
 
     public static Shape Subtract(Contour contour1, Contour contour2) {
-        return null;
+        var cw = new UnionContoursWalker(contour1, contour2);
+        return cw.Walk();
     }
     
     public static Shape Intersect(Contour contour1, Contour contour2) {

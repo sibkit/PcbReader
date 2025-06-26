@@ -14,7 +14,8 @@ public class Area {
                     InvertYAxe(ctr);
                     break;
                 case Shape shape:
-                    InvertYAxe(shape.OuterContour);
+                    foreach (var oc in shape.OuterContours)
+                        InvertYAxe(oc);
                     foreach (var ic in shape.InnerContours)
                         InvertYAxe(ic);
                     break;

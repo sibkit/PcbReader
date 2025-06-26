@@ -58,9 +58,7 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
         painter.ArcToInc(2*r,0, r, RotationDirection.Clockwise, false);
         painter.ArcToInc(-2*r,0,r, RotationDirection.Clockwise, false);
 
-        return new Shape {
-            OuterContour = painter.Root
-        };
+        return new Shape(painter.Root);
     }
 
     
@@ -80,8 +78,6 @@ public class PrimitiveConverter(MacroApertureTemplate template, MacroAperture ap
             painter.LineToAbs(cx+curX, cy+curY);
         }
 
-        return new Shape {
-            OuterContour = painter.Root
-        };
+        return new Shape(painter.Root);
     }
 }

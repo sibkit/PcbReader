@@ -50,4 +50,13 @@ public readonly struct Bounds {
             MaxY > b.MaxY ? MaxY : b.MaxY
         );
     }
+    
+    public static Bounds Empty() {
+        return new Bounds(
+            double.PositiveInfinity, 
+            double.PositiveInfinity,
+            double.NegativeInfinity,
+            double.NegativeInfinity
+        );
+    }
 }

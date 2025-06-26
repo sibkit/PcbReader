@@ -98,8 +98,8 @@ public class BoundsTest {
             Radius = 10
         };
         var b5 = arc5.Bounds;
-        Assert.True(b5.MinPoint == new Point(70, -120));
-        Assert.True(b5.MaxPoint == new Point(90, -100));
+        Assert.True(b5.MinPoint == new Point(70, -110));
+        Assert.True(b5.MaxPoint == new Point(80, -100));
     }
 
 

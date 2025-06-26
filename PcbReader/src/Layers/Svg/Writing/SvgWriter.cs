@@ -5,6 +5,7 @@ using PcbReader.Layers.Svg.Entities;
 using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Handling;
 using Path = PcbReader.Spv.Entities.GraphicElements.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
@@ -130,7 +131,34 @@ public static class SvgWriter {
     }
 
     static void WriteShape(StreamWriter writer, Shape shape) {
-            WriteContour(writer, shape.OuterContour);
+        if (shape.OuterContours.Count == 0)
+            return;
+        writer.Write("\n<path d=\"");
+        foreach (var oc in shape.OuterContours) {
+            if (Contours.GetRotationDirection(oc) != RotationDirection.Clockwise) {
+                oc.Reverse();
+            }
+
+            var sp = oc.Curves[0].PointFrom;
+            writer.Write("M " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
+            foreach (var pp in oc.Curves)
+                WritePathPart(writer, pp);
+            writer.Write("Z");
+        }
+
+        foreach (var ic in shape.InnerContours) {
+            if (Contours.GetRotationDirection(ic) != RotationDirection.CounterClockwise) {
+                ic.Reverse();
+            }
+            var sp = ic.Curves[0].PointFrom;
+            writer.Write("M " + Math.Round(sp.X, 6) + " " + Math.Round(sp.Y, 6) + " ");
+            foreach (var pp in ic.Curves)
+                WritePathPart(writer, pp);
+            writer.Write("Z");
+        }
+        
+        writer.Write("\" fill=\"black\"/>");
+
     }
 
     static void WriteDot(StreamWriter writer, Dot dot) {
