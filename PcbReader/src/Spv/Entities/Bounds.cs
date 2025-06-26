@@ -41,4 +41,13 @@ public readonly struct Bounds {
         
         return (MaxX>=b.MinX && MinX<=b.MaxX) && (MaxY>=b.MinY && MinY<=b.MaxY);
     }
+
+    public Bounds ExtendBounds(Bounds b) {
+        return new Bounds(
+            MinX < b.MinX ? MinX : b.MinX,
+            MinY < b.MinY ? MinY : b.MinY,
+            MaxX > b.MaxX ? MaxX : b.MaxX,
+            MaxY > b.MaxY ? MaxY : b.MaxY
+        );
+    }
 }

@@ -4,6 +4,7 @@ using PcbReader.Spv;
 using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Handling;
 using GerberArcPart = PcbReader.Layers.Gerber.Entities.ArcPathPart;
 using GerberLinePart = PcbReader.Layers.Gerber.Entities.LinePathPart;
 using Path = PcbReader.Spv.Entities.GraphicElements.Path;

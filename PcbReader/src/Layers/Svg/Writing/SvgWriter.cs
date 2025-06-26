@@ -16,14 +16,10 @@ public static class SvgWriter {
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
     }
 
-    private static Bounds ExtendBounds(Bounds bounds, Point pt) {
-        return new Bounds(
-            bounds.MinX < pt.X ? bounds.MinX : pt.X,
-            bounds.MinY < pt.Y ? bounds.MinY : pt.Y,
-            bounds.MaxX > pt.X ? bounds.MaxX : pt.X,
-            bounds.MaxY > pt.Y ? bounds.MaxY : pt.Y
-        );
-    }
+
+    
+    
+
 
     private static Bounds CalculateViewBox(SvgLayer doc) {
         // var leftTop = new Point(double.MaxValue, double.MaxValue);
@@ -32,46 +28,48 @@ public static class SvgWriter {
         var result = new Bounds(double.MaxValue, double.MaxValue, double.MinValue, double.MinValue);
         
         foreach (var e in doc.Elements) {
-            switch (e) {
-                case Path p:
-                    foreach (var pp in p.Curves) {
-                        result = ExtendBounds(result, pp.PointFrom);
-                        result = ExtendBounds(result, pp.PointTo);
-                    }
-
-                    break;
-                case Shape shape:
-
-                    result = ExtendBounds(result, shape.OuterContour.Curves[0].PointFrom);
-                    foreach (var pp in shape.OuterContour.Curves) {
-                        result = ExtendBounds(result, pp.PointFrom);
-                        result = ExtendBounds(result, pp.PointTo);
-                    }
-                        
-
-                    foreach (var ic in shape.InnerContours) {
-
-                        foreach (var pp in ic.Curves) {
-                            result = ExtendBounds(result, ic.Curves[0].PointFrom);
-                            result = ExtendBounds(result, pp.PointTo);
-                        }
-                            
-                    }
-
-                    break;
-                case Contour contour:
-
-                    foreach (var pp in contour.Curves) {
-                        result = ExtendBounds(result, pp.PointTo);
-                        result = ExtendBounds(result, contour.Curves[0].PointFrom);
-                    }
-                        
-                    break;
-                case Dot dot:
-                    result = ExtendBounds(result, dot.CenterPoint);
-                    break;
-                default: throw new NotImplementedException();
-            }
+            result = result.ExtendBounds(e.Bounds);
+            // switch (e) {
+            //     case Path p:
+            //         foreach (var pp in p.Curves) {
+            //             result = ExtendBounds(pp.Bounds, result);
+            //             // result = ExtendBounds(result, pp.PointFrom);
+            //             // result = ExtendBounds(result, pp.PointTo);
+            //         }
+            //
+            //         break;
+            //     case Shape shape:
+            //
+            //         result = ExtendBounds(result, shape.OuterContour.Curves[0].PointFrom);
+            //         foreach (var pp in shape.OuterContour.Curves) {
+            //             result = ExtendBounds(result, pp.PointFrom);
+            //             result = ExtendBounds(result, pp.PointTo);
+            //         }
+            //             
+            //
+            //         foreach (var ic in shape.InnerContours) {
+            //
+            //             foreach (var pp in ic.Curves) {
+            //                 result = ExtendBounds(result, ic.Curves[0].PointFrom);
+            //                 result = ExtendBounds(result, pp.PointTo);
+            //             }
+            //                 
+            //         }
+            //
+            //         break;
+            //     case Contour contour:
+            //
+            //         foreach (var pp in contour.Curves) {
+            //             result = ExtendBounds(result, pp.PointTo);
+            //             result = ExtendBounds(result, contour.Curves[0].PointFrom);
+            //         }
+            //             
+            //         break;
+            //     case Dot dot:
+            //         result = ExtendBounds(result, dot.CenterPoint);
+            //         break;
+            //     default: throw new NotImplementedException();
+            // }
         }
 
 
@@ -178,6 +176,6 @@ public static class SvgWriter {
     }
 
     static void AddBoundsRect(StreamWriter writer, Bounds b, string color) {
-        writer.Write("\n<rect x=\""+Math.Round(b.MinX)+"\" y=\""+Math.Round(b.MinY)+"\" width=\""+Math.Round(b.GetWidth())+"\" height=\""+Math.Round(b.GetHeight())+"\" fill=\"none\" stroke=\""+color+"\" stroke-width=\"0.4px\"/>");
+        writer.Write("\n<rect x=\""+Math.Round(b.MinX,5)+"\" y=\""+Math.Round(b.MinY,5)+"\" width=\""+Math.Round(b.GetWidth(),5)+"\" height=\""+Math.Round(b.GetHeight(),5)+"\" fill=\"none\" stroke=\""+color+"\" stroke-width=\"0.05px\"/>");
     }
 }

@@ -21,33 +21,33 @@ public static class Program {
 
     [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args) {
+        //
+        // var p1 = new Painter<Contour>(10, 10);
+        // p1.LineToInc(0, 60);
+        // p1.LineToInc(40, 0);
+        // p1.LineToInc(0, -60);
+        // p1.LineToInc(-40, 0);
+        // var c1 = p1.Root;
+        //
+        // var p2 = new Painter<Contour>(40, 30);
+        // p2.LineToInc(20, 20);
+        // p2.LineToInc(-30, 30);
+        // p2.LineToInc(50,0);
+        // p2.LineToInc(0,-50);
+        // p2.LineToInc(-40,0);
+        // var c2 = p2.Root;
+        // var t1 = System.DateTime.Now;
+        // for (var i = 0; i < 1_000_000; i++) {
+        //     var mc1 = Contours.Union(c1, c2);
+        //     if (i % 100_000 == 0)
+        //         Console.WriteLine(mc1.OuterContour.Curves.Count);
+        // }
+        //
+        // var t2 = System.DateTime.Now;
+        // Console.WriteLine("Mss:"+(t2-t1));
+        // return;
         
-        var p1 = new Painter<Contour>(10, 10);
-        p1.LineToInc(0, 60);
-        p1.LineToInc(40, 0);
-        p1.LineToInc(0, -60);
-        p1.LineToInc(-40, 0);
-        var c1 = p1.Root;
-        
-        var p2 = new Painter<Contour>(40, 30);
-        p2.LineToInc(20, 20);
-        p2.LineToInc(-30, 30);
-        p2.LineToInc(50,0);
-        p2.LineToInc(0,-50);
-        p2.LineToInc(-40,0);
-        var c2 = p2.Root;
-        var t1 = System.DateTime.Now;
-        for (var i = 0; i < 1_000_000; i++) {
-            var mc1 = Contours.Union(c1, c2);
-            if (i % 100_000 == 0)
-                Console.WriteLine(mc1.OuterContour.Curves.Count);
-        }
-
-        var t2 = System.DateTime.Now;
-        Console.WriteLine("Mss:"+(t2-t1));
-        return;
-        
-        PointsAccuracyHashing.HashPoints();
+        //PointsAccuracyHashing.HashPoints();
         
         CalculateResult();
         //MacroTest.MacroAmTest();
@@ -123,22 +123,23 @@ public static class Program {
     }
     
     static void CalculateResult() {
-        var callsCountPerDay = 60m;
-        var avgSellPrice = 1000m;
-        var clientOrdersPerDay = 0.12m;
-        var resultChance = 0.5m;
+        var callsCountPerDay = 30m;
+        var avgSellPrice = 20000m;
+        var clientOrdersPerDay = 0.02m;
+        var resultChance = 0.3m;
         var clientsCount = 0m;
-        var chanceLowingPerDay = 0.0001m;
+        var chanceLowingPerDay = 0.000001m;
+        
         
         var nfi = new NumberFormatInfo {
-            CurrencyDecimalSeparator = ".",
-            CurrencyGroupSeparator = " ",
             NumberGroupSizes = [3],
-            NumberDecimalDigits = 0
+            NumberDecimalDigits = 3,
+            NumberGroupSeparator = " ",
+            NumberDecimalSeparator = ","
         };
 
         var perMonth = 0m;
-        for (int d = 1; d < 1201; d++) {
+        for (int d = 1; d < 365; d++) {
             var newClients = Math.Floor((decimal)Random.Shared.NextDouble()*2 * callsCountPerDay * resultChance);
             clientsCount+=newClients;
             var orders = Math.Floor((decimal)Random.Shared.NextDouble()*2*clientsCount * clientOrdersPerDay);
@@ -150,20 +151,18 @@ public static class Program {
             //     GetText($"Sum: {sum.ToString("N", nfi)}", 18) +
             //     GetText($"PerMonth: {(sum * 21m).ToString("N", nfi)}", 24)
             // );
-            
+
+            Console.WriteLine(sum.ToString("N", nfi));
             perMonth += sum;
             if (d!=0 && d % 20 == 0) {
-                Console.WriteLine("Всего за месяц: "+perMonth.ToString("N",nfi));
+                Console.WriteLine("Всего: "+perMonth.ToString("N",nfi));
                 perMonth = 0;
             }
 
             if (resultChance > chanceLowingPerDay) {
                 resultChance -= chanceLowingPerDay;
             }
-            
-            
         }
-        
     }
 
     public static GerberLayer ReadGerber(FileInfo fileInfo) {

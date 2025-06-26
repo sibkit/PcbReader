@@ -1,6 +1,7 @@
 ﻿using PcbReader.Spv;
 using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Handling;
 
 namespace PcbReaderTest.GeometryTest;
 

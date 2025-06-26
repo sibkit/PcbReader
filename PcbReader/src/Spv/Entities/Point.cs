@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Spv.Entities;
+﻿using PcbReader.Spv.Handling;
+
+namespace PcbReader.Spv.Entities;
 
 public readonly struct Point(double x, double y) : IEquatable<Point> {
     public double X { get; } = x;

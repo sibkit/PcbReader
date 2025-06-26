@@ -1,6 +1,6 @@
 ﻿using PcbReader.Spv.Entities;
 
-namespace PcbReader.Spv;
+namespace PcbReader.Spv.Handling;
 
 public static class Angles {
     public static double CalculateAngle(Point sp, Point ep, Point cp) {

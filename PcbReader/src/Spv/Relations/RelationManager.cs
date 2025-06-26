@@ -1,5 +1,6 @@
 ﻿using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
+using PcbReader.Spv.Handling;
 using PcbReader.Spv.Relations.PointsSearch;
 
 namespace PcbReader.Spv.Relations;

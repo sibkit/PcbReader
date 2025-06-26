@@ -1,4 +1,6 @@
-﻿namespace PcbReader.Spv.Entities.GraphicElements.Curves;
+﻿using PcbReader.Spv.Handling;
+
+namespace PcbReader.Spv.Entities.GraphicElements.Curves;
 
 
 
@@ -33,61 +35,39 @@ public class Arc : ICurve {
             if (_bounds == null) {
                 var cp = Geometry.ArcCenter(this);
 
-                var sp = this.PointFrom;
-                var ep = this.PointTo;
+                var sp = PointFrom;
+                var ep = PointTo;
 
                 var spq = GetQuadrant(cp,sp);
                 var epq = GetQuadrant(cp, ep);
 
-                if (spq == epq && IsLargeArc) {
-                    _bounds = new Bounds(cp.X-Radius, cp.Y-Radius, cp.X+Radius, cp.Y+Radius);
-                    return _bounds.Value;
-                }
+                var qts = Quadrants.GetTransitions(spq, epq, RotationDirection);
                 
-                var quadrants = Quadrant.None;
-        
-                
-                if (RotationDirection == RotationDirection.CounterClockwise) {
-                    while (epq != spq) {
-                        quadrants |= spq;
-                        spq = spq.Next();
-                    }
-                } else {
-                    while (epq != spq) {
-                        quadrants |= spq;
-                        spq = spq.Prev();
-                    }
-                }
-                quadrants |= spq;
+                double minX, minY, maxX, maxY;
 
-                double minX;
-                double minY;
-                double maxX;
-                double maxY;
-
-
-                if ((quadrants & Quadrant.I_II) == Quadrant.I_II) {
+                if ((qts & QuadrantTransition.I_II) == QuadrantTransition.I_II) {
                     maxY = cp.Y + Radius;
                 } else {
-                    maxY = sp.Y>ep.Y ? sp.Y : ep.Y;
+                    maxY = sp.Y > ep.Y ? sp.Y : ep.Y;
                 }
-
-                if ((quadrants & Quadrant.II_III) == Quadrant.II_III) {
+                
+                if ((qts & QuadrantTransition.II_III) == QuadrantTransition.II_III) {
                     minX = cp.X - Radius;
                 } else {
                     minX = sp.X < ep.X ? sp.X : ep.X;
                 }
-
-                if ((quadrants & Quadrant.III_IV) == Quadrant.III_IV) {
+                
+                if ((qts & QuadrantTransition.III_IV) == QuadrantTransition.III_IV) {
                     minY = cp.Y - Radius;
                 } else {
                     minY = sp.Y < ep.Y ? sp.Y : ep.Y;
                 }
-        
-                if ((quadrants & Quadrant.IV_I) == Quadrant.IV_I) {
+
+                if ((qts & QuadrantTransition.IV_I) == QuadrantTransition.IV_I) {
                     maxX = cp.X + Radius;
-                } else {
-                    maxX = sp.X>ep.X ? sp.X : ep.X;
+                }
+                else {
+                    maxX = sp.X > ep.X ? sp.X : ep.X;
                 }
 
                 _bounds = new Bounds(minX, minY,maxX, maxY);   
@@ -112,4 +92,6 @@ public class Arc : ICurve {
         return MemberwiseClone();
     }
 }
+
+
 

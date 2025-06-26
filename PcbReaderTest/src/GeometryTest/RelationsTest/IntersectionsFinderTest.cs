@@ -2,6 +2,7 @@
 using PcbReader.Spv;
 using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
+using PcbReader.Spv.Handling;
 using PcbReader.Spv.Relations;
 
 namespace PcbReaderTest.GeometryTest.RelationsTest;

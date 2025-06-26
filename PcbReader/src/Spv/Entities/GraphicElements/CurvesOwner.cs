@@ -15,19 +15,9 @@ public abstract class CurvesOwner: IGraphicElement {
         get {
             if (_bounds == null) {
                 foreach (var p in Curves) {
-                    if (_bounds == null) {
-                        _bounds = p.Bounds;
-                    } else {
-                        _bounds = new Bounds(
-                            p.Bounds.MinX < _bounds.Value.MinX ? p.Bounds.MinX : _bounds.Value.MinX,
-                            p.Bounds.MinY < _bounds.Value.MinY ? p.Bounds.MinY : _bounds.Value.MinY,
-                            p.Bounds.MaxX > _bounds.Value.MaxX ? p.Bounds.MaxX : _bounds.Value.MaxX,
-                            p.Bounds.MaxY > _bounds.Value.MaxY ? p.Bounds.MaxY : _bounds.Value.MaxY
-                        );
-                    }
+                    _bounds = _bounds?.ExtendBounds(p.Bounds) ?? p.Bounds;
                 }
             }
-
             return _bounds!.Value;
         }
     }

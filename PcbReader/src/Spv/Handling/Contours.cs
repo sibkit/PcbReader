@@ -1,10 +1,9 @@
 ﻿using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
-using PcbReader.Spv.Handling;
 using PcbReader.Spv.Relations;
 
-namespace PcbReader.Spv;
+namespace PcbReader.Spv.Handling;
 
 public static class Contours {
     private static Contour Simplify(Contour contour) {
@@ -33,12 +32,12 @@ public static class Contours {
         return result;
     }
 
-          public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
+    public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
             return contour1;
-        
+
         var result = new Contour();
-        
+
         //находим все пересечения
         foreach (var curve in contour1.Curves) {
             var contactPoints = new List<ContactPoint>();
@@ -54,45 +53,55 @@ public static class Contours {
                         contactPoints.AddRange(or.Points);
                         break;
                     default:
-                        throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation+")");
+                        throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation + ")");
                 }
             }
-            
-            contactPoints.Sort((x,x1)=>x.T.CompareTo(x1.T));
+
+            contactPoints.Sort((x, x1) => x.T.CompareTo(x1.T));
             switch (curve) {
                 case Line line:
                     var sp = line.PointFrom;
                     foreach (var cp in contactPoints) {
+                        if (sp != cp.Point) {
+                            result.Curves.Add(new Line {
+                                PointFrom = sp,
+                                PointTo = cp.Point,
+                            });
+                            sp = cp.Point;
+                        }
+                    }
+
+                    if (sp != line.PointTo)
                         result.Curves.Add(new Line {
                             PointFrom = sp,
-                            PointTo = cp.Point,
+                            PointTo = line.PointTo,
                         });
-                        sp = cp.Point;
-                    }
-                    result.Curves.Add(new Line {
-                        PointFrom = sp,
-                        PointTo = line.PointTo,
-                    });
                     break;
                 case Arc arc:
                     var sp2 = arc.PointFrom;
                     foreach (var cp in contactPoints) {
+                        if (sp2 != cp.Point) {
+                            result.Curves.Add(new Arc {
+                                PointFrom = sp2,
+                                PointTo = cp.Point,
+                                Radius = arc.Radius,
+                                RotationDirection = arc.RotationDirection,
+                                IsLargeArc = arc.IsLargeArc
+                            });
+                        }
+                        sp2 = cp.Point;
+                    }
+
+                    if (sp2 != arc.PointTo) {
                         result.Curves.Add(new Arc {
                             PointFrom = sp2,
-                            PointTo = cp.Point,
+                            PointTo = arc.PointTo,
                             Radius = arc.Radius,
                             RotationDirection = arc.RotationDirection,
                             IsLargeArc = arc.IsLargeArc
                         });
-                        sp2 = cp.Point;
                     }
-                    result.Curves.Add(new Arc {
-                        PointFrom = sp2,
-                        PointTo = arc.PointTo,
-                        Radius = arc.Radius,
-                        RotationDirection = arc.RotationDirection,
-                        IsLargeArc = arc.IsLargeArc
-                    });
+
                     break;
                 default:
                     throw new Exception("Contours: Merge (Unknown Curve type: " + curve + ")");
@@ -101,7 +110,6 @@ public static class Contours {
 
         return result;
     }
-
     
     private static double GetRotationAngle(Line curLine, Line prevLine) {
         var th1 = Math.Atan2(prevLine.PointTo.Y - prevLine.PointFrom.Y, prevLine.PointTo.X - prevLine.PointFrom.X);
@@ -118,7 +126,8 @@ public static class Contours {
         foreach (var curve in contour.Curves) {
             switch (curve) {
                 case Line line:
-                    resultAngle += GetRotationAngle(line, prevLine);
+                    var ra = GetRotationAngle(line, prevLine);
+                    resultAngle += ra;
                     prevLine = line;
                     break;
                 default:
@@ -126,10 +135,14 @@ public static class Contours {
             }
         }
 
+
+        
         if (Math.Abs(resultAngle - Math.PI * 2) < Geometry.Accuracy)
             return RotationDirection.Clockwise;
         if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
             return RotationDirection.CounterClockwise;
+        if (Math.Abs(resultAngle) < Geometry.Accuracy)
+            return RotationDirection.None;
         throw new Exception("Contours: GetRotationDirection(2)");
     }
 

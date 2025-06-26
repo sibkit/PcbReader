@@ -76,7 +76,7 @@ public class ContoursWalker {
     }
 
     private ICurve NextCurve(ICurve inCurve, RotationDirection contoursRd) {
-        var points = _pointsMap[inCurve.PointTo];
+        var points = _pointsMap[Geometry.RoundPoint(inCurve.PointTo)];
         if (points == null || points.Count == 0) 
             throw new Exception("ContoursWalker: NextCurve");
         
@@ -88,9 +88,13 @@ public class ContoursWalker {
         foreach (var tp in points) {
             if(_placedCurves.Contains(tp.OutCurve))
                 continue;
+
+            var startCurveVec = Curves.GetCurveInVector(tp.OutCurve);
+            var pointTo = new Point(inCurve.PointTo.X+startCurveVec.X, inCurve.PointTo.Y+startCurveVec.Y);
+            
             var a = contoursRd == RotationDirection.CounterClockwise ?
-                Angles.PositiveNormalize(Angles.CalculateAngle(inCurve.PointFrom, tp.OutCurve.PointTo, inCurve.PointTo)) :
-                Angles.PositiveNormalize(Angles.CalculateAngle(tp.OutCurve.PointTo, inCurve.PointFrom, inCurve.PointTo));
+                Angles.PositiveNormalize(Angles.CalculateAngle(inCurve.PointFrom, pointTo, inCurve.PointTo)) :
+                Angles.PositiveNormalize(Angles.CalculateAngle(pointTo, inCurve.PointFrom, inCurve.PointTo));
             if (a < angle) {
                 angle = a;
                 result = tp.OutCurve;
@@ -138,7 +142,10 @@ public class ContoursWalker {
         var result = new Shape {
             OuterContour = outerContour,
         };
-        result.InnerContours.AddRange(contours.Where(c => Contours.GetRotationDirection(c) == _rotationDirection.Invert() ));
+        result.InnerContours.AddRange(contours.Where(c => {
+            var rd = Contours.GetRotationDirection(c);
+            return rd == _rotationDirection.Invert();
+        }));
 
         return result;
     }

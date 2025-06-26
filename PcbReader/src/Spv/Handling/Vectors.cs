@@ -1,6 +1,6 @@
 ﻿using PcbReader.Spv.Entities;
 
-namespace PcbReader.Spv;
+namespace PcbReader.Spv.Handling;
 
 public readonly struct Vector(double x, double y) {
 
