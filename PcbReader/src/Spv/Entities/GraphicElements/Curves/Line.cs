@@ -1,21 +1,14 @@
 ﻿namespace PcbReader.Spv.Entities.GraphicElements.Curves;
 
 public class Line: ICurve {
-    private Bounds? _bounds;
     
     public CurvesOwner Owner { get; set; }
-    
     public required Point PointTo { get; set; }
-    
     public required Point PointFrom { get; set; }
 
-    public void UpdateBounds() {
-        _bounds = null;
-    }
     
     public Bounds Bounds {
         get {
-            if (_bounds == null) {
                 double minX;
                 double minY;
                 double maxX;
@@ -37,9 +30,7 @@ public class Line: ICurve {
                     maxY = PointFrom.Y;
                 }
 
-                _bounds = new Bounds(minX, minY,maxX, maxY);
-            }
-            return _bounds.Value;
+                return new Bounds(minX, minY, maxX, maxY);
         }
     }
 
@@ -54,8 +45,15 @@ public class Line: ICurve {
     public void Reverse() {
         (PointFrom, PointTo) = (PointTo, PointFrom);
     }
-
-    public object Clone() {
-        return MemberwiseClone();
+    
+    public void Move(double dx, double dy) {
+        PointTo = PointTo with {
+            X = PointTo.X + dx,
+            Y = PointTo.Y + dy
+        };
+        PointFrom = PointFrom with {
+            X = PointFrom.X + dx,
+            Y = PointFrom.Y + dy
+        };
     }
 }

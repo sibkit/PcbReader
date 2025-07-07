@@ -8,7 +8,7 @@ public class QuadrantsTest {
     [Fact]
     public void TestQuadrantTransitions() {
         var q1 = Quadrant.I;
-        var q2 = Quadrant.II;
+        //var q2 = Quadrant.II;
         var q3 = Quadrant.III;
         var q4 = Quadrant.IV;
 

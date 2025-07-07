@@ -1,6 +1,6 @@
 ﻿namespace PcbReader.Spv.Entities;
 
-public readonly struct Bounds {
+public class Bounds {
     
     public double MinX { get; }
     public double MinY { get; }
@@ -43,6 +43,8 @@ public readonly struct Bounds {
     }
 
     public Bounds ExtendBounds(Bounds b) {
+        if (b == null)
+            return Clone();
         return new Bounds(
             MinX < b.MinX ? MinX : b.MinX,
             MinY < b.MinY ? MinY : b.MinY,
@@ -58,5 +60,9 @@ public readonly struct Bounds {
             double.NegativeInfinity,
             double.NegativeInfinity
         );
+    }
+
+    public Bounds Clone() {
+        return new Bounds(MinX, MinY, MaxX, MaxY);
     }
 }

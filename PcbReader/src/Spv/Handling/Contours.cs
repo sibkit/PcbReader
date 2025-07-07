@@ -7,31 +7,105 @@ using PcbReader.Spv.Relations;
 namespace PcbReader.Spv.Handling;
 
 public static class Contours {
-    private static Contour Simplify(Contour contour) {
 
-        var result = new Contour();
 
+    private static void SplitArcs(Contour contour) {
         for (var i = 0; i < contour.Curves.Count; i++) {
             switch (contour.Curves[i]) {
-                case Line lpp:
-                    result.Curves.Add((Line)lpp.Clone());
-                    break;
+                case Line:
+                    continue;
                 case Arc arc:
-                    var mp = Geometry.ArcMiddlePoint(arc);
-                    result.Curves.Add(new Line {
-                        PointFrom = arc.PointFrom,
-                        PointTo = mp,
+                    var cp = Geometry.ArcCenter(arc);
+                    var rd = arc.RotationDirection;
+                    var qStart = Quadrants.GetQuadrant(arc.PointFrom.X - cp.X, arc.PointFrom.Y - cp.Y);
+                    var qEnd = Quadrants.GetQuadrant(arc.PointTo.X - cp.X, arc.PointTo.Y - cp.Y);
+
+
+                    
+                    if ((qStart == qEnd) && !arc.IsLargeArc)
+                        continue;
+                    
+                    switch (qStart) {
+                        case Quadrant.I_II:
+                            qStart = rd == RotationDirection.CounterClockwise ? Quadrant.II : Quadrant.I;
+                            break;
+                        case Quadrant.II_III:
+                            qStart = rd == RotationDirection.CounterClockwise ? Quadrant.III : Quadrant.II;
+                            break;
+                        case Quadrant.III_IV:
+                            qStart = rd == RotationDirection.CounterClockwise ? Quadrant.IV : Quadrant.III;
+                            break;
+                        case Quadrant.IV_I:
+                            qStart = rd == RotationDirection.CounterClockwise ? Quadrant.I : Quadrant.IV;
+                            break;
+                    }
+                    
+                    switch (qEnd) {
+                        case Quadrant.I_II:
+                            qEnd = rd == RotationDirection.CounterClockwise ? Quadrant.I : Quadrant.II;
+                            break;
+                        case Quadrant.II_III:
+                            qEnd = rd == RotationDirection.CounterClockwise ? Quadrant.II : Quadrant.III;
+                            break;
+                        case Quadrant.III_IV:
+                            qEnd = rd == RotationDirection.CounterClockwise ? Quadrant.III : Quadrant.IV;
+                            break;
+                        case Quadrant.IV_I:
+                            qEnd = rd == RotationDirection.CounterClockwise ? Quadrant.IV : Quadrant.I;
+                            break;
+                    }
+                    
+                    var qCur = qStart;
+
+                    var splitPoints = new List<Point>(4);
+                    
+                    while (qCur != qEnd) {
+                        var qNew = rd == RotationDirection.CounterClockwise ? qCur.Next() : qCur.Prev();
+                        var qt = Quadrants.GetTransitions(qCur, qNew, rd);
+                        switch (qt) {
+                            case QuadrantTransition.I_II:
+                                splitPoints.Add(new Point(cp.X, cp.Y + arc.Radius));
+                                break;
+                            case QuadrantTransition.II_III:
+                                splitPoints.Add(new Point(cp.X - arc.Radius, cp.Y));
+                                break;
+                            case QuadrantTransition.III_IV:
+                                splitPoints.Add(new Point(cp.X, cp.Y - arc.Radius));
+                                break;
+                            case QuadrantTransition.IV_I:
+                                splitPoints.Add(new Point(cp.X + arc.Radius, cp.Y));
+                                break;
+                            default:
+                                throw new Exception("Unexpected QuadrantTransition");
+                        }
+                        qCur = qNew;
+                    } 
+                    
+                    contour.Curves.RemoveAt(i);
+                    var arcs = new List<Arc>(4);
+                    foreach (var splitPoint in splitPoints) {
+                        arcs.Add(new Arc {
+                            Radius = arc.Radius,
+                            RotationDirection = rd,
+                            IsLargeArc = arc.IsLargeArc,
+                            PointFrom = arcs.Count == 0 ? arc.PointFrom : arcs.Last().PointTo,
+                            PointTo = splitPoint
+                        });
+                    }
+                    arcs.Add(new Arc {
+                        Radius = arc.Radius,
+                        RotationDirection = rd,
+                        IsLargeArc = arc.IsLargeArc,
+                        PointFrom = arcs.Count == 0 ? arc.PointFrom : arcs.Last().PointTo,
+                        PointTo = arc.PointTo
                     });
-                    result.Curves.Add(new Line {
-                        PointFrom = mp,
-                        PointTo = arc.PointTo,
-                    });
+                    contour.Curves.InsertRange(i, arcs);
+                    i+=arcs.Count-1;
                     break;
             }
         }
-
-        return result;
     }
+
 
     public static Contour SplitByRelationPoints(Contour contour1, Contour contour2) {
         if (!contour1.Bounds.IsIntersected(contour2.Bounds))
@@ -108,40 +182,67 @@ public static class Contours {
                     throw new Exception("Contours: Merge (Unknown Curve type: " + curve + ")");
             }
         }
-
         return result;
     }
     
-    private static double GetRotationAngle(Line curLine, Line prevLine) {
-        var th1 = Math.Atan2(prevLine.PointTo.Y - prevLine.PointFrom.Y, prevLine.PointTo.X - prevLine.PointFrom.X);
-        var th2 = Math.Atan2(curLine.PointTo.Y - curLine.PointFrom.Y, curLine.PointTo.X - curLine.PointFrom.X);
-        return Angles.PiNormalize(th1 - th2);
+    private static double RotationAngle(ICurve curLine, ICurve prevLine) {
+        return Vectors.Angle(
+            new Vector(prevLine.PointTo.X - prevLine.PointFrom.X, prevLine.PointTo.Y - prevLine.PointFrom.Y),
+            new Vector(curLine.PointTo.X - curLine.PointFrom.X, curLine.PointTo.Y - curLine.PointFrom.Y));
     }
 
+    // public static double RotationAngle(ICurve curve, Vector prevOutVec, double prevInAngle) {
+    //     var tgIn = Curves.GetTangentInVector(curve);
+    //     var tgOut = Curves.GetTangentOutVector(curve);
+    //     var inAngle = Vectors.Angle(prevOutVec, tgIn);
+    //     var curveAngle = Vectors.Angle(tgIn, tgOut);
+    //
+    //     if (Math.Abs(inAngle) - Math.PI < Geometry.Accuracy) {
+    //         if (Math.Abs(inAngle + prevInAngle) > Math.PI)
+    //             inAngle = -inAngle;
+    //     }
+    //     
+    //     if (Math.Abs(curveAngle) - Math.PI < Geometry.Accuracy) {
+    //         if (Math.Abs(curveAngle + inAngle) > Math.PI)
+    //             curveAngle = -curveAngle;
+    //     }
+    //     return inAngle + curveAngle;
+    // }
+
+    public static bool CheckContourCurvesPoints(Contour contour) {
+        var prevEnd = contour.Curves[^1].PointTo;
+        foreach (var curve in contour.Curves) {
+            if (prevEnd == curve.PointFrom) {
+                prevEnd = curve.PointTo;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public static RotationDirection GetRotationDirection(Contour contour) {
-        contour = Simplify(contour);
+        
         if (contour.Curves.Count < 2)
             throw new ApplicationException("Контур состоит менее чем из 2-х частей");
+        SplitArcs(contour);
+        // var leftResultAngle = 0d;
+        // var rightResultAngle = 0d;
+        
+        var prevCurve = contour.Curves[^1];
         var resultAngle = 0d;
-        var prevLine = (Line)contour.Curves[^1];
+        
         foreach (var curve in contour.Curves) {
-            switch (curve) {
-                case Line line:
-                    var ra = GetRotationAngle(line, prevLine);
-                    resultAngle += ra;
-                    prevLine = line;
-                    break;
-                default:
-                    throw new Exception("Contours: GetRotationDirection(1)");
-            }
+            var ra = RotationAngle(curve, prevCurve);
+            resultAngle += ra;
+            prevCurve = curve;
         }
 
 
-        
         if (Math.Abs(resultAngle - Math.PI * 2) < Geometry.Accuracy)
-            return RotationDirection.Clockwise;
-        if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
             return RotationDirection.CounterClockwise;
+        if (Math.Abs(resultAngle + Math.PI * 2) < Geometry.Accuracy)
+            return RotationDirection.Clockwise;
         if (Math.Abs(resultAngle) < Geometry.Accuracy)
             return RotationDirection.None;
         throw new Exception("Contours: GetRotationDirection(2)");
@@ -153,19 +254,47 @@ public static class Contours {
             var part = contour.Curves[i];
             result.Curves.Add(part.GetReversed());
         }
-
         return result;
     }
 
+    // public static Contour Move(Contour contour, double dx, double dy) {
+    //     var result = new Contour();
+    //     foreach (var curve in contour.Curves) {
+    //         result.Curves.Add(Curves.Move(curve, dx, dy));
+    //     }
+    //     return result;
+    // }
+    
 
     public static Shape Union(Contour contour1, Contour contour2) {
-        var cw = new UnionContoursWalker(contour1, contour2);
-        return cw.Walk();
+        
+
+        var rd = GetRotationDirection(contour1);
+        
+        if (rd != GetRotationDirection(contour2))
+            contour2 = GetReversed(contour2);
+
+        var contours = new ContoursWalker(contour1, contour2).Walk(rd);
+        
+        var followingContours = new List<Contour>();
+        var reverseContours = new List<Contour>();
+
+        foreach (var contour in contours) {
+            var crd = GetRotationDirection(contour);
+            if(crd == rd)
+                followingContours.Add(contour);
+            else if(crd == rd.Invert()) {
+                reverseContours.Add(contour);
+            }
+        }
+
+        var result = new Shape(followingContours[0]);
+        result.InnerContours.AddRange(reverseContours);
+        return result;
     }
 
     public static Shape Subtract(Contour contour1, Contour contour2) {
-        var cw = new UnionContoursWalker(contour1, contour2);
-        return cw.Walk();
+        return null;
     }
     
     public static Shape Intersect(Contour contour1, Contour contour2) {

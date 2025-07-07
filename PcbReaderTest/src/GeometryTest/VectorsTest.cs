@@ -16,7 +16,6 @@ public class VectorsTest {
     public void TestStartCurveVector() {
         var cos45 = Math.Cos(Math.PI / 4d);
 
-
         
         var arc1 = new Arc {
             PointFrom = new Point(2d + cos45, 2d + cos45),
@@ -68,13 +67,19 @@ public class VectorsTest {
 
 
 
-
-        var v1 = Curves.GetCurveInVector(arc1);
-        var v2 = Curves.GetCurveInVector(arc2);
-        var v3 = Curves.GetCurveInVector(arc3);
-        var v4 = Curves.GetCurveInVector(arc4);
-        var v5 = Curves.GetCurveInVector(arc5);
-        var v6 = Curves.GetCurveInVector(arc6);
+        var vOut1 = Curves.GetTangentOutVector(arc1);
+        var vOut2 = Curves.GetTangentOutVector(arc2);
+        var vOut3 = Curves.GetTangentOutVector(arc3);
+        var vOut4 = Curves.GetTangentOutVector(arc4);
+        var vOut5 = Curves.GetTangentOutVector(arc5);
+        var vOut6 = Curves.GetTangentOutVector(arc6);
+        
+        var vIn1 = Curves.GetTangentInVector(arc1);
+        var vIn2 = Curves.GetTangentInVector(arc2);
+        var vIn3 = Curves.GetTangentInVector(arc3);
+        var vIn4 = Curves.GetTangentInVector(arc4);
+        var vIn5 = Curves.GetTangentInVector(arc5);
+        var vIn6 = Curves.GetTangentInVector(arc6);
         
 
     }

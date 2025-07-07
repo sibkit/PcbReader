@@ -48,26 +48,26 @@ public static class Geometry {
         return pp.RotationDirection == RotationDirection.Clockwise ? (pp.IsLargeArc ? p2 : p1) : (pp.IsLargeArc ? p1 : p2);
     }
 
-    public static Point ArcMiddlePoint(Arc arc) {
-        var cp = ArcCenter(arc);
-        var theta = Math.Atan2(arc.PointFrom.Y - cp.Y, arc.PointFrom.X - cp.X);
-        
-        var beta = Angles.CalculateAngle(arc.PointFrom, arc.PointTo, cp);
-        beta = arc.RotationDirection switch {
-            RotationDirection.Clockwise => Angles.NegativeNormalize(beta),
-            RotationDirection.CounterClockwise => Angles.PositiveNormalize(beta),
-            _ => beta
-        };
-
-        var mb = beta / 2;
-
-        return new Point(
-            cp.X + arc.Radius * Math.Cos(theta + mb),
-            cp.Y + arc.Radius * Math.Sin(theta + mb)
-        );
-
-
-    }
+    // public static Point ArcMiddlePoint(Arc arc) {
+    //     var cp = ArcCenter(arc);
+    //     var theta = Math.Atan2(arc.PointFrom.Y - cp.Y, arc.PointFrom.X - cp.X);
+    //     
+    //     var beta = Angles.CalculateAngle(arc.PointFrom, arc.PointTo, cp);
+    //     beta = arc.RotationDirection switch {
+    //         RotationDirection.Clockwise => Angles.NegativeNormalize(beta),
+    //         RotationDirection.CounterClockwise => Angles.PositiveNormalize(beta),
+    //         _ => beta
+    //     };
+    //
+    //     var mb = beta / 2;
+    //
+    //     return new Point(
+    //         cp.X + arc.Radius * Math.Cos(theta + mb),
+    //         cp.Y + arc.Radius * Math.Sin(theta + mb)
+    //     );
+    //
+    //
+    // }
 
     public static ArcWay ArcWay(Point sp, Point ep, Point cp) {
         var angle = Angles.CalculateAngle(sp, ep, cp);

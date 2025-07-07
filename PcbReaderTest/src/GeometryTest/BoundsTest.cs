@@ -49,7 +49,6 @@ public class BoundsTest {
         Assert.True(b1.MaxPoint == new Point(5, 5));
         
         arc1.IsLargeArc = true;
-        arc1.UpdateBounds();
         var b2 = arc1.Bounds;
         Assert.True(Math.Abs(b2.GetWidth() - 10) < Geometry.Accuracy);
         Assert.True(Math.Abs(b2.GetHeight() - 10) < Geometry.Accuracy);

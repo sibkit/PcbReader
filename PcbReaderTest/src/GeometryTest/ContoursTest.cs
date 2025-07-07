@@ -154,32 +154,110 @@ public class ContoursTest {
 
         contours.Add(p2.Root);
 
-        // var p3 = new Painter<Contour>(30, 20);
-        // p3.LineToInc(-10,0);
-        // p3.ArcToInc(0,20,10,RotationDirection.Clockwise, false);
-        // p3.LineToInc(20,0);
-        // p3.ArcToInc(10,-10,10,RotationDirection.Clockwise, false);
-        // p3.LineToInc(0,-10);
-        // p3.ArcToInc(-20,0,10,RotationDirection.Clockwise, false);
-        //
-        // contours.Add(p3.Root);
+        var p3 = new Painter<Contour>(30, 20);
+        p3.LineToInc(-10,0);
+        p3.ArcToInc(0,20,10,RotationDirection.Clockwise, false);
+        p3.LineToInc(20,0);
+        p3.ArcToInc(10,-10,10,RotationDirection.Clockwise, false);
+        p3.LineToInc(0,-10);
+        p3.ArcToInc(-20,0,10,RotationDirection.Clockwise, false);
+        
+        contours.Add(p3.Root);
 
         return contours;
     }
 
 
     [Fact]
-    public void TestContoursOperation() {
-
+    public void MoveTest() {
         var area = new Area();
         var cts = GetContours2();
         
-        var c1 = Contours.Union(cts[0], cts[1]);
+        for (var i = 0; i < 5; i++) {
+            for (var j = 0; j < 5; j++) {
+                var cCloned = cts[0].Clone();
+                cCloned.Move(j*80, i*80);
+                area.GraphicElements.Add(cCloned);
+            }
+        }
+        
+
+        
+        //var c1 = Contours.Union(cts[0], cts[1]);
         //c1 = Contours.Union(cts[0], c1.OuterContour);
-        area.GraphicElements.Add(c1);
+        //area.GraphicElements.Add(c1);
         area.InvertYAxe();
 
         var layer = SpvToSvgConverter.Convert(area);
-        SvgWriter.Write(layer,"D://3c.svg");
+        SvgWriter.Write(layer,"D://5c.svg");
+    }
+    
+    [Fact]
+    public void TestContoursOperation() {
+
+        var area = new Area();
+        var cts = GetContours2().Union(GetContours()).ToList();
+
+        var line = 0;
+        var sw = 80d;
+        for (var i = 0; i < cts.Count; i++) {
+            var ci = cts.ElementAt(i);
+            for (var j = i + 1; j < cts.Count; j++) {
+                var cj = cts.ElementAt(j);
+
+                
+                var ciCloned = ci.Clone();
+                if(Contours.GetRotationDirection(ciCloned) != RotationDirection.Clockwise)
+                    ciCloned.Reverse();
+                ciCloned.Move(0,line*sw);
+                area.GraphicElements.Add(ciCloned);
+                
+                var cjCloned = cj.Clone();
+                if(Contours.GetRotationDirection(cjCloned) != RotationDirection.Clockwise)
+                    cjCloned.Reverse();
+                cjCloned.Move(sw,line*sw);
+                area.GraphicElements.Add(cjCloned);
+                
+                
+                var uc =  Contours.Union(ci.Clone(), cj.Clone());
+                
+                if (uc != null) {
+                    uc.Move(2*sw, line*sw);
+                    area.GraphicElements.Add(uc);
+                }
+                line++;
+            }
+            
+        }
+        
+        //var c1 = Contours.Union(cts[0], cts[1]);
+        //c1 = Contours.Union(cts[0], c1.OuterContour);
+        //area.GraphicElements.Add(c1);
+        area.InvertYAxe();
+
+        var layer = SpvToSvgConverter.Convert(area);
+        SvgWriter.Write(layer,"D://4c.svg");
+    }
+
+    [Fact]
+    public void TestSimpleUnion() {
+        var p1 = new Painter<Contour>(10, 10);
+        p1.LineToInc(0,20);
+        p1.LineToInc(20,0);
+        p1.LineToInc(0,-20);
+        p1.LineToInc(-20,0);
+        
+        var p2 = new Painter<Contour>(20, 20);
+        p2.LineToInc(0,20);
+        p2.LineToInc(20,0);
+        p2.LineToInc(0,-20);
+        p2.LineToInc(-20,0);
+
+        var shape = Contours.Union(p1.Root, p2.Root);
+        
+        var area = new Area();
+        area.GraphicElements.Add(shape);
+        var svg = SpvToSvgConverter.Convert(area);
+        SvgWriter.Write(svg, "D://ts1.svg");
     }
 }

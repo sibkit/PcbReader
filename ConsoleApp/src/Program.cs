@@ -123,10 +123,10 @@ public static class Program {
     }
     
     static void CalculateResult() {
-        var callsCountPerDay = 30m;
+        var callsCountPerDay = 50m;
         var avgSellPrice = 20000m;
         var clientOrdersPerDay = 0.02m;
-        var resultChance = 0.3m;
+        var resultChance = 0.05m;
         var clientsCount = 0m;
         var chanceLowingPerDay = 0.000001m;
         

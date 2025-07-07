@@ -25,7 +25,7 @@ public class Area {
                 default:
                     throw new Exception("GerberToSvgConverter: InvertAxis");
             }
-            e.UpdateBounds();
+            //e.UpdateBounds();
         }
     }
     

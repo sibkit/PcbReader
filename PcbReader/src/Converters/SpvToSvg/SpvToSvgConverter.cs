@@ -1,5 +1,6 @@
 ﻿
 using PcbReader.Layers.Svg.Entities;
+using PcbReader.Layers.Svg.Writing;
 using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
@@ -12,6 +13,14 @@ public  static class SpvToSvgConverter {
         result.Elements.AddRange(area.GraphicElements);
         //InvertAxis(result);
         return result;
+    }
+
+    public static void WriteContour(Contour contour, string filename) {
+        var area = new Area();
+        area.GraphicElements.Add(contour);
+        var layer = Convert(area);
+        //InvertAxis(layer);
+        SvgWriter.Write(layer, filename);
     }
     
     static void InvertAxis(SvgLayer layer) {
@@ -36,12 +45,12 @@ public  static class SpvToSvgConverter {
     static ICurve InvertAxis(ICurve pathPart) {
         return pathPart switch {
             Line line => new Line {
-                PointTo = line.PointTo.WithNewY(-line.PointTo.Y), 
-                PointFrom = line.PointFrom.WithNewY(-line.PointFrom.Y),
+                PointTo = line.PointTo with { Y = -line.PointTo.Y }, 
+                PointFrom = line.PointFrom with { Y = -line.PointFrom.Y },
             },
             Arc arc => new Arc {
-                PointTo = arc.PointTo.WithNewY(-arc.PointTo.Y),
-                PointFrom = arc.PointFrom.WithNewY(-arc.PointFrom.Y),
+                PointTo = arc.PointTo with { Y = -arc.PointTo.Y },
+                PointFrom = arc.PointFrom with { Y = -arc.PointFrom.Y },
                 IsLargeArc = arc.IsLargeArc,
                 RotationDirection = arc.RotationDirection.Invert(),
                 Radius = arc.Radius,

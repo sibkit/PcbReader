@@ -2,7 +2,6 @@
 
 public abstract class CurvesOwner: IGraphicElement {
     
-    private Bounds? _bounds = new Bounds();
 
     public List<ICurve> Curves { get; } = [];
 
@@ -13,20 +12,18 @@ public abstract class CurvesOwner: IGraphicElement {
         }
     }
     
-    public void UpdateBounds() {
-        _bounds = null;
-        foreach (var p in Curves)
-            p.UpdateBounds();
-    }
-    
-    public Bounds Bounds {
-        get {
-            if (_bounds == null) {
-                foreach (var p in Curves) {
-                    _bounds = _bounds?.ExtendBounds(p.Bounds) ?? p.Bounds;
-                }
-            }
-            return _bounds!.Value;
+    public void Move(double dx, double dy) {
+        foreach (var curve in Curves) {
+            curve.Move(dx, dy);
         }
     }
+
+    public Bounds Bounds {
+        get {
+            var bounds = Bounds.Empty();
+            return Curves.Aggregate(bounds, (current, p) => current?.ExtendBounds(p.Bounds) ?? p.Bounds);
+        }
+    }
+
+
 }
