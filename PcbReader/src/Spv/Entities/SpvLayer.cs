@@ -3,9 +3,10 @@ using PcbReader.Spv.Entities.GraphicElements.Curves;
 
 namespace PcbReader.Spv.Entities;
 
-public class Area {
+public class SpvLayer {
     public List<IGraphicElement> GraphicElements { get; } = [];
-
+    public Bounds? Bounds { get; set; }
+    
     public void InvertYAxe() {
         foreach (var e in GraphicElements) {
             switch (e) {

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
 using PcbReader.Converters;
 using PcbReader.Converters.GerberToSpv;
+using PcbReader.Converters.SpvToSvg;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading;
@@ -19,8 +20,43 @@ namespace ConsoleApp;
 
 public static class Program {
 
+    static Contour DrawCircle(double centerX, double centerY, double radius) {
+        var p = new Painter<Contour>(centerX - radius, centerY);
+        p.ArcToInc(2*radius, 0, radius, RotationDirection.Clockwise, true);
+        p.ArcToInc(-2*radius, 0, radius, RotationDirection.Clockwise, true);
+        return p.Root;
+    }
+    
+    
+    
+    static void BuildTestPrintFile() {
+
+        var spv = new SpvLayer {
+            Bounds = new Bounds(0, 0, 1800, 1800)
+        };
+        
+        var radius = 800d;
+        while (radius > 10d) {
+            var shape = new Shape();
+            shape.OuterContours.Add(DrawCircle(900,900, radius));
+            radius -= 7;
+            shape.InnerContours.Add(DrawCircle(900,900, radius));
+            spv.GraphicElements.Add(shape);
+            radius -= 7;
+        }
+
+        // var svg = new SvgLayer();
+        // svg.ViewBox = new Bounds(0, 0, 1800, 1800);
+        // svg.Width = 1800;
+        // svg.Height = 1800;
+        var svg = SpvToSvgConverter.Convert(spv);
+        SvgWriter.Write(svg,"D:\\tt1.svg");
+
+    }
+    
     [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
     public static void Main(string[] args) {
+        BuildTestPrintFile();
         //
         // var p1 = new Painter<Contour>(10, 10);
         // p1.LineToInc(0, 60);

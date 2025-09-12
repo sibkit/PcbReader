@@ -170,7 +170,7 @@ public class ContoursTest {
 
     [Fact]
     public void MoveTest() {
-        var area = new Area();
+        var area = new SpvLayer();
         var cts = GetContours2();
         
         for (var i = 0; i < 5; i++) {
@@ -195,7 +195,7 @@ public class ContoursTest {
     [Fact]
     public void TestContoursOperation() {
 
-        var area = new Area();
+        var area = new SpvLayer();
         var cts = GetContours2().Union(GetContours()).ToList();
 
         var line = 0;
@@ -224,6 +224,12 @@ public class ContoursTest {
                 if (uc != null) {
                     uc.Move(2*sw, line*sw);
                     area.GraphicElements.Add(uc);
+                }
+                
+                var ss = Contours.Subtract(ci.Clone(), cj.Clone());
+                if (ss != null) {
+                    ss.Move(3*sw, line*sw);
+                    area.GraphicElements.Add(ss);
                 }
                 line++;
             }
@@ -255,7 +261,7 @@ public class ContoursTest {
 
         var shape = Contours.Union(p1.Root, p2.Root);
         
-        var area = new Area();
+        var area = new SpvLayer();
         area.GraphicElements.Add(shape);
         var svg = SpvToSvgConverter.Convert(area);
         SvgWriter.Write(svg, "D://ts1.svg");

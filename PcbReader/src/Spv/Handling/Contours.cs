@@ -1,4 +1,5 @@
-﻿using PcbReader.Spv.Entities;
+﻿using PcbReader.Layers;
+using PcbReader.Spv.Entities;
 using PcbReader.Spv.Entities.GraphicElements;
 using PcbReader.Spv.Entities.GraphicElements.Curves;
 using PcbReader.Spv.Handling.ContourWalkers;
@@ -190,25 +191,7 @@ public static class Contours {
             new Vector(prevLine.PointTo.X - prevLine.PointFrom.X, prevLine.PointTo.Y - prevLine.PointFrom.Y),
             new Vector(curLine.PointTo.X - curLine.PointFrom.X, curLine.PointTo.Y - curLine.PointFrom.Y));
     }
-
-    // public static double RotationAngle(ICurve curve, Vector prevOutVec, double prevInAngle) {
-    //     var tgIn = Curves.GetTangentInVector(curve);
-    //     var tgOut = Curves.GetTangentOutVector(curve);
-    //     var inAngle = Vectors.Angle(prevOutVec, tgIn);
-    //     var curveAngle = Vectors.Angle(tgIn, tgOut);
-    //
-    //     if (Math.Abs(inAngle) - Math.PI < Geometry.Accuracy) {
-    //         if (Math.Abs(inAngle + prevInAngle) > Math.PI)
-    //             inAngle = -inAngle;
-    //     }
-    //     
-    //     if (Math.Abs(curveAngle) - Math.PI < Geometry.Accuracy) {
-    //         if (Math.Abs(curveAngle + inAngle) > Math.PI)
-    //             curveAngle = -curveAngle;
-    //     }
-    //     return inAngle + curveAngle;
-    // }
-
+    
     public static bool CheckContourCurvesPoints(Contour contour) {
         var prevEnd = contour.Curves[^1].PointTo;
         foreach (var curve in contour.Curves) {
@@ -225,10 +208,9 @@ public static class Contours {
         
         if (contour.Curves.Count < 2)
             throw new ApplicationException("Контур состоит менее чем из 2-х частей");
+        contour = contour.Clone();
         SplitArcs(contour);
-        // var leftResultAngle = 0d;
-        // var rightResultAngle = 0d;
-        
+
         var prevCurve = contour.Curves[^1];
         var resultAngle = 0d;
         
@@ -268,7 +250,6 @@ public static class Contours {
 
     public static Shape Union(Contour contour1, Contour contour2) {
         
-
         var rd = GetRotationDirection(contour1);
         
         if (rd != GetRotationDirection(contour2))
@@ -294,7 +275,31 @@ public static class Contours {
     }
 
     public static Shape Subtract(Contour contour1, Contour contour2) {
-        return null;
+        var rd = GetRotationDirection(contour1);
+        
+        if (rd == GetRotationDirection(contour2))
+            contour2 = GetReversed(contour2);
+
+        var contours = new ContoursWalker(contour1, contour2).Walk(rd);
+        
+        var followingContours = new List<Contour>();
+        var reverseContours = new List<Contour>();
+
+        foreach (var contour in contours) {
+            var crd = GetRotationDirection(contour);
+            if(crd == rd)
+                followingContours.Add(contour);
+            else if(crd == rd.Invert()) {
+                reverseContours.Add(contour);
+            }
+        }
+
+        if (followingContours.Count == 0)
+            return null;
+        
+        var result = new Shape(followingContours[0]);
+        result.InnerContours.AddRange(reverseContours);
+        return result;
     }
     
     public static Shape Intersect(Contour contour1, Contour contour2) {
@@ -304,34 +309,5 @@ public static class Contours {
     public static Shape Exclude(Contour contour1, Contour contour2) {
         return null;
     }
-    
-    // public static ContactPoint FindExtremePoint(Line line, Contour contour) {
-    //     var contactPoints = new List<ContactPoint>();
-    //     foreach (var curve2 in contour.Curves) {
-    //         var relation = RelationManager.DefineRelation(line, curve2);
-    //         switch (relation) {
-    //             case NotRelation:
-    //                 break;
-    //             case ContactRelation ir:
-    //                 contactPoints.AddRange(ir.Points);
-    //                 break;
-    //             case OverlappingRelation or:
-    //                 contactPoints.AddRange(or.Points);
-    //                 break;
-    //             default:
-    //                 throw new Exception("Contours: SplitByRelationPoints (Unknown Relation type: " + relation + ")");
-    //         }
-    //     }
-    //
-    //     if (contactPoints.Count == 0)
-    //         return null;
-    //     contactPoints.Sort((a, b) => a.T.CompareTo(b.T));
-    //     return contactPoints[^1];
-    // }
-
-  
-
-    
-
 }
 

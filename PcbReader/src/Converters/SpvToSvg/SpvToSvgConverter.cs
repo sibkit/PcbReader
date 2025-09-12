@@ -7,16 +7,18 @@ using PcbReader.Spv.Entities.GraphicElements.Curves;
 
 namespace PcbReader.Converters.SpvToSvg;
 
-public  static class SpvToSvgConverter {
-    public static SvgLayer Convert(Area area) {
-        var result = new SvgLayer();
-        result.Elements.AddRange(area.GraphicElements);
-        //InvertAxis(result);
+public static class SpvToSvgConverter {
+    public static SvgLayer Convert(SpvLayer spvLayer) {
+        var result = new SvgLayer {
+            ViewBox = spvLayer.Bounds
+        };
+        result.Elements.AddRange(spvLayer.GraphicElements);
+        InvertAxis(result);
         return result;
     }
 
     public static void WriteContour(Contour contour, string filename) {
-        var area = new Area();
+        var area = new SpvLayer();
         area.GraphicElements.Add(contour);
         var layer = Convert(area);
         //InvertAxis(layer);

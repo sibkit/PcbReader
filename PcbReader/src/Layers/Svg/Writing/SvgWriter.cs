@@ -167,7 +167,7 @@ public static class SvgWriter {
 
     public static void Write(SvgLayer doc, string fileName) {
         using var swr = new StreamWriter(fileName);
-        
+        _pathPartsBounds.Clear();
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
 
         swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
@@ -175,7 +175,7 @@ public static class SvgWriter {
                   Math.Round(vbr.MinPoint.Y,6)+" "+ 
                   Math.Round(vbr.GetWidth(),6) + " "+
                   Math.Round(vbr.GetHeight(),6) + "\">");
-        swr.Write("\n<g fill=\"none\" stroke=\"red\" stroke-linejoin=\"round\" stroke-linecap=\"round\" stroke-width=\"0\">");
+        swr.Write("\n<g fill=\"none\" stroke-width=\"0\">");
         foreach (var e in doc.Elements) {
             switch (e) {
                 case Path p:
@@ -191,12 +191,12 @@ public static class SvgWriter {
                     WriteDot(swr, dot);
                     break;
             }
-            AddBoundsRect(swr,e.Bounds,"yellow");
+            //AddBoundsRect(swr,e.Bounds,"yellow");
         }
 
-        foreach (var b in _pathPartsBounds) {
-            AddBoundsRect(swr,b,"orange");
-        }
+        // foreach (var b in _pathPartsBounds) {
+        //     AddBoundsRect(swr,b,"orange");
+        // }
         
         swr.Write("\n</g>");
         swr.Write("\n</svg>");
