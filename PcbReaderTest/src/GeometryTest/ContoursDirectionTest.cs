@@ -1,7 +1,7 @@
-﻿using PcbReader.Spv;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements;
-using PcbReader.Spv.Handling;
+﻿using PcbReader.Strx;
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements;
+using PcbReader.Strx.Handling;
 
 namespace PcbReaderTest.GeometryTest;
 

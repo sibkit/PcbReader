@@ -1,5 +1,5 @@
 ﻿using PcbReader.Layers.Common;
-using PcbReader.Spv.Entities;
+using PcbReader.Strx.Entities;
 
 namespace PcbReader.Layers.Excellon.Entities;
 

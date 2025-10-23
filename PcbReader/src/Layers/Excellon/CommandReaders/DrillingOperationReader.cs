@@ -1,6 +1,6 @@
 ﻿using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Excellon.Entities;
-using PcbReader.Spv.Entities;
+using PcbReader.Strx.Entities;
 
 namespace PcbReader.Layers.Excellon.CommandReaders;
 

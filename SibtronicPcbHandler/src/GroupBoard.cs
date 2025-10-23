@@ -1,4 +1,4 @@
-﻿using PcbReader.Spv.Entities;
+﻿using PcbReader.Strx.Entities;
 
 namespace SibtronicPcbHandler;
 
@@ -8,6 +8,6 @@ public class GroupBoard {
     public int Columns { get; set; }
     public double HorizontalMargins { get; set; }
     public double VerticalMargins { get; set; }
-    public SpvLayer? MillingLayer { get; set; }
-    public SpvLayer? ScrabbingLayer { get; set; }
+    public StrxLayer? MillingLayer { get; set; }
+    public StrxLayer? ScrabbingLayer { get; set; }
 }

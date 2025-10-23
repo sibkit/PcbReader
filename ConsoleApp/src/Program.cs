@@ -3,18 +3,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
 using PcbReader.Converters;
-using PcbReader.Converters.GerberToSpv;
-using PcbReader.Converters.SpvToSvg;
+using PcbReader.Converters.GerberToStrx;
+using PcbReader.Converters.StrxToSvg;
 using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Reading;
 using PcbReader.Layers.Svg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
-using PcbReader.Spv;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements;
-using PcbReader.Spv.Handling;
+using PcbReader.Strx;
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements;
+using PcbReader.Strx.Handling;
 
 namespace ConsoleApp;
 
@@ -31,7 +31,7 @@ public static class Program {
     
     static void BuildTestPrintFile() {
 
-        var spv = new SpvLayer {
+        var spv = new StrxLayer {
             Bounds = new Bounds(0, 0, 1800, 1800)
         };
         

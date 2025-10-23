@@ -1,4 +1,4 @@
-﻿using PcbReader.Converters.GerberToSpv;
+﻿using PcbReader.Converters.GerberToStrx;
 
 namespace ConsoleApp;
 

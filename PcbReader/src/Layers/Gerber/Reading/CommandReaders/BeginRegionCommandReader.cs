@@ -2,7 +2,7 @@
 using PcbReader.Layers.Common.Reading;
 using PcbReader.Layers.Gerber.Entities;
 using PcbReader.Layers.Gerber.Entities.Apertures;
-using PcbReader.Spv.Entities;
+using PcbReader.Strx.Entities;
 
 namespace PcbReader.Layers.Gerber.Reading.CommandReaders;
 

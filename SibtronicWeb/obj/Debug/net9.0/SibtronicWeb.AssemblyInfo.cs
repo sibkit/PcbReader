@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SibtronicWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3de987656117650a263c0d23179207f98f17f5d7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5aec1c813743d15b044785afa7db7372310e99b4")]
 [assembly: System.Reflection.AssemblyProductAttribute("SibtronicWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SibtronicWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

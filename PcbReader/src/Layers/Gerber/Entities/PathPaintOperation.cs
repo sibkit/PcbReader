@@ -1,6 +1,6 @@
 ﻿using PcbReader.Layers.Common;
 using PcbReader.Layers.Gerber.Entities.Apertures;
-using PcbReader.Spv.Entities;
+using PcbReader.Strx.Entities;
 
 namespace PcbReader.Layers.Gerber.Entities;
 

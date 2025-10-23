@@ -1,4 +1,4 @@
-﻿using PcbReader.Spv.Entities;
+﻿using PcbReader.Strx.Entities;
 
 namespace SibtronicPcbHandler;
 
@@ -12,10 +12,10 @@ public enum SolderMaskColor {
 }
 
 public class SolderMaskLayer: IBoardLayer {
-    public SolderMaskLayer(SolderMaskColor color, SpvLayer image) {
+    public SolderMaskLayer(SolderMaskColor color, StrxLayer image) {
         Color = color;
         Image = image;
     }
     public SolderMaskColor Color { get; }
-    public SpvLayer Image { get; }
+    public StrxLayer Image { get; }
 }

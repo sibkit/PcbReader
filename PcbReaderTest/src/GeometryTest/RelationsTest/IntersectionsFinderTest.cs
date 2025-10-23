@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using PcbReader.Spv;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements;
-using PcbReader.Spv.Handling;
-using PcbReader.Spv.Relations;
+using PcbReader.Strx;
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements;
+using PcbReader.Strx.Handling;
+using PcbReader.Strx.Relations;
 
 namespace PcbReaderTest.GeometryTest.RelationsTest;
 

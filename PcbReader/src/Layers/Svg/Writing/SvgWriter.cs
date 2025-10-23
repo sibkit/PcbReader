@@ -2,11 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using PcbReader.Layers.Svg.Entities;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements;
-using PcbReader.Spv.Entities.GraphicElements.Curves;
-using PcbReader.Spv.Handling;
-using Path = PcbReader.Spv.Entities.GraphicElements.Path;
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements;
+using PcbReader.Strx.Entities.GraphicElements.Curves;
+using PcbReader.Strx.Handling;
+using Path = PcbReader.Strx.Entities.GraphicElements.Path;
 
 namespace PcbReader.Layers.Svg.Writing;
 
@@ -170,11 +170,14 @@ public static class SvgWriter {
         _pathPartsBounds.Clear();
         var vbr = doc.ViewBox ?? CalculateViewBox(doc);
 
-        swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\""+
-                   Math.Round(vbr.MinPoint.X,6)+ " "+
-                  Math.Round(vbr.MinPoint.Y,6)+" "+ 
-                  Math.Round(vbr.GetWidth(),6) + " "+
-                  Math.Round(vbr.GetHeight(),6) + "\">");
+        swr.Write("<svg xmlns=\"http://www.w3.org/2000/svg\" " +
+                  $"width = \"{vbr.MaxX - vbr.MinX}\" " +
+                  $"height = \"{vbr.MaxY - vbr.MinY}\" " +
+                  "viewBox=\"" +
+                  Math.Round(vbr.MinPoint.X, 6) + " " +
+                  Math.Round(vbr.MinPoint.Y, 6) + " " +
+                  Math.Round(vbr.GetWidth(), 6) + " " +
+                  Math.Round(vbr.GetHeight(), 6) + "\">");
         swr.Write("\n<g fill=\"none\" stroke-width=\"0\">");
         foreach (var e in doc.Elements) {
             switch (e) {

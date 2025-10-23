@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.ComTypes;
-using PcbReader.Converters.SpvToSvg;
+using PcbReader.Converters.StrxToSvg;
 using PcbReader.Layers.Svg.Entities;
 using PcbReader.Layers.Svg.Writing;
-using PcbReader.Spv;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements;
-using PcbReader.Spv.Handling;
+using PcbReader.Strx;
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements;
+using PcbReader.Strx.Handling;
 
 namespace PcbReaderTest.GeometryTest;
 
@@ -170,7 +170,7 @@ public class ContoursTest {
 
     [Fact]
     public void MoveTest() {
-        var area = new SpvLayer();
+        var area = new StrxLayer();
         var cts = GetContours2();
         
         for (var i = 0; i < 5; i++) {
@@ -195,7 +195,7 @@ public class ContoursTest {
     [Fact]
     public void TestContoursOperation() {
 
-        var area = new SpvLayer();
+        var area = new StrxLayer();
         var cts = GetContours2().Union(GetContours()).ToList();
 
         var line = 0;
@@ -261,7 +261,7 @@ public class ContoursTest {
 
         var shape = Contours.Union(p1.Root, p2.Root);
         
-        var area = new SpvLayer();
+        var area = new StrxLayer();
         area.GraphicElements.Add(shape);
         var svg = SpvToSvgConverter.Convert(area);
         SvgWriter.Write(svg, "D://ts1.svg");

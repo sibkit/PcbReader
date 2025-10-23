@@ -1,9 +1,7 @@
 ﻿using System.Runtime.Intrinsics;
-using PcbReader.Spv;
-using PcbReader.Spv.Entities;
-using PcbReader.Spv.Entities.GraphicElements.Curves;
-using PcbReader.Spv.Handling;
-
+using PcbReader.Strx.Entities;
+using PcbReader.Strx.Entities.GraphicElements.Curves;
+using PcbReader.Strx.Handling;
 
 namespace PcbReaderTest.GeometryTest;
 

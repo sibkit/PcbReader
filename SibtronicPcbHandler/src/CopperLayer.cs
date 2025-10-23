@@ -1,12 +1,12 @@
-﻿using PcbReader.Spv.Entities;
+﻿using PcbReader.Strx.Entities;
 
 namespace SibtronicPcbHandler;
 
 public class CopperLayer: IBoardLayer {
-    public SpvLayer Image { get; }
+    public StrxLayer Image { get; }
     public double Thickness { get; }
 
-    public CopperLayer(SpvLayer image, double thickness) {
+    public CopperLayer(StrxLayer image, double thickness) {
         Image = image;
         Thickness = thickness;
     }
