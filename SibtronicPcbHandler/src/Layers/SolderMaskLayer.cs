@@ -1,6 +1,6 @@
 ﻿using PcbReader.Strx.Entities;
 
-namespace SibtronicPcbHandler;
+namespace SibtronicPcbHandler.Layers;
 
 public enum SolderMaskColor {
     Any,
@@ -12,6 +12,7 @@ public enum SolderMaskColor {
 }
 
 public class SolderMaskLayer: IBoardLayer {
+    public required string Name { get; set; }
     public SolderMaskLayer(SolderMaskColor color, StrxLayer image) {
         Color = color;
         Image = image;
